@@ -1,0 +1,169 @@
+{
+  "config": {
+    "name": "quick_test",
+    "models": [
+      "meta-llama/llama-3.2-3b-instruct"
+    ],
+    "strategy": "multi_stage_simple",
+    "max_examples": 3,
+    "spider_path": "spider",
+    "split": "dev"
+  },
+  "experiments": {
+    "llama-3.2-3b-instruct_multi_stage_simple": {
+      "query_results": [
+        {
+          "predicted_sql": "SELECT c.country id, c.country name\nFROM countries c\nJOIN car makers m ON c.country id = m.country\nWHERE m.id IS NOT NULL",
+          "gold_sql": "SELECT T1.CountryName ,  T1.CountryId FROM COUNTRIES AS T1 JOIN CAR_MAKERS AS T2 ON T1.CountryId  =  T2.Country GROUP BY T1.CountryId HAVING count(*)  >=  1;",
+          "db_id": "car_1",
+          "question": "What are the names and ids of all countries with at least one car maker?",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null
+        },
+        {
+          "predicted_sql": "SELECT COUNT(*) \nFROM flights \nJOIN airlines ON flights.airline = airlines.airline_id \nWHERE airlines.airline_name = 'Jetblue Airways';",
+          "gold_sql": "SELECT count(*) FROM FLIGHTS AS T1 JOIN AIRLINES AS T2 ON T1.Airline  =  T2.uid WHERE T2.Airline = \"JetBlue Airways\"",
+          "db_id": "flight_2",
+          "question": "Give the number of Jetblue Airways flights.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null
+        },
+        {
+          "predicted_sql": "SELECT COUNT(*) \nFROM airports;",
+          "gold_sql": "SELECT count(*) FROM AIRPORTS",
+          "db_id": "flight_2",
+          "question": "How many airports do we have?",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null
+        }
+      ],
+      "llm_responses": [
+        {
+          "content": "To get the names and ids of all countries with at least one car maker, you can use the following SQL query:\n\n```sql\nSELECT c.country id, c.country name\nFROM countries c\nJOIN car makers m ON c.country id = m.country\nWHERE m.id IS NOT NULL\n```\n\nThis query works as follows:\n\n- It selects the `country id` and `country name` from the `countries` table.\n- It joins the `countries` table with the `car makers` table on the `country id` column.\n- It filters out countries that do not have any car makers by checking if the `id` in the `car makers` table is not null.\n\nHowever, the above query will return duplicate country names if a country has multiple car makers. If you want to get unique country names, you can use the following query:\n\n```sql\nSELECT DISTINCT c.country id, c.country name\nFROM countries c\nJOIN car makers m ON c.country id = m.country\nWHERE m.id IS NOT NULL\n```\n\nThis query uses the `DISTINCT` keyword to remove duplicate rows from the result set.",
+          "model": "meta-llama/llama-3.2-3b-instruct",
+          "usage": {
+            "total_tokens": 434,
+            "prompt_tokens": 203,
+            "completion_tokens": 231
+          },
+          "response_time": 2.572502374649048,
+          "success": true,
+          "error": null
+        },
+        {
+          "content": "To generate the SQL query, we need to join the `flights` table with the `airlines` table to get the airline name and then filter the results to get only the Jetblue Airways flights.\n\nHere is the SQL query:\n\n```sql\nSELECT COUNT(*) \nFROM flights \nJOIN airlines ON flights.airline = airlines.airline_id \nWHERE airlines.airline_name = 'Jetblue Airways';\n```\n\nThis query will return the number of Jetblue Airways flights.",
+          "model": "meta-llama/llama-3.2-3b-instruct",
+          "usage": {
+            "total_tokens": 236,
+            "prompt_tokens": 140,
+            "completion_tokens": 96
+          },
+          "response_time": 1.014317274093628,
+          "success": true,
+          "error": null
+        },
+        {
+          "content": "To find the number of airports, you can use the following SQL query:\n\n```sql\nSELECT COUNT(*) \nFROM airports;\n```\n\nThis query simply counts the number of rows in the `airports` table, which represents the number of airports.",
+          "model": "meta-llama/llama-3.2-3b-instruct",
+          "usage": {
+            "total_tokens": 189,
+            "prompt_tokens": 138,
+            "completion_tokens": 51
+          },
+          "response_time": 1.0228912830352783,
+          "success": true,
+          "error": null
+        }
+      ],
+      "total_examples": 3,
+      "successful_examples": 3
+    }
+  },
+  "summary": {
+    "model_comparison": {
+      "meta-llama/llama-3.2-3b-instruct": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 1.5365703105926514,
+        "total_tokens_sum": 859,
+        "error_rate_mean": 0.0
+      }
+    },
+    "strategy_comparison": {
+      "multi_stage_simple": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 1.5365703105926514,
+        "total_tokens_sum": 859,
+        "error_rate_mean": 0.0
+      }
+    },
+    "results": [
+      {
+        "experiment_id": "quick_test_llama-3.2-3b-instruct_multi_stage_simple_1763505554",
+        "model_name": "meta-llama/llama-3.2-3b-instruct",
+        "strategy": "multi_stage_simple",
+        "timestamp": "2025-11-18T17:39:14.957394",
+        "results": {
+          "total_queries": 3,
+          "exact_match_accuracy": 0.0,
+          "execution_accuracy": 0.0,
+          "error_rate": 0.0,
+          "avg_response_time": 1.5365703105926514,
+          "total_tokens": 859
+        },
+        "queries": [
+          {
+            "timestamp": "2025-11-18T17:39:17.536405",
+            "model_name": "meta-llama/llama-3.2-3b-instruct",
+            "strategy": "multi_stage_simple",
+            "accuracy": {
+              "exact_match": false,
+              "execution_match": false
+            },
+            "performance": {
+              "response_time": 2.572502374649048,
+              "tokens_used": 434
+            },
+            "error": null
+          },
+          {
+            "timestamp": "2025-11-18T17:39:18.652447",
+            "model_name": "meta-llama/llama-3.2-3b-instruct",
+            "strategy": "multi_stage_simple",
+            "accuracy": {
+              "exact_match": false,
+              "execution_match": false
+            },
+            "performance": {
+              "response_time": 1.014317274093628,
+              "tokens_used": 236
+            },
+            "error": null
+          },
+          {
+            "timestamp": "2025-11-18T17:39:19.776991",
+            "model_name": "meta-llama/llama-3.2-3b-instruct",
+            "strategy": "multi_stage_simple",
+            "accuracy": {
+              "exact_match": false,
+              "execution_match": false
+            },
+            "performance": {
+              "response_time": 1.0228912830352783,
+              "tokens_used": 189
+            },
+            "error": null
+          }
+        ]
+      }
+    ]
+  },
+  "timestamp": "2025-11-18T17:39:19.878616"
+}

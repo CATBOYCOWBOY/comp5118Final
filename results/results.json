@@ -1,0 +1,60 @@
+[
+  {
+    "experiment_id": "quick_test_llama-3.2-3b-instruct_multi_stage_simple_1763505554",
+    "model_name": "meta-llama/llama-3.2-3b-instruct",
+    "strategy": "multi_stage_simple",
+    "timestamp": "2025-11-18T17:39:14.957394",
+    "results": {
+      "total_queries": 3,
+      "exact_match_accuracy": 0.0,
+      "execution_accuracy": 0.0,
+      "error_rate": 0.0,
+      "avg_response_time": 1.5365703105926514,
+      "total_tokens": 859
+    },
+    "queries": [
+      {
+        "timestamp": "2025-11-18T17:39:17.536405",
+        "model_name": "meta-llama/llama-3.2-3b-instruct",
+        "strategy": "multi_stage_simple",
+        "accuracy": {
+          "exact_match": false,
+          "execution_match": false
+        },
+        "performance": {
+          "response_time": 2.572502374649048,
+          "tokens_used": 434
+        },
+        "error": null
+      },
+      {
+        "timestamp": "2025-11-18T17:39:18.652447",
+        "model_name": "meta-llama/llama-3.2-3b-instruct",
+        "strategy": "multi_stage_simple",
+        "accuracy": {
+          "exact_match": false,
+          "execution_match": false
+        },
+        "performance": {
+          "response_time": 1.014317274093628,
+          "tokens_used": 236
+        },
+        "error": null
+      },
+      {
+        "timestamp": "2025-11-18T17:39:19.776991",
+        "model_name": "meta-llama/llama-3.2-3b-instruct",
+        "strategy": "multi_stage_simple",
+        "accuracy": {
+          "exact_match": false,
+          "execution_match": false
+        },
+        "performance": {
+          "response_time": 1.0228912830352783,
+          "tokens_used": 189
+        },
+        "error": null
+      }
+    ]
+  }
+]

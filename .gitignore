@@ -1,1 +1,5 @@
 secrets.txt
+spider
+.venv/
+proto/
+NOVITA_API_KEY
