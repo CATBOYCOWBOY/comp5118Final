@@ -24,16 +24,20 @@ class NovitaClient:
     client: OpenAI
 
     def __init__(self, api_key: Optional[str] = None, temperature: float = 1.0, max_tokens: int = 1024):
+        with open('NOVITA_API_KEY', 'r') as f:
+            novita_key = f.readline().strip()
+        if not novita_key or novita_key == "":
+            raise ValueError("NOVITA_API_KEY must be set in the NOVITA_API_KEY file")
+
         self.temperature = temperature
         self.max_tokens = max_tokens
 
-        if api_key:
-            self.client = OpenAI(
-                base_url = NOVITA_BACKEND_URL,
-                api_key = api_key
-            )
-        else:
-            self.client = None
+        # Use the API key from file unless overridden
+        use_key = api_key or novita_key
+        self.client = OpenAI(
+            base_url = NOVITA_BACKEND_URL,
+            api_key = use_key
+        )
     
     def complete(self, prompt: str, model: str):
         response = self.client.chat.completions.create(

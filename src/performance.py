@@ -7,7 +7,7 @@ from datetime import datetime
 from typing import Dict, List, Any, Optional
 from collections import defaultdict
 
-from .novita_client import LLMResponse
+from novita_client import LLMResponse
 
 
 class PerformanceManager:

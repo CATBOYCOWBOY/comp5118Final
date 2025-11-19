@@ -4,121 +4,145 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a simplified test bench for analyzing LLM performance on NL2SQL tasks using the Spider dataset. The project uses a multi-stage prompting strategy with Novita AI's LLM service and supports ablation studies to understand the impact of different pipeline components.
+This is a Spider2-lite testbench for analyzing LLM performance on enterprise NL2SQL tasks using real-world databases. The project implements text-in-results-out evaluation with Novita AI's LLM service and provides comprehensive benchmarking of models on complex business analytics queries.
 
 ## Project Structure
 
-- **`spider/`** - Contains the Spider dataset and evaluation framework (gitignored but contains core evaluation logic)
-  - `evaluation.py` - Main evaluation script for SQL accuracy metrics
-  - `process_sql.py` - SQL parsing and processing utilities
-- **`src/`** - Simplified source code directory:
-  - `testbench.py` - Main orchestrator with simple dictionary-based configs
+- **`Spider2/`** - Contains the Spider2-lite dataset and SQLite databases
+  - `spider2-lite/` - Spider2-lite dataset with 135 local examples
+  - `spider2-lite/resource/databases/local_sqlite/` - 30 real SQLite databases
+  - `spider2-lite/resource/documents/` - External knowledge documents
+- **`src/`** - Source code directory:
+  - `spider2_testbench.py` - Main Spider2 testbench orchestrator
   - `novita_client.py` - Novita AI integration
-  - `spider.py` - Merged Spider dataset loading and evaluation
-  - `strategies.py` - Multi-stage prompting strategy with ablation support
-  - `performance.py` - Merged performance tracking and visualization using JSON
-  - `config.py` - Simple configuration with hardcoded model lists
+  - `spider2.py` - Spider2-lite dataset manager and evaluation
+  - `strategies.py` - Spider2 prompting strategy
+  - `performance.py` - Performance tracking and visualization
+  - `config.py` - Configuration with hardcoded model lists
 - **`results/`** - Output directory for JSON-based experiment results
-- **`secrets.txt`** - API keys and configuration (gitignored)
-- **`run_testbench.py`** - Simplified CLI interface
+- **`NOVITA_API_KEY`** - API key file (gitignored)
+- **`run_testbench.py`** - Spider2-lite CLI interface
 
 ## Available Models
 
 The system supports these hardcoded models (defined in `src/config.py`):
 - `meta-llama/llama-3.2-3b-instruct`
+- `meta-llama/llama-3.1-8b-instruct`
 - `meta-llama/llama-3.2-11b-vision-instruct`
-- `deepseek/deepseek-r1`
-- `qwen/qwen-2.5-72b-instruct`
+- `qwen/qwen-2.5-14b-instruct`
+- `qwen/qwen3-coder-30b-a3b-instruct`
+- `google/gemma-3-12b-it`
+- `google/gemma-3-27b-it`
+- `mistralai/mistral-7b-instruct-v0.3`
+- `deepseek/deepseek-r1-0528-qwen3-8b`
 
-## Strategy Variants (Ablation Support)
+## Strategy Configuration
 
-The multi-stage strategy supports ablation studies with these variants:
-- `multi_stage` - Full pipeline: analysis → generation → verification
-- `multi_stage_no_analysis` - Skip analysis step
-- `multi_stage_no_verification` - Skip verification step
-- `multi_stage_simple` - Generation only
+The system uses a single comprehensive strategy:
+- `spider2_basic` - Text-in-results-out evaluation with schema context
 
 ## Quick Usage
 
 ### Command Line Interface
 ```bash
 # Quick test
-python run_testbench.py quick --model meta-llama/llama-3.2-3b-instruct --examples 10
+python run_testbench.py quick --model qwen/qwen3-coder-30b-a3b-instruct --examples 10
 
-# Compare all models
+# Compare models
 python run_testbench.py compare-models --examples 50
 
-# Compare strategies (ablation study)
-python run_testbench.py compare-strategies --model meta-llama/llama-3.2-3b-instruct
+# Show dataset info
+python run_testbench.py info
 
-# List available options
+# List available models
 python run_testbench.py list-models
-python run_testbench.py list-strategies
 ```
 
 ### Python API
 ```python
-from src.testbench import NL2SQLTestbench
+from src.spider2_testbench import Spider2Testbench
 
 # Quick test
-testbench = NL2SQLTestbench()
-await testbench.quick_test(model_name="meta-llama/llama-3.2-3b-instruct", num_examples=10)
+testbench = Spider2Testbench()
+await testbench.quick_test(model_name="qwen/qwen3-coder-30b-a3b-instruct", max_examples=10)
 
-# Strategy ablation
-await testbench.compare_strategies(
-    strategies=["multi_stage", "multi_stage_no_verification"],
-    num_examples=50
-)
+# Model comparison
+await testbench.compare_models(max_examples=50)
 ```
 
 ## Configuration System
 
-The system uses simple Python dictionaries instead of complex objects:
+The system uses simple Python dictionaries:
 
 ```python
 # Example config
 {
-    "name": "experiment_name",
-    "models": ["meta-llama/llama-3.2-3b-instruct"],
-    "strategy": "multi_stage",
-    "max_examples": 50,
-    "spider_path": "spider",
-    "split": "dev"
+    "name": "spider2_quick_test",
+    "models": ["qwen/qwen3-coder-30b-a3b-instruct"],
+    "strategy": "spider2_basic",
+    "max_examples": 10,
+    "spider2_path": "Spider2",
+    "dataset_type": "spider2"
 }
 ```
 
 ## Performance Tracking
 
-Results are stored as simple JSON with this structure:
+Results are stored as JSON with this structure:
 ```json
 {
-    "timestamp": "2024-01-01T12:00:00",
-    "model_name": "meta-llama/llama-3.2-3b-instruct",
-    "strategy": "multi_stage",
-    "accuracy": {
-        "exact_match": true,
-        "execution_match": true
-    },
-    "performance": {
-        "response_time": 2.5,
-        "tokens_used": 150
+    "timestamp": "2025-11-19T12:54:10",
+    "dataset_type": "spider2-lite",
+    "experiments": {
+        "config": {...},
+        "experiments": {
+            "model_strategy": {
+                "summary": {
+                    "total_examples": 10,
+                    "execution_accuracy": 0.8,
+                    "successful_examples": 8
+                },
+                "entries": [...]
+            }
+        }
     }
 }
 ```
 
-## Key Simplifications
+## Key Features
 
-- **No Complex Dataclasses**: Uses simple Python dictionaries
-- **No CSV Files**: All data stored as JSON
-- **Merged Classes**: Combined related functionality
-- **Hardcoded Lists**: Models and strategies defined in config
-- **Simple CLI**: Direct function calls, no complex object setup
-- **Multi-Stage Only**: Focused on one effective strategy with ablation variants
+- **Text-in-Results-Out**: Evaluation based on SQL execution results, not string matching
+- **Real Enterprise Data**: 30 SQLite databases with complex schemas from real businesses
+- **Complex Analytics**: Time series, RFM analysis, window functions, CTEs
+- **External Knowledge**: Domain-specific documentation integration
+- **Execution-Based**: True semantic evaluation through SQL execution
+
+## Spider2-lite Dataset
+
+- **135 local examples** across 30 different databases
+- **Complex business questions** requiring advanced SQL
+- **Real-world schemas** from e-commerce, sports, entertainment, finance
+- **External knowledge documents** for domain-specific analysis
+- **SQLite format** for local evaluation without cloud costs
+
+## Key Improvements from Spider1
+
+- **Enterprise Focus**: Real-world business analytics vs academic examples
+- **Execution Evaluation**: Results comparison vs regex string matching
+- **Complex Queries**: Multi-table joins, window functions, CTEs
+- **Domain Knowledge**: Business context integration
+- **Scalable Evaluation**: Local SQLite databases vs cloud dependencies
 
 ## Development Notes
 
-- The Spider directory is gitignored but contains essential evaluation infrastructure
-- API credentials should be stored in `secrets.txt` (gitignored)
-- The project focuses on multi-stage prompting ablation studies
-- All performance data is JSON-based for easy analysis
-- System designed for simplicity and ease of modification
+- All experiments automatically save results to `results/` with timestamps
+- The system focuses on execution accuracy as the primary metric
+- External knowledge documents provide business context for complex queries
+- SQL extraction handles multiple response formats from different LLMs
+- Database schemas are automatically introspected and formatted for prompts
+
+# Important Instructions
+Do what has been asked; nothing more, nothing less.
+NEVER create files unless they're absolutely necessary for achieving your goal.
+ALWAYS prefer editing an existing file to creating a new one.
+NEVER proactively create documentation files (*.md) or README files. Only create documentation files if explicitly requested by the User.

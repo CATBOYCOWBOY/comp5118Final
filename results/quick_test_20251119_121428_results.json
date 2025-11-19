@@ -1,0 +1,85 @@
+{
+  "config": {
+    "name": "quick_test",
+    "models": [
+      "qwen/qwen3-coder-30b-a3b-instruct"
+    ],
+    "strategy": "multi_stage",
+    "max_examples": 3,
+    "spider_path": "spider",
+    "split": "dev"
+  },
+  "experiments": {
+    "qwen3-coder-30b-a3b-instruct_multi_stage": {
+      "summary": {
+        "total_examples": 2,
+        "exact_match_count": 0,
+        "exact_match_accuracy": 0.0,
+        "component_match_count": 0,
+        "component_match_accuracy": 0.0,
+        "execution_match_count": 0,
+        "execution_match_accuracy": 0.0,
+        "successful_examples": 2
+      },
+      "entries": [
+        {
+          "entry_id": 1,
+          "question": "What are the country code and first name of the players who won in both tourney WTA Championships and Australian Open?",
+          "database": "wta_1",
+          "predicted_sql": "SELECT p.country_code, p.first_name\nFROM players p\nJOIN matches m ON p.player_id = m.winner_id\nWHERE m.tourney_name IN ('WTA Championships', 'Australian Open')\nGROUP BY p.player_id, p.country_code, p.first_name\nHAVING COUNT(DISTINCT m.tourney_name) = 2",
+          "extracted_sql": "SELECT p.country_code, p.first_name\nFROM players p\nJOIN matches m ON p.player_id = m.winner_id\nWHERE m.tourney_name IN ('WTA Championships', 'Australian Open')\nGROUP BY p.player_id, p.country_code, p.first_name\nHAVING COUNT(DISTINCT m.tourney_name) = 2",
+          "gold_sql": "SELECT T1.country_code ,  T1.first_name FROM players AS T1 JOIN matches AS T2 ON T1.player_id  =  T2.winner_id WHERE T2.tourney_name  =  'WTA Championships' INTERSECT SELECT T1.country_code ,  T1.first_name FROM players AS T1 JOIN matches AS T2 ON T1.player_id  =  T2.winner_id WHERE T2.tourney_name  =  'Australian Open'",
+          "llm_response": "```sql\nSELECT p.country_code, p.first_name\nFROM players p\nJOIN matches m ON p.player_id = m.winner_id\nWHERE m.tourney_name IN ('WTA Championships', 'Australian Open')\nGROUP BY p.player_id, p.country_code, p.first_name\nHAVING COUNT(DISTINCT m.tourney_name) = 2\n```",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": "Database not found: spider/database/wta_1.sqlite",
+          "performance": {
+            "response_time": 56.08678197860718,
+            "tokens_used": 2024,
+            "model": "qwen/qwen3-coder-30b-a3b-instruct"
+          }
+        },
+        {
+          "entry_id": 2,
+          "question": "List the name of teachers whose hometown is not `` Little Lever Urban District '' .",
+          "database": "course_teach",
+          "predicted_sql": "SELECT name \nFROM teacher \nWHERE hometown != 'Little Lever Urban District';",
+          "extracted_sql": "SELECT name \nFROM teacher \nWHERE hometown != 'Little Lever Urban District';",
+          "gold_sql": "select name from teacher where hometown != \"little lever urban district\"",
+          "llm_response": "Based on the analysis provided, here is the SQL query:\n\n```sql\nSELECT name \nFROM teacher \nWHERE hometown != 'Little Lever Urban District';\n```\n\nThis query:\n- Selects the `name` column from the `teacher` table\n- Filters out teachers whose `hometown` is exactly 'Little Lever Urban District'\n- Returns the names of all teachers who meet this criteria\n\nThe query is correct as it only requires the teacher table and uses a simple WHERE clause with the != operator to exclude the specified hometown.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": "Database not found: spider/database/course_teach.sqlite",
+          "performance": {
+            "response_time": 25.414649963378906,
+            "tokens_used": 1228,
+            "model": "qwen/qwen3-coder-30b-a3b-instruct"
+          }
+        }
+      ]
+    }
+  },
+  "summary": {
+    "model_comparison": {
+      "qwen/qwen3-coder-30b-a3b-instruct": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 40.75071597099304,
+        "total_tokens_sum": 3252,
+        "error_rate_mean": 1.0
+      }
+    },
+    "strategy_comparison": {
+      "multi_stage": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 40.75071597099304,
+        "total_tokens_sum": 3252,
+        "error_rate_mean": 1.0
+      }
+    }
+  },
+  "timestamp": "2025-11-19T12:14:28.057278"
+}

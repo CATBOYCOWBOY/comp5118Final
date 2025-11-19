@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-NL2SQL Testbench CLI - Simplified
+Spider2-lite Testbench CLI
 
-Simple command-line interface for running NL2SQL evaluations.
+Command-line interface for running Spider2-lite NL2SQL evaluations.
 """
 
 import argparse
@@ -13,138 +13,113 @@ from typing import Optional, List
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
-from src.testbench import NL2SQLTestbench
+from src.spider2_testbench import Spider2Testbench
 from src.config import AVAILABLE_MODELS
 
 
 async def run_quick_test(args: argparse.Namespace) -> None:
-    """Run a quick test."""
-    testbench = NL2SQLTestbench(spider_path=args.spider_path)
+    """Run a quick Spider2-lite test."""
+    testbench = Spider2Testbench(spider2_path=args.spider2_path)
 
-    try:
-        results = await testbench.quick_test(
-            model_name=args.model,
-            strategy=args.strategy,
-            num_examples=args.examples
-        )
-        print("Quick test completed successfully!")
-
-    finally:
-        await testbench.close()
+    print(f"Running Spider2-lite quick test with {args.model}")
+    results = await testbench.quick_test(
+        model_name=args.model,
+        max_examples=args.examples
+    )
+    print("Quick test completed successfully!")
 
 
 async def run_model_comparison(args: argparse.Namespace) -> None:
-    """Run model comparison."""
-    models: List[str] = args.models if args.models else AVAILABLE_MODELS
-    testbench = NL2SQLTestbench(spider_path=args.spider_path)
+    """Run Spider2-lite model comparison."""
+    models: List[str] = args.models if args.models else AVAILABLE_MODELS[:3]  # Limit to 3 for speed
+    testbench = Spider2Testbench(spider2_path=args.spider2_path)
 
-    try:
-        results = await testbench.compare_models(
-            models=models,
-            strategy="multi_stage",
-            num_examples=args.examples
-        )
-        print("Model comparison completed successfully!")
-
-    finally:
-        await testbench.close()
+    print(f"Running Spider2-lite model comparison with {len(models)} models")
+    results = await testbench.compare_models(
+        models=models,
+        max_examples=args.examples
+    )
+    print("Model comparison completed successfully!")
 
 
-async def run_strategy_comparison(args: argparse.Namespace) -> None:
-    """Run strategy comparison."""
-    strategies: List[str] = args.strategies if args.strategies else [
-        "multi_stage", "multi_stage_no_analysis", "multi_stage_no_verification", "multi_stage_simple"
-    ]
-    testbench = NL2SQLTestbench(spider_path=args.spider_path)
-
-    try:
-        results = await testbench.compare_strategies(
-            strategies=strategies,
-            model=args.model,
-            num_examples=args.examples
-        )
-        print("Strategy comparison completed successfully!")
-
-    finally:
-        await testbench.close()
+async def show_dataset_info(args: argparse.Namespace) -> None:
+    """Show Spider2-lite dataset information."""
+    testbench = Spider2Testbench(spider2_path=args.spider2_path)
+    stats = testbench.get_dataset_info()
 
 
-def list_models(args: argparse.Namespace) -> None:
+def list_models() -> None:
     """List available models."""
-    print("Available models:")
-    for model in AVAILABLE_MODELS:
-        print(f"  - {model}")
+    print("Available Models:")
+    print("=" * 40)
+    for i, model in enumerate(AVAILABLE_MODELS, 1):
+        print(f"{i:2d}. {model}")
 
 
-def list_strategies(args: argparse.Namespace) -> None:
-    """List available strategies."""
-    strategies: List[str] = ["multi_stage", "multi_stage_no_analysis", "multi_stage_no_verification", "multi_stage_simple"]
-    print("Available strategies:")
-    for strategy in strategies:
-        print(f"  - {strategy}")
+def main():
+    """Main CLI entry point."""
+    parser = argparse.ArgumentParser(
+        description="Spider2-lite NL2SQL Testbench",
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
 
+    # Global arguments
+    parser.add_argument(
+        "--spider2-path",
+        default="Spider2",
+        help="Path to Spider2-lite dataset (default: Spider2)"
+    )
 
-async def run_minimal_test(args: argparse.Namespace) -> None:
-    """Run a minimal test with just 3 examples for quick validation."""
-    testbench = NL2SQLTestbench(spider_path=args.spider_path)
-
-    try:
-        results = await testbench.quick_test(
-            model_name="meta-llama/llama-3.1-8b-instruct",
-            strategy="multi_stage",
-            num_examples=3
-        )
-        print("Minimal test completed successfully!")
-        print(f"Results: {results}")
-
-    finally:
-        await testbench.close()
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser(description="NL2SQL Testbench - Simplified")
-    parser.add_argument("--spider-path", default="spider", help="Path to Spider dataset")
-
-    subparsers = parser.add_subparsers(dest="command", help="Available commands")
+    subparsers = parser.add_subparsers(dest='command', help='Available commands')
 
     # Quick test command
-    quick_parser = subparsers.add_parser("quick", help="Run quick test")
-    quick_parser.add_argument("--model", default="meta-llama/llama-3.2-3b-instruct", help="Model to test")
-    quick_parser.add_argument("--strategy", default="multi_stage", help="Strategy to use")
-    quick_parser.add_argument("--examples", type=int, default=10, help="Number of examples")
+    quick_parser = subparsers.add_parser('quick', help='Run quick test with single model')
+    quick_parser.add_argument(
+        '--model',
+        required=True,
+        help='Model to test'
+    )
+    quick_parser.add_argument(
+        '--examples',
+        type=int,
+        default=10,
+        help='Number of examples to test (default: 10)'
+    )
 
     # Model comparison command
-    models_parser = subparsers.add_parser("compare-models", help="Compare multiple models")
-    models_parser.add_argument("--models", nargs="+", help="Models to compare (default: all)")
-    models_parser.add_argument("--examples", type=int, default=50, help="Number of examples")
+    compare_parser = subparsers.add_parser('compare-models', help='Compare multiple models')
+    compare_parser.add_argument(
+        '--models',
+        nargs='+',
+        help='Models to compare (default: first 3 available models)'
+    )
+    compare_parser.add_argument(
+        '--examples',
+        type=int,
+        default=50,
+        help='Number of examples per model (default: 50)'
+    )
 
-    # Strategy comparison command
-    strategies_parser = subparsers.add_parser("compare-strategies", help="Compare multiple strategies")
-    strategies_parser.add_argument("--model", default="meta-llama/llama-3.2-3b-instruct", help="Model to use")
-    strategies_parser.add_argument("--strategies", nargs="+", help="Strategies to compare (default: all)")
-    strategies_parser.add_argument("--examples", type=int, default=50, help="Number of examples")
+    # Dataset info command
+    info_parser = subparsers.add_parser('info', help='Show dataset information')
 
-    # List commands
-    subparsers.add_parser("list-models", help="List available models")
-    subparsers.add_parser("list-strategies", help="List available strategies")
+    # List models command
+    list_parser = subparsers.add_parser('list-models', help='List available models')
 
-    # Minimal test command
-    minimal_parser = subparsers.add_parser("minimal", help="Run minimal test with 3 examples for quick validation")
+    if len(sys.argv) == 1:
+        parser.print_help()
+        return
 
     args = parser.parse_args()
 
-    if args.command == "quick":
+    if args.command == 'quick':
         asyncio.run(run_quick_test(args))
-    elif args.command == "compare-models":
+    elif args.command == 'compare-models':
         asyncio.run(run_model_comparison(args))
-    elif args.command == "compare-strategies":
-        asyncio.run(run_strategy_comparison(args))
-    elif args.command == "minimal":
-        asyncio.run(run_minimal_test(args))
-    elif args.command == "list-models":
-        list_models(args)
-    elif args.command == "list-strategies":
-        list_strategies(args)
+    elif args.command == 'info':
+        asyncio.run(show_dataset_info(args))
+    elif args.command == 'list-models':
+        list_models()
     else:
         parser.print_help()
 

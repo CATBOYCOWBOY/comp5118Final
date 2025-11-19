@@ -1,0 +1,44 @@
+{
+  "timestamp": "2025-11-19T12:54:10.171955",
+  "dataset_type": "spider2-lite",
+  "experiments": {
+    "config": {
+      "name": "spider2_quick_test",
+      "models": [
+        "qwen/qwen3-coder-30b-a3b-instruct"
+      ],
+      "strategy": "spider2_basic",
+      "max_examples": 1
+    },
+    "experiments": {
+      "qwen3-coder-30b-a3b-instruct_spider2_basic": {
+        "summary": {
+          "total_examples": 1,
+          "successful_executions": 1,
+          "execution_accuracy": 1.0,
+          "successful_examples": 1
+        },
+        "entries": [
+          {
+            "instance_id": "local002",
+            "question": "Can you calculate the 5-day symmetric moving average of predicted toy sales for December 5 to 8, 2018, using daily sales data from January 1, 2017, to August 29, 2018, with a simple linear regression model? Finally provide the sum of those four 5-day moving averages?",
+            "database": "E_commerce",
+            "predicted_sql": "WITH toy_sales AS (\n    SELECT \n        DATE(oi.shipping_limit_date) as sale_date,\n        SUM(oi.price) as daily_sales\n    FROM order_items oi\n    JOIN products p ON oi.product_id = p.product_id\n    WHERE p.product_category_name IN (\n        SELECT product_category_name \n        FROM product_category_name_translation \n        WHERE product_category_name_english LIKE '%toy%'\n    )\n    AND DATE(oi.shipping_limit_date) BETWEEN '2017-01-01' AND '2018-08-29'\n    GROUP BY DATE(oi.shipping_limit_date)\n),\nmoving_averages AS (\n    SELECT \n        sale_date,\n        AVG(daily_sales) OVER (\n            ORDER BY sale_date \n            ROWS BETWEEN 2 PRECEDING AND 2 FOLLOWING\n        ) as five_day_ma\n    FROM toy_sales\n    WHERE sale_date BETWEEN '2018-12-05' AND '2018-12-08'\n)\nSELECT SUM(five_day_ma) as sum_of_moving_averages\nFROM moving_averages;",
+            "extracted_sql": "WITH toy_sales AS (\n    SELECT \n        DATE(oi.shipping_limit_date) as sale_date,\n        SUM(oi.price) as daily_sales\n    FROM order_items oi\n    JOIN products p ON oi.product_id = p.product_id\n    WHERE p.product_category_name IN (\n        SELECT product_category_name \n        FROM product_category_name_translation \n        WHERE product_category_name_english LIKE '%toy%'\n    )\n    AND DATE(oi.shipping_limit_date) BETWEEN '2017-01-01' AND '2018-08-29'\n    GROUP BY DATE(oi.shipping_limit_date)\n),\nmoving_averages AS (\n    SELECT \n        sale_date,\n        AVG(daily_sales) OVER (\n            ORDER BY sale_date \n            ROWS BETWEEN 2 PRECEDING AND 2 FOLLOWING\n        ) as five_day_ma\n    FROM toy_sales\n    WHERE sale_date BETWEEN '2018-12-05' AND '2018-12-08'\n)\nSELECT SUM(five_day_ma) as sum_of_moving_averages\nFROM moving_averages;",
+            "execution_success": true,
+            "execution_match": false,
+            "error": null,
+            "llm_response": "I need to analyze this step by step:\n\n1. First, I need to understand what's being asked:\n   - Calculate 5-day symmetric moving average of predicted toy sales\n   - For December 5-8, 2018\n   - Using daily sales data from Jan 1, 2017 to Aug 29, 2018\n   - Using simple linear regression model\n   - Sum the 4 moving averages\n\n2. Looking at the schema, I need to:\n   - Find toy products (need to identify them from product_category_name)\n   - Get daily sales data from orders and order_items\n   - Apply linear regression to predict sales\n   - Calculate 5-day moving averages for the specified dates\n   - Sum those averages\n\n3. However, there's a challenge: The schema doesn't contain a direct \"sales prediction\" table or function for linear regression in SQLite. Also, the question mentions \"predicted toy sales\" but we only have actual sales data.\n\n4. Given the constraints and typical SQL capabilities, I'll need to:\n   - Join relevant tables to get sales data\n   - Filter for toy categories\n   - Aggregate daily sales\n   - Since SQLite doesn't have built-in linear regression functions, I'll need to approximate or use available functions\n\nLet me construct a query that:\n- Identifies toy products through category names\n- Aggregates daily sales\n- Calculates moving averages (though true linear regression would require more complex calculations)\n\nLooking more carefully at the schema, I notice there's no direct way to do linear regression in SQLite without custom functions. The question seems to expect a specific approach that might not be fully achievable with just the schema provided.\n\nHowever, I'll create a query that attempts to follow the logical steps as much as possible within SQLite limitations:\n\n```sql\nWITH toy_sales AS (\n    SELECT \n        DATE(oi.shipping_limit_date) as sale_date,\n        SUM(oi.price) as daily_sales\n    FROM order_items oi\n    JOIN products p ON oi.product_id = p.product_id\n    WHERE p.product_category_name IN (\n        SELECT product_category_name \n        FROM product_category_name_translation \n        WHERE product_category_name_english LIKE '%toy%'\n    )\n    AND DATE(oi.shipping_limit_date) BETWEEN '2017-01-01' AND '2018-08-29'\n    GROUP BY DATE(oi.shipping_limit_date)\n),\nmoving_averages AS (\n    SELECT \n        sale_date,\n        AVG(daily_sales) OVER (\n            ORDER BY sale_date \n            ROWS BETWEEN 2 PRECEDING AND 2 FOLLOWING\n        ) as five_day_ma\n    FROM toy_sales\n    WHERE sale_date BETWEEN '2018-12-05' AND '2018-12-08'\n)\nSELECT SUM(five_day_ma) as sum_of_moving_averages\nFROM moving_averages;\n```",
+            "performance": {
+              "response_time": 6.769505262374878,
+              "tokens_used": 461.5,
+              "model": "qwen/qwen3-coder-30b-a3b-instruct"
+            },
+            "execution_rows": 1,
+            "execution_columns": 1
+          }
+        ]
+      }
+    }
+  }
+}

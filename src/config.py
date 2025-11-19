@@ -1,5 +1,5 @@
 """
-Simple configuration system with hardcoded model lists and basic Python types.
+Spider2-lite configuration system with hardcoded model lists and basic Python types.
 """
 
 # Hardcoded model list
@@ -22,76 +22,44 @@ DEFAULT_MODEL_PARAMS = {
     "retry_count": 3
 }
 
-# Strategy configurations with ablation support
-STRATEGY_CONFIGS = {
-    "multi_stage": {
-        "use_analysis": True,
-        "use_verification": True,
-        "analysis_temp": 0.2,
-        "generation_temp": 0.1,
-        "verification_temp": 0.05
-    },
-    "multi_stage_no_analysis": {
-        "use_analysis": False,
-        "use_verification": True,
-        "generation_temp": 0.1,
-        "verification_temp": 0.05
-    },
-    "multi_stage_no_verification": {
-        "use_analysis": True,
-        "use_verification": False,
-        "analysis_temp": 0.2,
-        "generation_temp": 0.1
-    },
-    "multi_stage_simple": {
-        "use_analysis": False,
-        "use_verification": False,
+# Spider2 Strategy configuration
+STRATEGY_CONFIG = {
+    "spider2_basic": {
         "generation_temp": 0.1
     }
 }
 
-def get_quick_test_config() -> dict:
-    """Get config for quick testing."""
+def get_spider2_quick_test_config() -> dict:
+    """Get config for Spider2-lite quick testing."""
     return {
-        "name": "quick_test",
-        "models": [AVAILABLE_MODELS[0]],  # Just first model
-        "strategy": "multi_stage",
+        "name": "spider2_quick_test",
+        "models": [AVAILABLE_MODELS[0]],
+        "strategy": "spider2_basic",
         "max_examples": 10,
-        "spider_path": "spider",
-        "split": "dev"
+        "spider2_path": "Spider2",
+        "dataset_type": "spider2"
     }
 
-def get_model_comparison_config() -> dict:
-    """Get config for comparing all models."""
+def get_spider2_comparison_config() -> dict:
+    """Get config for Spider2-lite model comparison."""
     return {
-        "name": "model_comparison",
-        "models": AVAILABLE_MODELS,  # All models
-        "strategy": "multi_stage",
-        "max_examples": 50,
-        "spider_path": "spider",
-        "split": "dev"
-    }
-
-def get_strategy_ablation_config() -> dict:
-    """Get config for strategy ablation study."""
-    return {
-        "name": "strategy_ablation",
-        "models": [AVAILABLE_MODELS[0]],  # Single model
-        "strategies": list(STRATEGY_CONFIGS.keys()),  # All strategy variants
-        "max_examples": 100,
-        "spider_path": "spider",
-        "split": "dev"
-    }
-
-def get_comprehensive_config() -> dict:
-    """Get config for comprehensive evaluation."""
-    return {
-        "name": "comprehensive",
+        "name": "spider2_model_comparison",
         "models": AVAILABLE_MODELS,
-        "strategies": list(STRATEGY_CONFIGS.keys()),
+        "strategy": "spider2_basic",
+        "max_examples": 50,
+        "spider2_path": "Spider2",
+        "dataset_type": "spider2"
+    }
+
+def get_spider2_comprehensive_config() -> dict:
+    """Get config for comprehensive Spider2-lite evaluation."""
+    return {
+        "name": "spider2_comprehensive",
+        "models": AVAILABLE_MODELS,
+        "strategy": "spider2_basic",
         "max_examples": None,  # All examples
-        "spider_path": "spider",
-        "split": "dev"
+        "spider2_path": "Spider2",
+        "dataset_type": "spider2"
     }
 
 def get_model_params(model_name: str, **overrides) -> dict:
@@ -101,19 +69,15 @@ def get_model_params(model_name: str, **overrides) -> dict:
     params.update(overrides)
     return params
 
-def get_strategy_config(strategy_name: str) -> dict:
+def get_strategy_config(strategy_name: str = "spider2_basic") -> dict:
     """Get strategy configuration."""
-    if strategy_name not in STRATEGY_CONFIGS:
-        raise ValueError(f"Unknown strategy: {strategy_name}. Available: {list(STRATEGY_CONFIGS.keys())}")
-    return STRATEGY_CONFIGS[strategy_name].copy()
+    if strategy_name not in STRATEGY_CONFIG:
+        raise ValueError(f"Unknown strategy: {strategy_name}. Available: {list(STRATEGY_CONFIG.keys())}")
+    return STRATEGY_CONFIG[strategy_name].copy()
 
 def list_available_models() -> list:
     """List all available models."""
     return AVAILABLE_MODELS.copy()
-
-def list_available_strategies() -> list:
-    """List all available strategy configurations."""
-    return list(STRATEGY_CONFIGS.keys())
 
 def validate_config(config: dict) -> bool:
     """Basic config validation."""
@@ -127,13 +91,8 @@ def validate_config(config: dict) -> bool:
             return False
 
     if "strategy" in config:
-        if config["strategy"] not in STRATEGY_CONFIGS:
+        if config["strategy"] not in STRATEGY_CONFIG:
             print(f"Error: Unknown strategy: {config['strategy']}")
             return False
-    elif "strategies" in config:
-        for strategy in config["strategies"]:
-            if strategy not in STRATEGY_CONFIGS:
-                print(f"Error: Unknown strategy: {strategy}")
-                return False
 
     return True

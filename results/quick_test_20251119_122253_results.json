@@ -1,0 +1,139 @@
+{
+  "config": {
+    "name": "quick_test",
+    "models": [
+      "qwen/qwen3-coder-30b-a3b-instruct"
+    ],
+    "strategy": "multi_stage",
+    "max_examples": 5,
+    "spider_path": "spider",
+    "split": "dev"
+  },
+  "experiments": {
+    "qwen3-coder-30b-a3b-instruct_multi_stage": {
+      "summary": {
+        "total_examples": 5,
+        "exact_match_count": 2,
+        "exact_match_accuracy": 0.4,
+        "component_match_count": 2,
+        "component_match_accuracy": 0.4,
+        "execution_match_count": 0,
+        "execution_match_accuracy": 0.0,
+        "successful_examples": 5
+      },
+      "entries": [
+        {
+          "entry_id": 1,
+          "question": "What are 3 most highly rated episodes in the TV series table and what were those ratings?",
+          "database": "tvshow",
+          "predicted_sql": "SELECT episode, rating \nFROM tv_series \nORDER BY rating DESC \nLIMIT 3;",
+          "extracted_sql": "SELECT episode, rating \nFROM tv_series \nORDER BY rating DESC \nLIMIT 3;",
+          "gold_sql": "SELECT Episode ,  Rating FROM TV_series ORDER BY Rating DESC LIMIT 3;",
+          "llm_response": "Based on the analysis provided, here is the SQL query:\n\n```sql\nSELECT episode, rating \nFROM tv_series \nORDER BY rating DESC \nLIMIT 3;\n```\n\nThis query:\n- Selects the episode name and rating columns from the tv_series table\n- Orders the results by rating in descending order (highest ratings first)\n- Limits the output to only the top 3 results\n- Returns exactly what was asked for: the 3 most highly rated episodes and their corresponding ratings",
+          "exact_match": true,
+          "component_match": true,
+          "execution_match": false,
+          "error": "Database not found: spider/database/tvshow.sqlite",
+          "performance": {
+            "response_time": 38.066813230514526,
+            "tokens_used": 1284,
+            "model": "qwen/qwen3-coder-30b-a3b-instruct"
+          }
+        },
+        {
+          "entry_id": 2,
+          "question": "How many transcripts are listed?",
+          "database": "student_transcripts_tracking",
+          "predicted_sql": "SELECT COUNT(*) AS transcript_count\nFROM transcripts;",
+          "extracted_sql": "SELECT COUNT(*) AS transcript_count\nFROM transcripts;",
+          "gold_sql": "SELECT count(*) FROM Transcripts",
+          "llm_response": "Based on the analysis provided, here is the SQL query to count the total number of transcripts:\n\n```sql\nSELECT COUNT(*) AS transcript_count\nFROM transcripts;\n```\n\nThis query will return a single number representing the total count of all transcripts in the transcripts table. The `COUNT(*)` function counts all rows in the table, and the alias `transcript_count` provides a meaningful name for the result column.",
+          "exact_match": true,
+          "component_match": true,
+          "execution_match": false,
+          "error": "Database not found: spider/database/student_transcripts_tracking.sqlite",
+          "performance": {
+            "response_time": 43.931798458099365,
+            "tokens_used": 1736,
+            "model": "qwen/qwen3-coder-30b-a3b-instruct"
+          }
+        },
+        {
+          "entry_id": 3,
+          "question": "Show the stadium name and the number of concerts in each stadium.",
+          "database": "concert_singer",
+          "predicted_sql": "SELECT s.name, COUNT(c.concert_id) AS number_of_concerts\nFROM stadium s\nJOIN concert c ON s.stadium_id = c.stadium_id\nGROUP BY s.stadium_id, s.name\nORDER BY s.name;",
+          "extracted_sql": "SELECT s.name, COUNT(c.concert_id) AS number_of_concerts\nFROM stadium s\nJOIN concert c ON s.stadium_id = c.stadium_id\nGROUP BY s.stadium_id, s.name\nORDER BY s.name;",
+          "gold_sql": "SELECT T2.name ,  count(*) FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id GROUP BY T1.stadium_id",
+          "llm_response": "Based on the analysis provided, here is the SQL query to show the stadium name and the number of concerts in each stadium:\n\n```sql\nSELECT s.name, COUNT(c.concert_id) AS number_of_concerts\nFROM stadium s\nJOIN concert c ON s.stadium_id = c.stadium_id\nGROUP BY s.stadium_id, s.name\nORDER BY s.name;\n```\n\nThis query:\n- Joins the `stadium` and `concert` tables on `stadium_id`\n- Groups the results by stadium to aggregate the concert counts\n- Counts the number of concerts for each stadium\n- Orders the results alphabetically by stadium name for better readability\n- Returns both the stadium name and the count of concerts as requested",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": "Database not found: spider/database/concert_singer.sqlite",
+          "performance": {
+            "response_time": 13.647475242614746,
+            "tokens_used": 1146,
+            "model": "qwen/qwen3-coder-30b-a3b-instruct"
+          }
+        },
+        {
+          "entry_id": 4,
+          "question": "Please show the different record companies and the corresponding number of orchestras.",
+          "database": "orchestra",
+          "predicted_sql": "SELECT record company, COUNT(*) as number_of_orchestras\nFROM orchestra\nGROUP BY record company;",
+          "extracted_sql": "SELECT record company, COUNT(*) as number_of_orchestras\nFROM orchestra\nGROUP BY record company;",
+          "gold_sql": "SELECT Record_Company ,  COUNT(*) FROM orchestra GROUP BY Record_Company",
+          "llm_response": "Based on the analysis provided, here is the SQL query:\n\n```sql\nSELECT record company, COUNT(*) as number_of_orchestras\nFROM orchestra\nGROUP BY record company;\n```\n\nThis query:\n- Selects the record company column and counts the number of orchestras for each company\n- Uses the orchestra table which contains both the record company and orchestra information\n- Groups by record company to aggregate the count of orchestras per company\n- Returns all record companies with their corresponding orchestra counts",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": "Database not found: spider/database/orchestra.sqlite",
+          "performance": {
+            "response_time": 50.52816700935364,
+            "tokens_used": 1445,
+            "model": "qwen/qwen3-coder-30b-a3b-instruct"
+          }
+        },
+        {
+          "entry_id": 5,
+          "question": "What are the ids of the TV channels that do not have any cartoons directed by Ben Jones?",
+          "database": "tvshow",
+          "predicted_sql": "SELECT id \nFROM tv_channel \nWHERE NOT EXISTS (\n    SELECT 1 \n    FROM cartoon \n    WHERE cartoon.channel = tv_channel.id \n    AND cartoon.directed_by = 'Ben Jones'\n)",
+          "extracted_sql": "SELECT id \nFROM tv_channel \nWHERE NOT EXISTS (\n    SELECT 1 \n    FROM cartoon \n    WHERE cartoon.channel = tv_channel.id \n    AND cartoon.directed_by = 'Ben Jones'\n)",
+          "gold_sql": "SELECT id FROM TV_Channel EXCEPT SELECT channel FROM cartoon WHERE directed_by  =  'Ben Jones'",
+          "llm_response": "Based on the analysis provided, here is the SQL query to find the IDs of TV channels that do not have any cartoons directed by Ben Jones:\n\n```sql\nSELECT id \nFROM tv_channel \nWHERE NOT EXISTS (\n    SELECT 1 \n    FROM cartoon \n    WHERE cartoon.channel = tv_channel.id \n    AND cartoon.directed_by = 'Ben Jones'\n)\n```\n\nThis query uses a NOT EXISTS subquery approach to identify TV channels that do not have any cartoons directed by Ben Jones. It selects the id from the tv_channel table where there does not exist any record in the cartoon table where the channel matches the current tv_channel id and the directed_by field equals 'Ben Jones'.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": "Database not found: spider/database/tvshow.sqlite",
+          "performance": {
+            "response_time": 37.45985150337219,
+            "tokens_used": 1636,
+            "model": "qwen/qwen3-coder-30b-a3b-instruct"
+          }
+        }
+      ]
+    }
+  },
+  "summary": {
+    "model_comparison": {
+      "qwen/qwen3-coder-30b-a3b-instruct": {
+        "exact_match_accuracy_mean": 0.2,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 38.73876852989197,
+        "total_tokens_sum": 10499,
+        "error_rate_mean": 1.0
+      }
+    },
+    "strategy_comparison": {
+      "multi_stage": {
+        "exact_match_accuracy_mean": 0.2,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 38.73876852989197,
+        "total_tokens_sum": 10499,
+        "error_rate_mean": 1.0
+      }
+    }
+  },
+  "timestamp": "2025-11-19T12:22:53.431989"
+}

@@ -1,0 +1,42 @@
+{
+  "timestamp": "2025-11-19T12:58:17.013792",
+  "dataset_type": "spider2-lite",
+  "experiments": {
+    "config": {
+      "name": "spider2_quick_test",
+      "models": [
+        "qwen/qwen3-coder-30b-a3b-instruct"
+      ],
+      "strategy": "spider2_basic",
+      "max_examples": 1
+    },
+    "experiments": {
+      "qwen3-coder-30b-a3b-instruct_spider2_basic": {
+        "summary": {
+          "total_examples": 1,
+          "successful_executions": 0,
+          "execution_accuracy": 0.0,
+          "successful_examples": 0
+        },
+        "entries": [
+          {
+            "instance_id": "local002",
+            "question": "Can you calculate the 5-day symmetric moving average of predicted toy sales for December 5 to 8, 2018, using daily sales data from January 1, 2017, to August 29, 2018, with a simple linear regression model? Finally provide the sum of those four 5-day moving averages?",
+            "database": "E_commerce",
+            "predicted_sql": "",
+            "extracted_sql": "",
+            "error": "'SELECT SUM(moving_avg)' is not in list",
+            "execution_success": false,
+            "execution_match": false,
+            "llm_response": "",
+            "performance": {
+              "response_time": 0.0,
+              "tokens_used": 0,
+              "model": "qwen/qwen3-coder-30b-a3b-instruct"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
