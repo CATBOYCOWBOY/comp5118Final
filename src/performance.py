@@ -92,8 +92,7 @@ class PerformanceManager:
                 "error_rate": errors / total,
                 "avg_response_time": avg_response_time,
                 "total_tokens": total_tokens
-            },
-            "queries": self.current_results
+            }
         }
 
         # Save to JSON
@@ -252,15 +251,197 @@ class PerformanceManager:
 
         return filename if save else ""
 
+    def plot_strategy_comparison(self, save: bool = True, show: bool = False) -> str:
+        """Create a strategy comparison plot."""
+        strategy_comparison = self.get_strategy_comparison()
+        if not strategy_comparison:
+            print("No data available for strategy comparison")
+            return ""
+
+        strategies = list(strategy_comparison.keys())
+        accuracies = [strategy_comparison[s]["exact_match_accuracy_mean"] for s in strategies]
+        response_times = [strategy_comparison[s]["average_response_time_mean"] for s in strategies]
+
+        fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+        # Accuracy plot
+        bars1 = ax1.bar(strategies, accuracies, color='lightcoral', alpha=0.7)
+        ax1.set_ylabel('Exact Match Accuracy')
+        ax1.set_title('Accuracy by Strategy')
+        ax1.tick_params(axis='x', rotation=45)
+        ax1.grid(True, alpha=0.3)
+        ax1.set_ylim(0, max(accuracies) * 1.1 if accuracies else 1)
+
+        # Add value labels on bars
+        for bar, acc in zip(bars1, accuracies):
+            height = bar.get_height()
+            ax1.annotate(f'{acc:.3f}', xy=(bar.get_x() + bar.get_width() / 2, height),
+                        xytext=(0, 3), textcoords="offset points", ha='center', va='bottom')
+
+        # Response time plot
+        bars2 = ax2.bar(strategies, response_times, color='lightblue', alpha=0.7)
+        ax2.set_ylabel('Response Time (seconds)')
+        ax2.set_title('Average Response Time by Strategy')
+        ax2.tick_params(axis='x', rotation=45)
+        ax2.grid(True, alpha=0.3)
+
+        # Add value labels on bars
+        for bar, time in zip(bars2, response_times):
+            height = bar.get_height()
+            ax2.annotate(f'{time:.2f}s', xy=(bar.get_x() + bar.get_width() / 2, height),
+                        xytext=(0, 3), textcoords="offset points", ha='center', va='bottom')
+
+        plt.tight_layout()
+
+        filename = ""
+        if save:
+            filename = os.path.join(self.plots_dir, 'strategy_comparison.png')
+            plt.savefig(filename, dpi=300, bbox_inches='tight')
+            print(f"Strategy comparison plot saved to: {filename}")
+
+        if show:
+            plt.show()
+        else:
+            plt.close()
+
+        return filename if save else ""
+
+    def plot_accuracy_comparison(self, save: bool = True, show: bool = False) -> str:
+        """Create accuracy comparison plot (both model and strategy)."""
+        model_comparison = self.get_model_comparison()
+        strategy_comparison = self.get_strategy_comparison()
+
+        if not model_comparison and not strategy_comparison:
+            print("No data available for accuracy comparison")
+            return ""
+
+        fig, axes = plt.subplots(1, 2, figsize=(15, 6))
+
+        # Model accuracy comparison
+        if model_comparison:
+            models = list(model_comparison.keys())
+            model_accuracies = [model_comparison[m]["exact_match_accuracy_mean"] for m in models]
+
+            bars1 = axes[0].bar(models, model_accuracies, color='lightgreen', alpha=0.7)
+            axes[0].set_ylabel('Exact Match Accuracy')
+            axes[0].set_title('Accuracy by Model')
+            axes[0].tick_params(axis='x', rotation=45)
+            axes[0].grid(True, alpha=0.3)
+            axes[0].set_ylim(0, max(model_accuracies) * 1.1 if model_accuracies else 1)
+
+            # Add value labels
+            for bar, acc in zip(bars1, model_accuracies):
+                height = bar.get_height()
+                axes[0].annotate(f'{acc:.3f}', xy=(bar.get_x() + bar.get_width() / 2, height),
+                               xytext=(0, 3), textcoords="offset points", ha='center', va='bottom')
+
+        # Strategy accuracy comparison
+        if strategy_comparison:
+            strategies = list(strategy_comparison.keys())
+            strategy_accuracies = [strategy_comparison[s]["exact_match_accuracy_mean"] for s in strategies]
+
+            bars2 = axes[1].bar(strategies, strategy_accuracies, color='lightsalmon', alpha=0.7)
+            axes[1].set_ylabel('Exact Match Accuracy')
+            axes[1].set_title('Accuracy by Strategy')
+            axes[1].tick_params(axis='x', rotation=45)
+            axes[1].grid(True, alpha=0.3)
+            axes[1].set_ylim(0, max(strategy_accuracies) * 1.1 if strategy_accuracies else 1)
+
+            # Add value labels
+            for bar, acc in zip(bars2, strategy_accuracies):
+                height = bar.get_height()
+                axes[1].annotate(f'{acc:.3f}', xy=(bar.get_x() + bar.get_width() / 2, height),
+                               xytext=(0, 3), textcoords="offset points", ha='center', va='bottom')
+
+        plt.tight_layout()
+
+        filename = ""
+        if save:
+            filename = os.path.join(self.plots_dir, 'accuracy_comparison.png')
+            plt.savefig(filename, dpi=300, bbox_inches='tight')
+            print(f"Accuracy comparison plot saved to: {filename}")
+
+        if show:
+            plt.show()
+        else:
+            plt.close()
+
+        return filename if save else ""
+
+    def plot_performance_comparison(self, save: bool = True, show: bool = False) -> str:
+        """Create performance comparison plot (response time and token usage)."""
+        model_comparison = self.get_model_comparison()
+        strategy_comparison = self.get_strategy_comparison()
+
+        if not model_comparison and not strategy_comparison:
+            print("No data available for performance comparison")
+            return ""
+
+        fig, axes = plt.subplots(2, 2, figsize=(15, 10))
+
+        # Model response times
+        if model_comparison:
+            models = list(model_comparison.keys())
+            model_times = [model_comparison[m]["average_response_time_mean"] for m in models]
+            model_tokens = [model_comparison[m]["total_tokens_sum"] for m in models]
+
+            axes[0,0].bar(models, model_times, color='skyblue', alpha=0.7)
+            axes[0,0].set_ylabel('Response Time (seconds)')
+            axes[0,0].set_title('Response Time by Model')
+            axes[0,0].tick_params(axis='x', rotation=45)
+            axes[0,0].grid(True, alpha=0.3)
+
+            axes[0,1].bar(models, model_tokens, color='lightcoral', alpha=0.7)
+            axes[0,1].set_ylabel('Total Tokens Used')
+            axes[0,1].set_title('Token Usage by Model')
+            axes[0,1].tick_params(axis='x', rotation=45)
+            axes[0,1].grid(True, alpha=0.3)
+
+        # Strategy performance
+        if strategy_comparison:
+            strategies = list(strategy_comparison.keys())
+            strategy_times = [strategy_comparison[s]["average_response_time_mean"] for s in strategies]
+            strategy_tokens = [strategy_comparison[s]["total_tokens_sum"] for s in strategies]
+
+            axes[1,0].bar(strategies, strategy_times, color='lightgreen', alpha=0.7)
+            axes[1,0].set_ylabel('Response Time (seconds)')
+            axes[1,0].set_title('Response Time by Strategy')
+            axes[1,0].tick_params(axis='x', rotation=45)
+            axes[1,0].grid(True, alpha=0.3)
+
+            axes[1,1].bar(strategies, strategy_tokens, color='lightsalmon', alpha=0.7)
+            axes[1,1].set_ylabel('Total Tokens Used')
+            axes[1,1].set_title('Token Usage by Strategy')
+            axes[1,1].tick_params(axis='x', rotation=45)
+            axes[1,1].grid(True, alpha=0.3)
+
+        plt.tight_layout()
+
+        filename = ""
+        if save:
+            filename = os.path.join(self.plots_dir, 'performance_comparison.png')
+            plt.savefig(filename, dpi=300, bbox_inches='tight')
+            print(f"Performance comparison plot saved to: {filename}")
+
+        if show:
+            plt.show()
+        else:
+            plt.close()
+
+        return filename if save else ""
+
     def create_dashboard(self, save: bool = True) -> List[str]:
-        """Create a simple dashboard."""
-        print("Generating performance dashboard...")
+        """Create separate visualization files."""
+        print("Generating performance visualizations...")
 
         plots = []
         plots.append(self.plot_model_comparison(save, False))
+        plots.append(self.plot_strategy_comparison(save, False))
+        plots.append(self.plot_accuracy_comparison(save, False))
+        plots.append(self.plot_performance_comparison(save, False))
 
         plots = [p for p in plots if p]
-        print(f"Dashboard complete. {len(plots)} plots generated in {self.plots_dir}/")
+        print(f"Visualization complete. {len(plots)} separate PNG files generated in {self.plots_dir}/")
         return plots
 
     def generate_summary_report(self) -> str:

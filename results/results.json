@@ -1,60 +1,170 @@
 [
   {
-    "experiment_id": "quick_test_llama-3.2-3b-instruct_multi_stage_simple_1763505554",
-    "model_name": "meta-llama/llama-3.2-3b-instruct",
+    "experiment_id": "quick_test_llama-3.1-8b-instruct_multi_stage_simple_1763510735",
+    "model_name": "meta-llama/llama-3.1-8b-instruct",
     "strategy": "multi_stage_simple",
-    "timestamp": "2025-11-18T17:39:14.957394",
+    "timestamp": "2025-11-18T19:05:35.508746",
     "results": {
       "total_queries": 3,
       "exact_match_accuracy": 0.0,
       "execution_accuracy": 0.0,
       "error_rate": 0.0,
-      "avg_response_time": 1.5365703105926514,
-      "total_tokens": 859
-    },
-    "queries": [
-      {
-        "timestamp": "2025-11-18T17:39:17.536405",
-        "model_name": "meta-llama/llama-3.2-3b-instruct",
-        "strategy": "multi_stage_simple",
-        "accuracy": {
-          "exact_match": false,
-          "execution_match": false
-        },
-        "performance": {
-          "response_time": 2.572502374649048,
-          "tokens_used": 434
-        },
-        "error": null
-      },
-      {
-        "timestamp": "2025-11-18T17:39:18.652447",
-        "model_name": "meta-llama/llama-3.2-3b-instruct",
-        "strategy": "multi_stage_simple",
-        "accuracy": {
-          "exact_match": false,
-          "execution_match": false
-        },
-        "performance": {
-          "response_time": 1.014317274093628,
-          "tokens_used": 236
-        },
-        "error": null
-      },
-      {
-        "timestamp": "2025-11-18T17:39:19.776991",
-        "model_name": "meta-llama/llama-3.2-3b-instruct",
-        "strategy": "multi_stage_simple",
-        "accuracy": {
-          "exact_match": false,
-          "execution_match": false
-        },
-        "performance": {
-          "response_time": 1.0228912830352783,
-          "tokens_used": 189
-        },
-        "error": null
-      }
-    ]
+      "avg_response_time": 3.043443520863851,
+      "total_tokens": 932
+    }
+  },
+  {
+    "experiment_id": "strategy_comparison_llama-3.1-8b-instruct_multi_stage_1763510889",
+    "model_name": "meta-llama/llama-3.1-8b-instruct",
+    "strategy": "multi_stage",
+    "timestamp": "2025-11-18T19:08:09.938494",
+    "results": {
+      "total_queries": 15,
+      "exact_match_accuracy": 0.0,
+      "execution_accuracy": 0.0,
+      "error_rate": 0.0,
+      "avg_response_time": 12.861327489217123,
+      "total_tokens": 29571
+    }
+  },
+  {
+    "experiment_id": "strategy_comparison_llama-3.1-8b-instruct_multi_stage_no_analysis_1763511084",
+    "model_name": "meta-llama/llama-3.1-8b-instruct",
+    "strategy": "multi_stage_no_analysis",
+    "timestamp": "2025-11-18T19:11:24.390354",
+    "results": {
+      "total_queries": 15,
+      "exact_match_accuracy": 0.0,
+      "execution_accuracy": 0.0,
+      "error_rate": 0.0,
+      "avg_response_time": 8.384258254369099,
+      "total_tokens": 13834
+    }
+  },
+  {
+    "experiment_id": "strategy_comparison_llama-3.1-8b-instruct_multi_stage_no_verification_1763511211",
+    "model_name": "meta-llama/llama-3.1-8b-instruct",
+    "strategy": "multi_stage_no_verification",
+    "timestamp": "2025-11-18T19:13:31.675268",
+    "results": {
+      "total_queries": 15,
+      "exact_match_accuracy": 0.0,
+      "execution_accuracy": 0.0,
+      "error_rate": 0.0,
+      "avg_response_time": 7.046631956100464,
+      "total_tokens": 19894
+    }
+  },
+  {
+    "experiment_id": "strategy_comparison_llama-3.1-8b-instruct_multi_stage_simple_1763511318",
+    "model_name": "meta-llama/llama-3.1-8b-instruct",
+    "strategy": "multi_stage_simple",
+    "timestamp": "2025-11-18T19:15:18.895441",
+    "results": {
+      "total_queries": 15,
+      "exact_match_accuracy": 0.0,
+      "execution_accuracy": 0.0,
+      "error_rate": 0.0,
+      "avg_response_time": 3.598338731129964,
+      "total_tokens": 6608
+    }
+  },
+  {
+    "experiment_id": "strategy_comparison_qwen3-coder-30b-a3b-instruct_multi_stage_simple_1763512410",
+    "model_name": "qwen/qwen3-coder-30b-a3b-instruct",
+    "strategy": "multi_stage_simple",
+    "timestamp": "2025-11-18T19:33:30.693852",
+    "results": {
+      "total_queries": 15,
+      "exact_match_accuracy": 0.0,
+      "execution_accuracy": 0.0,
+      "error_rate": 0.0,
+      "avg_response_time": 5.2932554086049395,
+      "total_tokens": 5502
+    }
+  },
+  {
+    "experiment_id": "strategy_comparison_qwen3-coder-30b-a3b-instruct_multi_stage_1763512491",
+    "model_name": "qwen/qwen3-coder-30b-a3b-instruct",
+    "strategy": "multi_stage",
+    "timestamp": "2025-11-18T19:34:51.624081",
+    "results": {
+      "total_queries": 14,
+      "exact_match_accuracy": 0.0,
+      "execution_accuracy": 0.0,
+      "error_rate": 0.0,
+      "avg_response_time": 18.16836162975856,
+      "total_tokens": 22219
+    }
+  },
+  {
+    "experiment_id": "strategy_comparison_qwen3-coder-30b-a3b-instruct_multi_stage_simple_1763513046",
+    "model_name": "qwen/qwen3-coder-30b-a3b-instruct",
+    "strategy": "multi_stage_simple",
+    "timestamp": "2025-11-18T19:44:06.729820",
+    "results": {
+      "total_queries": 5,
+      "exact_match_accuracy": 0.0,
+      "execution_accuracy": 0.0,
+      "error_rate": 0.0,
+      "avg_response_time": 5.772160482406616,
+      "total_tokens": 1700
+    }
+  },
+  {
+    "experiment_id": "strategy_comparison_qwen3-coder-30b-a3b-instruct_multi_stage_simple_1763513233",
+    "model_name": "qwen/qwen3-coder-30b-a3b-instruct",
+    "strategy": "multi_stage_simple",
+    "timestamp": "2025-11-18T19:47:13.885589",
+    "results": {
+      "total_queries": 5,
+      "exact_match_accuracy": 0.0,
+      "execution_accuracy": 0.0,
+      "error_rate": 0.0,
+      "avg_response_time": 6.949641847610474,
+      "total_tokens": 2044
+    }
+  },
+  {
+    "experiment_id": "strategy_comparison_qwen3-coder-30b-a3b-instruct_multi_stage_simple_1763513345",
+    "model_name": "qwen/qwen3-coder-30b-a3b-instruct",
+    "strategy": "multi_stage_simple",
+    "timestamp": "2025-11-18T19:49:05.293902",
+    "results": {
+      "total_queries": 2,
+      "exact_match_accuracy": 0.0,
+      "execution_accuracy": 0.0,
+      "error_rate": 0.0,
+      "avg_response_time": 2.9248417615890503,
+      "total_tokens": 653
+    }
+  },
+  {
+    "experiment_id": "strategy_comparison_qwen3-coder-30b-a3b-instruct_multi_stage_simple_1763513514",
+    "model_name": "qwen/qwen3-coder-30b-a3b-instruct",
+    "strategy": "multi_stage_simple",
+    "timestamp": "2025-11-18T19:51:54.812390",
+    "results": {
+      "total_queries": 2,
+      "exact_match_accuracy": 0.0,
+      "execution_accuracy": 0.0,
+      "error_rate": 0.0,
+      "avg_response_time": 4.8975701332092285,
+      "total_tokens": 670
+    }
+  },
+  {
+    "experiment_id": "strategy_comparison_qwen3-coder-30b-a3b-instruct_multi_stage_simple_1763513666",
+    "model_name": "qwen/qwen3-coder-30b-a3b-instruct",
+    "strategy": "multi_stage_simple",
+    "timestamp": "2025-11-18T19:54:26.565667",
+    "results": {
+      "total_queries": 2,
+      "exact_match_accuracy": 0.5,
+      "execution_accuracy": 0.0,
+      "error_rate": 0.0,
+      "avg_response_time": 8.28523564338684,
+      "total_tokens": 492
+    }
   }
 ]

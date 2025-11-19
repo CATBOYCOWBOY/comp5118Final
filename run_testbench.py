@@ -90,8 +90,8 @@ async def run_minimal_test(args: argparse.Namespace) -> None:
 
     try:
         results = await testbench.quick_test(
-            model_name="meta-llama/llama-3.2-3b-instruct",
-            strategy="multi_stage_simple",
+            model_name="meta-llama/llama-3.1-8b-instruct",
+            strategy="multi_stage",
             num_examples=3
         )
         print("Minimal test completed successfully!")

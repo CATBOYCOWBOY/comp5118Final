@@ -1,0 +1,113 @@
+{
+  "config": {
+    "name": "strategy_comparison",
+    "models": [
+      "qwen/qwen3-coder-30b-a3b-instruct"
+    ],
+    "strategies": [
+      "multi_stage_simple"
+    ],
+    "max_examples": 2,
+    "spider_path": "spider",
+    "split": "dev"
+  },
+  "experiments": {
+    "qwen3-coder-30b-a3b-instruct_multi_stage_simple": {
+      "summary": {
+        "total_examples": 2,
+        "exact_match_count": 0,
+        "exact_match_accuracy": 0.0,
+        "component_match_count": 0,
+        "component_match_accuracy": 0.0,
+        "execution_match_count": 0,
+        "execution_match_accuracy": 0.0,
+        "successful_examples": 2
+      },
+      "entries": [
+        {
+          "entry_id": 1,
+          "question": "Give the total population and average surface area corresponding to countries in North America that have a surface area greater than 3000 .",
+          "database": "world_1",
+          "predicted_sql": "SELECT \n    SUM(population) AS total_population,\n    AVG(surface_area) AS average_surface_area\nFROM country\nWHERE continent = 'North America' \n    AND surface_area > 3000;",
+          "gold_sql": "select sum(population) ,  avg(surfacearea) from country where continent  =  \"north america\" and surfacearea  >  3000",
+          "llm_response": "Looking at the analysis, I need to:\n\n1. Join the `country` table with itself (or use the foreign key relationship)\n2. Filter for countries in North America (continent = 'North America')\n3. Filter for countries with surface area > 3000\n4. Calculate the total population and average surface area\n\nLet me analyze the tables:\n- The `country` table has all the required information: continent, surface area, and population\n- No joins are needed since all data is in one table\n- The condition is about continent = 'North America' and surface area > 3000\n\n```sql\nSELECT \n    SUM(population) AS total_population,\n    AVG(surface_area) AS average_surface_area\nFROM country\nWHERE continent = 'North America' \n    AND surface_area > 3000;\n```",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 3.0010056495666504,
+            "tokens_used": 346,
+            "model": "qwen/qwen3-coder-30b-a3b-instruct"
+          }
+        },
+        {
+          "entry_id": 2,
+          "question": "What are the names of the teachers and how many courses do they teach?",
+          "database": "course_teach",
+          "predicted_sql": "SELECT t.name, COUNT(ca.course_id) AS course_count\nFROM teacher t\nLEFT JOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nGROUP BY t.teacher_id, t.name\nORDER BY t.name;",
+          "gold_sql": "SELECT T2.Name ,  COUNT(*) FROM course_arrange AS T1 JOIN teacher AS T2 ON T1.Teacher_ID  =  T2.Teacher_ID GROUP BY T2.Name",
+          "llm_response": "Based on the analysis, I need to find the names of teachers and count how many courses they teach. Looking at the schema:\n\n- The `teacher` table contains teacher names\n- The `course arrange` table links teachers to courses through teacher_id and course_id\n- I need to join these tables and count the courses per teacher\n\nHere's the SQL query:\n\n```sql\nSELECT t.name, COUNT(ca.course_id) AS course_count\nFROM teacher t\nLEFT JOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nGROUP BY t.teacher_id, t.name\nORDER BY t.name;\n```\n\nThis query:\n1. Joins the teacher table with course_arrange table on teacher_id\n2. Uses LEFT JOIN to include teachers even if they don't teach any courses\n3. Groups by teacher to count their courses\n4. Orders results by teacher name for better readability\n5. Returns both the teacher name and the count of courses they teach",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 2.84867787361145,
+            "tokens_used": 307,
+            "model": "qwen/qwen3-coder-30b-a3b-instruct"
+          }
+        }
+      ]
+    }
+  },
+  "summary": {
+    "model_comparison": {
+      "meta-llama/llama-3.1-8b-instruct": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 6.986799990336101,
+        "total_tokens_sum": 70839,
+        "error_rate_mean": 0.0
+      },
+      "qwen/qwen3-coder-30b-a3b-instruct": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 7.821652225993928,
+        "total_tokens_sum": 32118,
+        "error_rate_mean": 0.0
+      }
+    },
+    "strategy_comparison": {
+      "multi_stage_simple": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 4.596946958700816,
+        "total_tokens_sum": 17439,
+        "error_rate_mean": 0.0
+      },
+      "multi_stage": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 15.514844559487841,
+        "total_tokens_sum": 51790,
+        "error_rate_mean": 0.0
+      },
+      "multi_stage_no_analysis": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 8.384258254369099,
+        "total_tokens_sum": 13834,
+        "error_rate_mean": 0.0
+      },
+      "multi_stage_no_verification": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 7.046631956100464,
+        "total_tokens_sum": 19894,
+        "error_rate_mean": 0.0
+      }
+    }
+  },
+  "timestamp": "2025-11-18T19:49:11.356194"
+}

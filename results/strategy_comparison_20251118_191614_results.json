@@ -1,0 +1,1137 @@
+{
+  "config": {
+    "name": "strategy_comparison",
+    "models": [
+      "meta-llama/llama-3.1-8b-instruct"
+    ],
+    "strategies": [
+      "multi_stage",
+      "multi_stage_no_analysis",
+      "multi_stage_no_verification",
+      "multi_stage_simple"
+    ],
+    "max_examples": 15,
+    "spider_path": "spider",
+    "split": "dev"
+  },
+  "experiments": {
+    "llama-3.1-8b-instruct_multi_stage": {
+      "summary": {
+        "total_examples": 15,
+        "exact_match_count": 0,
+        "exact_match_accuracy": 0.0,
+        "component_match_count": 1,
+        "component_match_accuracy": 0.06666666666666667,
+        "execution_match_count": 0,
+        "execution_match_accuracy": 0.0,
+        "successful_examples": 15
+      },
+      "entries": [
+        {
+          "entry_id": 1,
+          "question": "Show all countries and the number of singers in each country.",
+          "database": "concert_singer",
+          "predicted_sql": "SELECT country, COUNT(*) as singer_count\nFROM singer\nGROUP BY country;",
+          "gold_sql": "SELECT country ,  count(*) FROM singer GROUP BY country",
+          "llm_response": "Based on the analysis, the SQL query to answer the question is:\n\n```sql\nSELECT country, COUNT(*) as singer_count\nFROM singer\nGROUP BY country;\n```\n\nThis query selects the `country` column and counts the number of singers in each country using the `COUNT` aggregation function. The `GROUP BY` clause groups the results by country, allowing us to count the number of singers in each country.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 10.445610284805298,
+            "tokens_used": 1632,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 2,
+          "question": "Find the weight of the youngest dog.",
+          "database": "pets_1",
+          "predicted_sql": "SELECT p.weight\nFROM pets p\nWHERE p.pet_type = 'dog' AND p.pet_age = (SELECT MIN(pet_age) FROM pets WHERE pet_type = 'dog');",
+          "gold_sql": "SELECT weight FROM pets ORDER BY pet_age LIMIT 1",
+          "llm_response": "Based on the analysis, the SQL query to find the weight of the youngest dog is:\n\n```sql\nSELECT p.weight\nFROM pets p\nWHERE p.pet_type = 'dog' AND p.pet_age = (SELECT MIN(pet_age) FROM pets WHERE pet_type = 'dog');\n```\n\nThis query directly selects the weight of the youngest dog from the `pets` table without joining the table with itself, making it more efficient.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 14.31953477859497,
+            "tokens_used": 2047,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 3,
+          "question": "Show the name of singers whose birth year is either 1948 or 1949?",
+          "database": "singer",
+          "predicted_sql": "SELECT name\nFROM singer\nWHERE birth_year IN (1948, 1949);",
+          "gold_sql": "SELECT Name FROM singer WHERE Birth_Year  =  1948 OR Birth_Year  =  1949",
+          "llm_response": "Based on the analysis, the SQL query to answer the question is:\n\n```sql\nSELECT name\nFROM singer\nWHERE birth_year IN (1948, 1949);\n```\n\nThis query selects the `name` column from the `singer` table where the `birth_year` is either 1948 or 1949.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 8.101977109909058,
+            "tokens_used": 1309,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 4,
+          "question": "Which semesters do not have any student enrolled? List the semester name.",
+          "database": "student_transcripts_tracking",
+          "predicted_sql": "SELECT s.semester_name\nFROM semesters s\nLEFT JOIN student_enrolment se ON s.semester_id = se.semester_id\nWHERE se.semester_id IS NULL;",
+          "gold_sql": "SELECT semester_name FROM Semesters WHERE semester_id NOT IN( SELECT semester_id FROM Student_Enrolment )",
+          "llm_response": "Based on the analysis, the SQL query to answer the question is:\n\n```sql\nSELECT s.semester_name\nFROM semesters s\nLEFT JOIN student_enrolment se ON s.semester_id = se.semester_id\nWHERE se.semester_id IS NULL;\n```\n\nThis query selects the `semester_name` column from the `semesters` table and joins it with the `student_enrolment` table on the `semester_id` column using a LEFT JOIN. The WHERE clause filters the semesters that do not have any student enrolled by checking if the result of the LEFT JOIN is NULL.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 13.825093746185303,
+            "tokens_used": 2632,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 5,
+          "question": "What is the language spoken by the largest percentage of people in each country?",
+          "database": "world_1",
+          "predicted_sql": "SELECT \n  cl.countrycode, \n  c.name, \n  cl.language, \n  cl.percentage\nFROM \n  countrylanguage cl\nJOIN \n  country c ON cl.countrycode = c.code\nJOIN \n  (SELECT countrycode, MAX(percentage) AS max_percentage FROM countrylanguage GROUP BY countrycode) max_cl ON cl.countrycode = max_cl.countrycode AND cl.percentage = max_cl.max_percentage;",
+          "gold_sql": "SELECT LANGUAGE ,  CountryCode ,  max(Percentage) FROM countrylanguage GROUP BY CountryCode",
+          "llm_response": "Based on the analysis, the SQL query to answer the question is:\n\n```sql\nSELECT \n  cl.countrycode, \n  c.name, \n  cl.language, \n  cl.percentage\nFROM \n  countrylanguage cl\nJOIN \n  country c ON cl.countrycode = c.code\nJOIN \n  (SELECT countrycode, MAX(percentage) AS max_percentage FROM countrylanguage GROUP BY countrycode) max_cl ON cl.countrycode = max_cl.countrycode AND cl.percentage = max_cl.max_percentage;\n```\n\nThis query will return the language spoken by the largest percentage of people in each country.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 14.54358196258545,
+            "tokens_used": 2395,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 6,
+          "question": "How many TV Channel using language English?",
+          "database": "tvshow",
+          "predicted_sql": "SELECT COUNT(id) \nFROM tv_channel \nWHERE language = 'English';",
+          "gold_sql": "SELECT count(*) FROM TV_Channel WHERE LANGUAGE = \"English\";",
+          "llm_response": "Based on the analysis and the provided database schema, the SQL query to answer the question is:\n\n```sql\nSELECT COUNT(id) \nFROM tv_channel \nWHERE language = 'English';\n```\n\nThis query will return the count of TV Channels that use the language English.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 8.826829195022583,
+            "tokens_used": 1449,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 7,
+          "question": "What is the average age for all students who do not own any pets ?",
+          "database": "pets_1",
+          "predicted_sql": "SELECT AVG(age)\nFROM student\nLEFT JOIN has_pet ON student.student_id = has_pet.student_id\nWHERE has_pet.student_id IS NULL;",
+          "gold_sql": "select avg(age) from student where stuid not in (select stuid from has_pet)",
+          "llm_response": "```sql\nSELECT AVG(age)\nFROM student\nLEFT JOIN has_pet ON student.student_id = has_pet.student_id\nWHERE has_pet.student_id IS NULL;\n```\n\nThis query will return the average age of all students who do not own any pets.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 9.50245213508606,
+            "tokens_used": 1506,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 8,
+          "question": "What is the code of the country with the most players?",
+          "database": "wta_1",
+          "predicted_sql": "SELECT country_code\nFROM players\nGROUP BY country_code\nORDER BY COUNT(*) DESC\nLIMIT 1;",
+          "gold_sql": "SELECT country_code FROM players GROUP BY country_code ORDER BY count(*) DESC LIMIT 1",
+          "llm_response": "Based on the analysis, the SQL query to get the country code of the country with the most players would be:\n\n```sql\nSELECT country_code\nFROM players\nGROUP BY country_code\nORDER BY COUNT(*) DESC\nLIMIT 1;\n```\n\nThis query will return the country code of the country with the most players. If there are multiple countries with the same maximum number of players, this query will return only one of them. If you want to return all countries with the maximum number of players, you can use a subquery or a window function to achieve this.",
+          "exact_match": false,
+          "component_match": true,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 10.239891290664673,
+            "tokens_used": 1818,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 9,
+          "question": "How many cities in each district have a population that is above the average population across all cities?",
+          "database": "world_1",
+          "predicted_sql": "SELECT district, COUNT(*) as num_cities\nFROM city\nWHERE population > (SELECT AVG(population) FROM city)\nGROUP BY district;",
+          "gold_sql": "SELECT count(*) ,  District FROM city WHERE Population  >  (SELECT avg(Population) FROM city) GROUP BY District",
+          "llm_response": "Based on the analysis and the provided database schema, the SQL query to answer the question is:\n\n```sql\nSELECT district, COUNT(*) as num_cities\nFROM city\nWHERE population > (SELECT AVG(population) FROM city)\nGROUP BY district;\n```\n\nThis query selects the `district` column and counts the number of cities in each district with a population above the average population across all cities. The results are grouped by district.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 12.69806432723999,
+            "tokens_used": 1915,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 10,
+          "question": "What are the names of the people who teach math courses?",
+          "database": "course_teach",
+          "predicted_sql": "SELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course = 'math';",
+          "gold_sql": "SELECT T3.Name FROM course_arrange AS T1 JOIN course AS T2 ON T1.Course_ID  =  T2.Course_ID JOIN teacher AS T3 ON T1.Teacher_ID  =  T3.Teacher_ID WHERE T2.Course  =  \"Math\"",
+          "llm_response": "Based on the analysis, the SQL query to answer the question \"What are the names of the people who teach math courses?\" is:\n\n```sql\nSELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course = 'math';\n```\n\nHowever, since the course table does not have a column named 'course', we need to join the course_arrange table with the course table on the course_id column and then filter for math courses. But since the course table does not have a column named 'course', we need to use the course_id to filter the math courses.\n\n```sql\nSELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course_id IN (SELECT course_id FROM course WHERE course = 'math');\n```\n\nHowever, since the course table does not have a column named 'course', we need to use the course_id to filter the math courses. But we do not know the course_id of the math course. We can use a subquery to get the course_id of the math course.\n\n```sql\nSELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course_id IN (SELECT course_id FROM course WHERE course = 'math');\n```\n\nHowever, since the course table does not have a column named 'course', we need to use the course_id to filter the math courses. But we do not know the course_id of the math course. We can use a subquery to get the course_id of the math course.\n\n```sql\nSELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course_id IN (SELECT course_id FROM course WHERE course = 'math');\n```\n\nHowever, since the course table does not have a column named 'course', we need to use the course_id to filter the math courses. But we do not know the course_id of the math course. We can use a subquery to get the course_id of the math course.\n\n```sql\nSELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course_id IN (SELECT course_id FROM course WHERE course = 'math');\n```\n\nHowever, since the course table does not have a column named 'course', we need to use the course_id to filter the math courses. But we do not know the course_id of the math course. We can use a subquery to get the course_id of the math course.\n\n```sql\nSELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course_id IN (SELECT course_id FROM course WHERE course = 'math');\n```\n\nHowever, since the course table does not have a column named 'course', we need to use the course_id to filter the math courses. But we do not know the course_id of the math course. We can use a subquery to get the course_id of the math course.\n\n```sql\nSELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course_id IN (SELECT course_id FROM course WHERE course = 'math');\n```\n\nHowever, since the course table does not have a column named 'course', we need to use the course_id to filter the math courses. But we do not know the course_id of the math course. We can use a subquery to get the course_id of the math course.\n\n```sql\nSELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course_id IN (SELECT course_id FROM course WHERE course = 'math');\n```\n\nHowever, since the course table does not have a column named 'course', we need to use the course_id to filter the math courses. But we do not know the course_id of the math course. We can use a subquery to get the course_id of the math course.\n\n```sql\nSELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course_id IN (SELECT course_id FROM course WHERE course = 'math');\n```\n\nHowever, since the course table does not have a column named 'course', we need to use the course_id to filter the math courses. But we do not know the course_id of",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 24.78038215637207,
+            "tokens_used": 2972,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 11,
+          "question": "Give the country codes for countries in which people speak langauges that are not English.",
+          "database": "world_1",
+          "predicted_sql": "SELECT c.code\nFROM country c\nJOIN countrylanguage cl ON c.code = cl.countrycode\nWHERE cl.language != 'English';",
+          "gold_sql": "SELECT DISTINCT CountryCode FROM countrylanguage WHERE LANGUAGE != \"English\"",
+          "llm_response": "Based on the analysis, the SQL query to answer the question is:\n\n```sql\nSELECT c.code\nFROM country c\nJOIN countrylanguage cl ON c.code = cl.countrycode\nWHERE cl.language != 'English';\n```\n\nThis query joins the `country` table with the `countrylanguage` table on the `code` and `countrycode` columns, respectively, and filters out countries where English is spoken. The resulting query returns a list of country codes for countries where people speak languages other than English.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 10.891095399856567,
+            "tokens_used": 1816,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 12,
+          "question": "What is the grade of each high schooler?",
+          "database": "network_1",
+          "predicted_sql": "SELECT grade\nFROM high_schooler;",
+          "gold_sql": "SELECT grade FROM Highschooler",
+          "llm_response": "Based on the analysis, the SQL query to answer the question \"What is the grade of each high schooler?\" is:\n\n```sql\nSELECT grade\nFROM high_schooler;\n```\n\nThis query selects the `grade` column from the `high_schooler` table, which contains the grade information for all high schoolers.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 12.150507688522339,
+            "tokens_used": 1548,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 13,
+          "question": "For each stadium, how many concerts play there?",
+          "database": "concert_singer",
+          "predicted_sql": "SELECT \n  s.name,\n  COUNT(c.concert id) AS num_concerts\nFROM \n  stadium s\nINNER JOIN \n  concert c ON s.stadium id = c.stadium id\nGROUP BY \n  s.name;",
+          "gold_sql": "SELECT T2.name ,  count(*) FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id GROUP BY T1.stadium_id",
+          "llm_response": "Based on the analysis, the SQL query to answer the question \"For each stadium, how many concerts play there?\" is:\n\n```sql\nSELECT \n  s.name,\n  COUNT(c.concert id) AS num_concerts\nFROM \n  stadium s\nINNER JOIN \n  concert c ON s.stadium id = c.stadium id\nGROUP BY \n  s.name;\n```\n\nThis query will return a list of stadiums with the number of concerts played at each stadium.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 12.706993103027344,
+            "tokens_used": 1930,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 14,
+          "question": "Give the names of nations that speak both English and French.",
+          "database": "world_1",
+          "predicted_sql": "SELECT c.name\nFROM country c\nJOIN countrylanguage cl1 ON c.code = cl1.countrycode\nJOIN countrylanguage cl2 ON c.code = cl2.countrycode\nWHERE cl1.language = 'English' AND cl1.isofficial = 'T'\n  AND cl2.language = 'French' AND cl2.isofficial = 'T'\n  AND cl1.countrycode = cl2.countrycode;",
+          "gold_sql": "SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T2.Language  =  \"English\" INTERSECT SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T2.Language  =  \"French\"",
+          "llm_response": "Based on the analysis, the SQL query to answer the question is:\n\n```sql\nSELECT c.name\nFROM country c\nJOIN countrylanguage cl1 ON c.code = cl1.countrycode\nJOIN countrylanguage cl2 ON c.code = cl2.countrycode\nWHERE cl1.language = 'English' AND cl1.isofficial = 'T'\n  AND cl2.language = 'French' AND cl2.isofficial = 'T'\n  AND cl1.countrycode = cl2.countrycode;\n```\n\nHowever, this query will return duplicate countries because it joins the `countrylanguage` table with itself on the `countrycode` column. To avoid this, we can use a subquery or a join with a distinct clause. Here's an alternative query:\n\n```sql\nSELECT c.name\nFROM country c\nJOIN (\n  SELECT countrycode\n  FROM countrylanguage\n  WHERE language IN ('English', 'French') AND isofficial = 'T'\n  GROUP BY countrycode\n  HAVING COUNT(language) = 2\n) cl ON c.code = cl.countrycode;\n```\n\nThis query first selects the `countrycode`s where both English and French are official. It then joins this result with the `country` table to get the names of the countries.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 16.373615980148315,
+            "tokens_used": 2334,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 15,
+          "question": "What is the best rank of losers across all matches?",
+          "database": "wta_1",
+          "predicted_sql": "SELECT \n  MAX(m.loser_rank) AS max_rank\nFROM \n  matches m\n  JOIN players p ON m.loser_id = p.player_id;",
+          "gold_sql": "SELECT min(loser_rank) FROM matches",
+          "llm_response": "Based on the analysis, the SQL query to answer the question \"What is the best rank of losers across all matches?\" is:\n\n```sql\nSELECT \n  MAX(m.loser_rank) AS max_rank\nFROM \n  matches m\n  JOIN players p ON m.loser_id = p.player_id;\n```\n\nThis query joins the `matches` table with the `players` table on the `loser_id` column to access the loser's rank. The `MAX` aggregation function is used to find the highest rank of the losers across all matches.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 13.514283180236816,
+            "tokens_used": 2268,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        }
+      ]
+    },
+    "llama-3.1-8b-instruct_multi_stage_no_analysis": {
+      "summary": {
+        "total_examples": 15,
+        "exact_match_count": 0,
+        "exact_match_accuracy": 0.0,
+        "component_match_count": 0,
+        "component_match_accuracy": 0.0,
+        "execution_match_count": 0,
+        "execution_match_accuracy": 0.0,
+        "successful_examples": 15
+      },
+      "entries": [
+        {
+          "entry_id": 1,
+          "question": "Show all countries and the number of singers in each country.",
+          "database": "concert_singer",
+          "predicted_sql": "SELECT \n    s.country, \n    COUNT(s.singer_id) AS number_of_singers\nFROM \n    singer s\nGROUP BY \n    s.country;",
+          "gold_sql": "SELECT country ,  count(*) FROM singer GROUP BY country",
+          "llm_response": "To show all countries and the number of singers in each country, you can use the following SQL query:\n\n```sql\nSELECT \n    s.country, \n    COUNT(s.singer_id) AS number_of_singers\nFROM \n    singer s\nGROUP BY \n    s.country;\n```\n\nThis query works as follows:\n\n- `SELECT s.country`: Selects the country column from the singer table.\n- `COUNT(s.singer_id) AS number_of_singers`: Counts the number of singer_id values in each group and assigns the result to a column named `number_of_singers`.\n- `FROM singer s`: Specifies the singer table as the source of the data.\n- `GROUP BY s.country`: Groups the rows by the country column, so that the COUNT function can count the number of singer_id values in each country.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 4.882434606552124,
+            "tokens_used": 661,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 2,
+          "question": "Find the weight of the youngest dog.",
+          "database": "pets_1",
+          "predicted_sql": "SELECT p.weight\nFROM pets p\nJOIN has_pet hp ON p.pet_id = hp.pet_id\nJOIN student s ON hp.student_id = s.student_id\nWHERE p.pet_type = 'dog'\nORDER BY p.pet_age ASC\nLIMIT 1;",
+          "gold_sql": "SELECT weight FROM pets ORDER BY pet_age LIMIT 1",
+          "llm_response": "To find the weight of the youngest dog, we need to join the tables based on the foreign keys and then filter the results to get the youngest dog. Here's the SQL query:\n\n```sql\nSELECT p.weight\nFROM pets p\nJOIN has_pet hp ON p.pet_id = hp.pet_id\nJOIN student s ON hp.student_id = s.student_id\nWHERE p.pet_type = 'dog'\nORDER BY p.pet_age ASC\nLIMIT 1;\n```\n\nThis query works as follows:\n\n1. It joins the `pets` table with the `has_pet` table on the `pet_id` column.\n2. It then joins the `has_pet` table with the `student` table on the `student_id` column.\n3. It filters the results to only include rows where the `pet_type` is 'dog'.\n4. It orders the results by the `pet_age` in ascending order.\n5. It limits the results to the first row, which will be the youngest dog.\n\nNote: This query assumes that there is only one youngest dog in the database. If there are multiple dogs with the same minimum age, this query will return one of them arbitrarily. If you want to return all dogs with the minimum age, you can use a subquery or a window function.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 10.203383684158325,
+            "tokens_used": 1028,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 3,
+          "question": "Show the name of singers whose birth year is either 1948 or 1949?",
+          "database": "singer",
+          "predicted_sql": "SELECT name\nFROM singer\nWHERE birth_year IN (1948, 1949);",
+          "gold_sql": "SELECT Name FROM singer WHERE Birth_Year  =  1948 OR Birth_Year  =  1949",
+          "llm_response": "To show the name of singers whose birth year is either 1948 or 1949, you can use the following SQL query:\n\n```sql\nSELECT name\nFROM singer\nWHERE birth_year IN (1948, 1949);\n```\n\nThis query selects the `name` column from the `singer` table where the `birth_year` is either 1948 or 1949. The `IN` operator is used to specify multiple values in the `WHERE` clause.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 6.52159309387207,
+            "tokens_used": 662,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 4,
+          "question": "Which semesters do not have any student enrolled? List the semester name.",
+          "database": "student_transcripts_tracking",
+          "predicted_sql": "SELECT s.semester_name\nFROM semesters s\nLEFT JOIN student_enrolment se ON s.semester_id = se.semester_id\nWHERE se.semester_id IS NULL;",
+          "gold_sql": "SELECT semester_name FROM Semesters WHERE semester_id NOT IN( SELECT semester_id FROM Student_Enrolment )",
+          "llm_response": "To find the semesters that do not have any student enrolled, we need to join the `semesters` table with the `student_enrolment` table on the `semester id` foreign key. We then need to check if there are any matching records in the `student_enrolment` table. If there are no matching records, it means that the semester does not have any student enrolled.\n\nHere is the SQL query:\n\n```sql\nSELECT s.semester_name\nFROM semesters s\nLEFT JOIN student_enrolment se ON s.semester_id = se.semester_id\nWHERE se.semester_id IS NULL;\n```\n\nThis query uses a `LEFT JOIN` to include all semesters from the `semesters` table, even if there are no matching records in the `student_enrolment` table. The `WHERE` clause then filters out the semesters that do have a matching record in the `student_enrolment` table, leaving only the semesters that do not have any student enrolled.\n\nNote: This query assumes that the `semester_id` column in the `student_enrolment` table is not nullable. If it is nullable, you may need to modify the query to use `se.semester_id IS NULL AND se.student_enrolment_id IS NULL` to filter out semesters that have a `NULL` semester ID but a non-`NULL` student enrolment ID.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 10.445662021636963,
+            "tokens_used": 1289,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 5,
+          "question": "What is the language spoken by the largest percentage of people in each country?",
+          "database": "world_1",
+          "predicted_sql": "SELECT c.name, cl.language, cl.percentage\nFROM country c\nJOIN countrylanguage cl ON c.code = cl.countrycode\nJOIN (\n  SELECT countrycode, MAX(percentage) as max_percentage\n  FROM countrylanguage\n  GROUP BY countrycode\n) max_percentage ON cl.countrycode = max_percentage.countrycode\nORDER BY c.name;",
+          "gold_sql": "SELECT LANGUAGE ,  CountryCode ,  max(Percentage) FROM countrylanguage GROUP BY CountryCode",
+          "llm_response": "To find the language spoken by the largest percentage of people in each country, you can use the following SQL query:\n\n```sql\nSELECT c.name, cl.language, cl.percentage\nFROM country c\nJOIN countrylanguage cl ON c.code = cl.countrycode\nJOIN (\n  SELECT countrycode, MAX(percentage) as max_percentage\n  FROM countrylanguage\n  GROUP BY countrycode\n) max_percentage ON cl.countrycode = max_percentage.countrycode\nORDER BY c.name;\n```\n\nHowever, the `countrylanguage` table does not have a `percentage` column. The correct column name is `percentage` in the `countrylanguage` table is actually in the `is official` and `percentage` columns, but we need to use the `is official` column to get the official language and the `percentage` column to get the percentage of people who speak that language. \n\nSo, the correct query should be:\n\n```sql\nSELECT c.name, cl.language, cl.percentage\nFROM country c\nJOIN countrylanguage cl ON c.code = cl.countrycode\nWHERE cl.isofficial = 1\nORDER BY c.name;\n```\n\nThis query will return the name of the country, the language spoken by the largest percentage of people, and the percentage of people who speak that language.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 10.54676079750061,
+            "tokens_used": 1152,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 6,
+          "question": "How many TV Channel using language English?",
+          "database": "tvshow",
+          "predicted_sql": "SELECT COUNT(*) \nFROM tv_channel \nWHERE language = 'English';",
+          "gold_sql": "SELECT count(*) FROM TV_Channel WHERE LANGUAGE = \"English\";",
+          "llm_response": "Based on the analysis, it seems like there's a foreign key relationship between the 'tv channel' table and the 'tv series' table, but the 'id' is repeated in the foreign key definition. However, we can assume that the foreign key is referencing the 'id' column in the 'tv channel' table.\n\nTo answer the question \"How many TV Channel using language English?\", we need to query the 'tv channel' table. Here's the SQL query:\n\n```sql\nSELECT COUNT(*) \nFROM tv_channel \nWHERE language = 'English';\n```\n\nThis query will return the number of TV channels that use the language 'English'.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 5.733813524246216,
+            "tokens_used": 592,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 7,
+          "question": "What is the average age for all students who do not own any pets ?",
+          "database": "pets_1",
+          "predicted_sql": "SELECT AVG(age) \nFROM student \nWHERE student.id NOT IN (SELECT student.id \n                           FROM student \n                           JOIN has_pet ON student.id = has_pet.student_id);",
+          "gold_sql": "select avg(age) from student where stuid not in (select stuid from has_pet)",
+          "llm_response": "To find the average age for all students who do not own any pets, you can use the following SQL query:\n\n```sql\nSELECT AVG(age) \nFROM student \nWHERE student.id NOT IN (SELECT student.id \n                           FROM student \n                           JOIN has_pet ON student.id = has_pet.student_id);\n```\n\nHowever, this query may not be efficient if the `has_pet` table is large, because it uses a subquery with a `NOT IN` clause. A more efficient way to write this query is to use a `LEFT JOIN`:\n\n```sql\nSELECT AVG(s.age) \nFROM student s \nLEFT JOIN has_pet hp ON s.id = hp.student_id \nWHERE hp.student_id IS NULL;\n```\n\nThis query works by joining the `student` table with the `has_pet` table on the `student_id` column. The `LEFT JOIN` ensures that all students are included in the result, even if they don't have a matching row in the `has_pet` table. The `WHERE` clause then filters out the students who do have a matching row in the `has_pet` table, leaving only the students who don't own any pets.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 8.809184312820435,
+            "tokens_used": 973,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 8,
+          "question": "What is the code of the country with the most players?",
+          "database": "wta_1",
+          "predicted_sql": "SELECT country_code, COUNT(*) as num_players\nFROM players\nGROUP BY country_code\nORDER BY num_players DESC\nLIMIT 1;",
+          "gold_sql": "SELECT country_code FROM players GROUP BY country_code ORDER BY count(*) DESC LIMIT 1",
+          "llm_response": "To find the code of the country with the most players, you can use the following SQL query:\n\n```sql\nSELECT country_code, COUNT(*) as num_players\nFROM players\nGROUP BY country_code\nORDER BY num_players DESC\nLIMIT 1;\n```\n\nThis query works as follows:\n\n- `SELECT country_code, COUNT(*) as num_players`: Selects the country code and counts the number of players for each country.\n- `FROM players`: Specifies the table to query.\n- `GROUP BY country_code`: Groups the results by country code.\n- `ORDER BY num_players DESC`: Orders the results in descending order by the number of players.\n- `LIMIT 1`: Returns only the first row, which corresponds to the country with the most players.\n\nNote: If there are multiple countries with the same maximum number of players, this query will return only one of them. If you want to return all countries with the maximum number of players, you can use a subquery or a window function.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 9.601887464523315,
+            "tokens_used": 1056,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 9,
+          "question": "How many cities in each district have a population that is above the average population across all cities?",
+          "database": "world_1",
+          "predicted_sql": "SELECT \n  c.district,\n  COUNT(*) as num_cities_above_avg_population\nFROM \n  city c\nWHERE \n  c.population > (SELECT AVG(population) FROM city)\nGROUP BY \n  c.district;",
+          "gold_sql": "SELECT count(*) ,  District FROM city WHERE Population  >  (SELECT avg(Population) FROM city) GROUP BY District",
+          "llm_response": "To solve this problem, we need to calculate the average population across all cities and then find the number of cities in each district that have a population above this average.\n\nHere's the SQL query:\n\n```sql\nSELECT \n  c.district,\n  COUNT(*) as num_cities_above_avg_population\nFROM \n  city c\nWHERE \n  c.population > (SELECT AVG(population) FROM city)\nGROUP BY \n  c.district;\n```\n\nThis query works as follows:\n\n1. It selects the `district` column from the `city` table.\n2. It counts the number of cities in each district that have a population above the average population across all cities.\n3. It uses a subquery to calculate the average population across all cities.\n4. It groups the results by district.\n\nNote that this query assumes that the `population` column in the `city` table is of a numeric type (e.g., `INTEGER`, `FLOAT`, etc.). If it's not, you may need to modify the query accordingly.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 11.291719675064087,
+            "tokens_used": 1083,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 10,
+          "question": "What are the names of the people who teach math courses?",
+          "database": "course_teach",
+          "predicted_sql": "SELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course = 'Math';",
+          "gold_sql": "SELECT T3.Name FROM course_arrange AS T1 JOIN course AS T2 ON T1.Course_ID  =  T2.Course_ID JOIN teacher AS T3 ON T1.Teacher_ID  =  T3.Teacher_ID WHERE T2.Course  =  \"Math\"",
+          "llm_response": "To answer the question, we need to join the `course` table with the `course_arrange` table and then join the `teacher` table with the `course_arrange` table. We also need to filter the courses to only include math courses.\n\nHere's the SQL query:\n\n```sql\nSELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course = 'Math';\n```\n\nThis query will return the names of the people who teach math courses. \n\nHowever, if you want to get the names of all teachers who teach any math course, you can use the following query:\n\n```sql\nSELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course = 'Math'\nGROUP BY t.name;\n```\n\nThis query will return the names of all teachers who teach math courses, even if they teach other courses as well. \n\nIf you want to get the names of all teachers who teach math courses, without duplicates, you can use the following query:\n\n```sql\nSELECT DISTINCT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course = 'Math';\n```",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 11.033953189849854,
+            "tokens_used": 1017,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 11,
+          "question": "Give the country codes for countries in which people speak langauges that are not English.",
+          "database": "world_1",
+          "predicted_sql": "SELECT c.code\nFROM country c\nJOIN countrylanguage cl ON c.code = cl.countrycode\nWHERE cl.language != 'English' AND cl.isofficial = 1 AND cl.percentage > 0;",
+          "gold_sql": "SELECT DISTINCT CountryCode FROM countrylanguage WHERE LANGUAGE != \"English\"",
+          "llm_response": "To solve this problem, we need to join the `countrylanguage` table with the `country` table and filter out the countries where English is the official language. We also need to exclude countries where English is not an official language but has a percentage of 0.\n\nHere's the SQL query:\n\n```sql\nSELECT c.code\nFROM country c\nJOIN countrylanguage cl ON c.code = cl.countrycode\nWHERE cl.language != 'English' AND cl.isofficial = 1 AND cl.percentage > 0;\n```\n\nHowever, this query will not give us the country codes for countries where people speak languages that are not English. To get that, we need to exclude countries where English is an official language.\n\nHere's the corrected SQL query:\n\n```sql\nSELECT c.code\nFROM country c\nJOIN countrylanguage cl ON c.code = cl.countrycode\nWHERE cl.language != 'English' AND (cl.isofficial = 0 OR (cl.isofficial = 1 AND cl.percentage < 100));\n```\n\nThis query will give us the country codes for countries where people speak languages that are not English.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 9.654295921325684,
+            "tokens_used": 1094,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 12,
+          "question": "What is the grade of each high schooler?",
+          "database": "network_1",
+          "predicted_sql": "SELECT grade\nFROM network_1.high_schooler;",
+          "gold_sql": "SELECT grade FROM Highschooler",
+          "llm_response": "To get the grade of each high schooler, you can use a simple SELECT statement. Since the grade is in the 'high schooler' table, you can directly select it. Here's the SQL query:\n\n```sql\nSELECT grade\nFROM network_1.high_schooler;\n```\n\nThis query will return a list of grades for each high schooler in the 'high schooler' table.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 4.478480100631714,
+            "tokens_used": 542,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 13,
+          "question": "For each stadium, how many concerts play there?",
+          "database": "concert_singer",
+          "predicted_sql": "SELECT s.name, COUNT(c.concert_id) AS num_concerts\nFROM stadium s\nJOIN concert c ON s.stadium_id = c.stadium_id\nGROUP BY s.name;",
+          "gold_sql": "SELECT T2.name ,  count(*) FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id GROUP BY T1.stadium_id",
+          "llm_response": "To answer the question, we need to join the `stadium` table with the `concert` table using the `stadium id` foreign key. Then, we need to count the number of concerts for each stadium.\n\nHere's the SQL query:\n\n```sql\nSELECT s.name, COUNT(c.concert_id) AS num_concerts\nFROM stadium s\nJOIN concert c ON s.stadium_id = c.stadium_id\nGROUP BY s.name;\n```\n\nThis query will return a list of stadiums with the number of concerts played at each stadium. The `GROUP BY` clause groups the results by stadium name, and the `COUNT` function counts the number of concerts for each group.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 7.539274215698242,
+            "tokens_used": 874,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 14,
+          "question": "Give the names of nations that speak both English and French.",
+          "database": "world_1",
+          "predicted_sql": "SELECT c.name\nFROM country c\nJOIN countrylanguage cl1 ON c.code = cl1.countrycode\nJOIN countrylanguage cl2 ON c.code = cl2.countrycode\nWHERE cl1.language = 'English' AND cl2.language = 'French'\nGROUP BY c.name\nHAVING COUNT(DISTINCT cl1.countrycode) > 1;",
+          "gold_sql": "SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T2.Language  =  \"English\" INTERSECT SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T2.Language  =  \"French\"",
+          "llm_response": "To solve this problem, we need to join the `countrylanguage` table with the `country` table and filter the results to include only countries that speak both English and French. We also need to use the `GROUP BY` clause to group the results by country and use the `HAVING` clause to filter the results to include only countries that speak both languages.\n\nHere is the SQL query:\n\n```sql\nSELECT c.name\nFROM country c\nJOIN countrylanguage cl1 ON c.code = cl1.countrycode\nJOIN countrylanguage cl2 ON c.code = cl2.countrycode\nWHERE cl1.language = 'English' AND cl2.language = 'French'\nGROUP BY c.name\nHAVING COUNT(DISTINCT cl1.countrycode) > 1;\n```\n\nHowever, the above query will not give the correct result because it will count the number of rows where English is the official language and French is the official language, not the number of countries that speak both languages.\n\nTo get the correct result, we need to use the `GROUP BY` clause to group the results by country and use the `HAVING` clause to filter the results to include only countries that speak both languages. We also need to use the `COUNT(DISTINCT)` function to count the number of distinct languages spoken in each country.\n\nHere is the corrected SQL query:\n\n```sql\nSELECT c.name\nFROM country c\nJOIN countrylanguage cl ON c.code = cl.countrycode\nGROUP BY c.name\nHAVING COUNT(DISTINCT cl.language) = 2 AND COUNT(DISTINCT cl.countrycode) = 1\nAND cl.language IN ('English', 'French');\n```\n\nThis query will give the names of nations that speak both English and French.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 8.977731943130493,
+            "tokens_used": 1033,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 15,
+          "question": "What is the best rank of losers across all matches?",
+          "database": "wta_1",
+          "predicted_sql": "SELECT MAX(winner_rank) AS best_loser_rank\nFROM matches;",
+          "gold_sql": "SELECT min(loser_rank) FROM matches",
+          "llm_response": "To find the best rank of losers across all matches, you can use the following SQL query:\n\n```sql\nSELECT MAX(winner_rank) AS best_loser_rank\nFROM matches;\n```\n\nHowever, this query will return the best rank of the winners, not the losers. To get the best rank of the losers, you should use the `loser_rank` column instead of `winner_rank`. \n\n```sql\nSELECT MAX(loser_rank) AS best_loser_rank\nFROM matches;\n```\n\nThis query will return the highest rank of the losers across all matches.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 6.043699264526367,
+            "tokens_used": 778,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        }
+      ]
+    },
+    "llama-3.1-8b-instruct_multi_stage_no_verification": {
+      "summary": {
+        "total_examples": 15,
+        "exact_match_count": 0,
+        "exact_match_accuracy": 0.0,
+        "component_match_count": 2,
+        "component_match_accuracy": 0.13333333333333333,
+        "execution_match_count": 0,
+        "execution_match_accuracy": 0.0,
+        "successful_examples": 15
+      },
+      "entries": [
+        {
+          "entry_id": 1,
+          "question": "Show all countries and the number of singers in each country.",
+          "database": "concert_singer",
+          "predicted_sql": "SELECT \n  s.country, \n  COUNT(*) as singer_count\nFROM \n  singer s\nGROUP BY \n  s.country;",
+          "gold_sql": "SELECT country ,  count(*) FROM singer GROUP BY country",
+          "llm_response": "Based on the analysis and the provided database schema, the SQL query to answer the question is:\n\n```sql\nSELECT \n  s.country, \n  COUNT(*) as singer_count\nFROM \n  singer s\nGROUP BY \n  s.country;\n```\n\nThis query selects the `country` column from the `singer` table and uses the `COUNT` aggregation function to count the number of singers in each country. The `GROUP BY` clause groups the results by country.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 5.940734148025513,
+            "tokens_used": 1150,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 2,
+          "question": "Find the weight of the youngest dog.",
+          "database": "pets_1",
+          "predicted_sql": "SELECT p.weight\nFROM pets p\nWHERE p.pet_type = 'dog'\nAND p.pet_age = (SELECT MIN(pet_age) FROM pets WHERE pet_type = 'dog');",
+          "gold_sql": "SELECT weight FROM pets ORDER BY pet_age LIMIT 1",
+          "llm_response": "Based on the analysis, the SQL query to find the weight of the youngest dog is:\n\n```sql\nSELECT p.weight\nFROM pets p\nWHERE p.pet_type = 'dog'\nAND p.pet_age = (SELECT MIN(pet_age) FROM pets WHERE pet_type = 'dog');\n```\n\nThis query directly accesses the `pets` table, selects the `weight` column, and applies the conditions to get the weight of the youngest dog. The `JOIN` with the `has_pet` table is not necessary in this case, as we're only interested in the `pets` table.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 8.295895099639893,
+            "tokens_used": 1400,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 3,
+          "question": "Show the name of singers whose birth year is either 1948 or 1949?",
+          "database": "singer",
+          "predicted_sql": "SELECT name\nFROM singer\nWHERE birth_year = 1948 OR birth_year = 1949;",
+          "gold_sql": "SELECT Name FROM singer WHERE Birth_Year  =  1948 OR Birth_Year  =  1949",
+          "llm_response": "Based on the analysis, the SQL query to answer the question is:\n\n```sql\nSELECT name\nFROM singer\nWHERE birth_year = 1948 OR birth_year = 1949;\n```\n\nThis query selects the `name` column from the `singer` table where the `birth_year` is either 1948 or 1949.",
+          "exact_match": false,
+          "component_match": true,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 6.349246025085449,
+            "tokens_used": 1029,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 4,
+          "question": "Which semesters do not have any student enrolled? List the semester name.",
+          "database": "student_transcripts_tracking",
+          "predicted_sql": "SELECT s.semester_name\nFROM semesters s\nLEFT JOIN student_enrolment se ON s.semester_id = se.semester_id\nWHERE se.semester_id IS NULL;",
+          "gold_sql": "SELECT semester_name FROM Semesters WHERE semester_id NOT IN( SELECT semester_id FROM Student_Enrolment )",
+          "llm_response": "Based on the analysis and the database schema provided, the SQL query to find the semesters that do not have any student enrolled can be written as follows:\n\n```sql\nSELECT s.semester_name\nFROM semesters s\nLEFT JOIN student_enrolment se ON s.semester_id = se.semester_id\nWHERE se.semester_id IS NULL;\n```\n\nThis query will return the semester names that do not have any student enrolled. The LEFT JOIN is used to join the `semesters` table with the `student_enrolment` table. The WHERE clause filters the results to include only the semesters that do not have any enrollments.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 7.588374614715576,
+            "tokens_used": 1801,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 5,
+          "question": "What is the language spoken by the largest percentage of people in each country?",
+          "database": "world_1",
+          "predicted_sql": "SELECT c.name, cl.language, cl.percentage\nFROM country c\nJOIN (\n  SELECT countrycode, language, percentage\n  FROM countrylanguage\n  WHERE percentage = (SELECT MAX(percentage) FROM countrylanguage cl2 WHERE cl2.countrycode = countrycode)\n) cl ON c.code = cl.countrycode;",
+          "gold_sql": "SELECT LANGUAGE ,  CountryCode ,  max(Percentage) FROM countrylanguage GROUP BY CountryCode",
+          "llm_response": "Based on the analysis, the SQL query to answer the question is:\n\n```sql\nSELECT c.name, cl.language, cl.percentage\nFROM country c\nJOIN (\n  SELECT countrycode, language, percentage\n  FROM countrylanguage\n  WHERE percentage = (SELECT MAX(percentage) FROM countrylanguage cl2 WHERE cl2.countrycode = countrycode)\n) cl ON c.code = cl.countrycode;\n```\n\nHowever, this query will not work as expected because the `GROUP BY` clause is grouping by all columns, not just the country name. To fix this, we can use a subquery to get the maximum percentage for each country, and then join this with the `countrylanguage` table to get the language spoken by the largest percentage of people in each country.\n\nThis query will return the language spoken by the largest percentage of people in each country.\n\nNote: The query is assuming that the `countrylanguage` table has the maximum percentage for each country. If there are multiple languages with the same maximum percentage, this query will return all of them. If you want to return only one language, you may need to use a different approach, such as using a subquery with `ROW_NUMBER()` or `RANK()` function.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 10.127240896224976,
+            "tokens_used": 1782,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 6,
+          "question": "How many TV Channel using language English?",
+          "database": "tvshow",
+          "predicted_sql": "SELECT COUNT(id) AS count\nFROM tv_channel\nWHERE language = 'English';",
+          "gold_sql": "SELECT count(*) FROM TV_Channel WHERE LANGUAGE = \"English\";",
+          "llm_response": "Based on the analysis, the SQL query to answer the question \"How many TV Channel using language English?\" is:\n\n```sql\nSELECT COUNT(id) AS count\nFROM tv_channel\nWHERE language = 'English';\n```\n\nThis query will return the total count of TV channels that use the language 'English'.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 5.837932825088501,
+            "tokens_used": 1158,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 7,
+          "question": "What is the average age for all students who do not own any pets ?",
+          "database": "pets_1",
+          "predicted_sql": "SELECT AVG(s.age)\nFROM student s\nLEFT JOIN has_pet hp ON s.id = hp.student_id\nWHERE hp.student_id IS NULL;",
+          "gold_sql": "select avg(age) from student where stuid not in (select stuid from has_pet)",
+          "llm_response": "Based on the analysis, the SQL query to answer the question is:\n\n```sql\nSELECT AVG(s.age)\nFROM student s\nLEFT JOIN has_pet hp ON s.id = hp.student_id\nWHERE hp.student_id IS NULL;\n```\n\nThis query joins the `student` table with the `has_pet` table on the `student id` column, and then filters out students who have a matching row in the `has_pet` table (i.e., students who own pets). The `LEFT JOIN` ensures that all students are included, even if they do not have a matching row in the `has_pet` table. The `AVG(s.age)` function then calculates the average age of the students who do not own any pets.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 7.933182001113892,
+            "tokens_used": 1429,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 8,
+          "question": "What is the code of the country with the most players?",
+          "database": "wta_1",
+          "predicted_sql": "SELECT country_code\nFROM players\nGROUP BY country_code\nORDER BY COUNT(*) DESC\nLIMIT 1;",
+          "gold_sql": "SELECT country_code FROM players GROUP BY country_code ORDER BY count(*) DESC LIMIT 1",
+          "llm_response": "```sql\nSELECT country_code\nFROM players\nGROUP BY country_code\nORDER BY COUNT(*) DESC\nLIMIT 1;\n```\n\nThis SQL query will return the `country_code` of the country with the most players.",
+          "exact_match": false,
+          "component_match": true,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 5.883601427078247,
+            "tokens_used": 1263,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 9,
+          "question": "How many cities in each district have a population that is above the average population across all cities?",
+          "database": "world_1",
+          "predicted_sql": "SELECT \n  district,\n  COUNT(*) as num_cities\nFROM \n  city\nWHERE \n  population > (SELECT AVG(population) FROM city)\nGROUP BY \n  district;",
+          "gold_sql": "SELECT count(*) ,  District FROM city WHERE Population  >  (SELECT avg(Population) FROM city) GROUP BY District",
+          "llm_response": "Based on the analysis, the following SQL query can be used to answer the question:\n\n```sql\nSELECT \n  district,\n  COUNT(*) as num_cities\nFROM \n  city\nWHERE \n  population > (SELECT AVG(population) FROM city)\nGROUP BY \n  district;\n```\n\nThis query selects the `district` column and counts the number of cities in each district with a population above the average population across all cities. The subquery calculates the average population, and the `WHERE` clause filters cities with a population above the average. The `GROUP BY` clause groups the results by district.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 7.794418096542358,
+            "tokens_used": 1431,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 10,
+          "question": "What are the names of the people who teach math courses?",
+          "database": "course_teach",
+          "predicted_sql": "SELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course = 'math';",
+          "gold_sql": "SELECT T3.Name FROM course_arrange AS T1 JOIN course AS T2 ON T1.Course_ID  =  T2.Course_ID JOIN teacher AS T3 ON T1.Teacher_ID  =  T3.Teacher_ID WHERE T2.Course  =  \"Math\"",
+          "llm_response": "Based on the analysis, the SQL query to answer the question is:\n\n```sql\nSELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course = 'math';\n```\n\nThis query joins the `teacher` table with the `course_arrange` table and then with the `course` table to get the teacher names for math courses. The `WHERE` clause filters the courses to only include math courses.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 6.863690137863159,
+            "tokens_used": 1173,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 11,
+          "question": "Give the country codes for countries in which people speak langauges that are not English.",
+          "database": "world_1",
+          "predicted_sql": "SELECT c.code\nFROM country c\nJOIN countrylanguage cl ON c.code = cl.countrycode\nWHERE cl.language != 'English';",
+          "gold_sql": "SELECT DISTINCT CountryCode FROM countrylanguage WHERE LANGUAGE != \"English\"",
+          "llm_response": "Based on the analysis, the SQL query to answer the question is:\n\n```sql\nSELECT c.code\nFROM country c\nJOIN countrylanguage cl ON c.code = cl.countrycode\nWHERE cl.language != 'English';\n```\n\nThis query joins the `country` table with the `countrylanguage` table on the `countrycode` column and selects the country code for countries where people speak languages that are not English.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 6.24665641784668,
+            "tokens_used": 1202,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 12,
+          "question": "What is the grade of each high schooler?",
+          "database": "network_1",
+          "predicted_sql": "SELECT id, grade\nFROM high_schooler;",
+          "gold_sql": "SELECT grade FROM Highschooler",
+          "llm_response": "Based on the analysis, the SQL query to answer the question would be:\n\n```sql\nSELECT id, grade\nFROM high_schooler;\n```\n\nThis query simply selects the `id` and `grade` columns from the `high_schooler` table, without any conditions, JOINs, aggregations, sorting, or limiting.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 5.2240824699401855,
+            "tokens_used": 945,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 13,
+          "question": "For each stadium, how many concerts play there?",
+          "database": "concert_singer",
+          "predicted_sql": "SELECT \n  s.name, \n  COUNT(c.concert id) AS num_concerts\nFROM \n  stadium s\n  JOIN concert c ON s.stadium id = c.stadium id\nGROUP BY \n  s.name;",
+          "gold_sql": "SELECT T2.name ,  count(*) FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id GROUP BY T1.stadium_id",
+          "llm_response": "Based on the analysis and the provided database schema, the SQL query to answer the question \"For each stadium, how many concerts play there?\" would be:\n\n```sql\nSELECT \n  s.name, \n  COUNT(c.concert id) AS num_concerts\nFROM \n  stadium s\n  JOIN concert c ON s.stadium id = c.stadium id\nGROUP BY \n  s.name;\n```\n\nThis query joins the `stadium` and `concert` tables based on the `stadium id` column, groups the results by stadium name, and counts the number of concerts played at each stadium. The `COUNT` aggregation function is used to count the number of concerts for each stadium.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 7.475378513336182,
+            "tokens_used": 1363,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 14,
+          "question": "Give the names of nations that speak both English and French.",
+          "database": "world_1",
+          "predicted_sql": "SELECT c.name\nFROM country c\nJOIN countrylanguage cl ON c.code = cl.countrycode\nWHERE cl.language IN ('English', 'French')\nAND cl.isofficial = 'T';",
+          "gold_sql": "SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T2.Language  =  \"English\" INTERSECT SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T2.Language  =  \"French\"",
+          "llm_response": "Based on the analysis, the SQL query to get the names of nations that speak both English and French is:\n\n```sql\nSELECT c.name\nFROM country c\nJOIN countrylanguage cl ON c.code = cl.countrycode\nWHERE cl.language IN ('English', 'French')\nAND cl.isofficial = 'T';\n```\n\nThis query joins the `country` table with the `countrylanguage` table on the `code` and `countrycode` columns, respectively. It then selects the `name` column from the `country` table and filters the results to include only countries where both English and French are official languages.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 8.177298307418823,
+            "tokens_used": 1421,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 15,
+          "question": "What is the best rank of losers across all matches?",
+          "database": "wta_1",
+          "predicted_sql": "SELECT MAX(loser_rank) AS best_rank\nFROM wta_1.matches;",
+          "gold_sql": "SELECT min(loser_rank) FROM matches",
+          "llm_response": "```sql\nSELECT MAX(loser_rank) AS best_rank\nFROM wta_1.matches;\n```\n\nThis SQL query will return the best rank of losers across all matches in the `wta_1` database.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 5.961748361587524,
+            "tokens_used": 1347,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        }
+      ]
+    },
+    "llama-3.1-8b-instruct_multi_stage_simple": {
+      "summary": {
+        "total_examples": 15,
+        "exact_match_count": 0,
+        "exact_match_accuracy": 0.0,
+        "component_match_count": 0,
+        "component_match_accuracy": 0.0,
+        "execution_match_count": 0,
+        "execution_match_accuracy": 0.0,
+        "successful_examples": 15
+      },
+      "entries": [
+        {
+          "entry_id": 1,
+          "question": "Show all countries and the number of singers in each country.",
+          "database": "concert_singer",
+          "predicted_sql": "SELECT \n    s.country, \n    COUNT(si.singer_id) AS number_of_singers\nFROM \n    singer s\nJOIN \n    singer_in_concert si ON s.singer_id = si.singer_id\nGROUP BY \n    s.country;",
+          "gold_sql": "SELECT country ,  count(*) FROM singer GROUP BY country",
+          "llm_response": "To show all countries and the number of singers in each country, you can use the following SQL query:\n\n```sql\nSELECT \n    s.country, \n    COUNT(si.singer_id) AS number_of_singers\nFROM \n    singer s\nJOIN \n    singer_in_concert si ON s.singer_id = si.singer_id\nGROUP BY \n    s.country;\n```\n\nThis query works as follows:\n\n- It selects the `country` column from the `singer` table and counts the number of singers in each country using the `COUNT` function.\n- It joins the `singer` table with the `singer_in_concert` table on the `singer_id` column to link each singer with their concerts.\n- It groups the results by the `country` column to count the number of singers in each country.\n\nThis query will return a list of countries and the number of singers in each country.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 2.860893726348877,
+            "tokens_used": 366,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 2,
+          "question": "Find the weight of the youngest dog.",
+          "database": "pets_1",
+          "predicted_sql": "SELECT p.weight\nFROM pets p\nJOIN has_pet hp ON p.pet_id = hp.pet_id\nJOIN student s ON hp.student_id = s.student_id\nWHERE p.pet_type = 'dog'\nORDER BY p.pet_age ASC\nLIMIT 1;",
+          "gold_sql": "SELECT weight FROM pets ORDER BY pet_age LIMIT 1",
+          "llm_response": "To find the weight of the youngest dog, we need to join the `has_pet`, `pets`, and `student` tables based on their foreign keys. We also need to filter the results to only include dogs and find the youngest one.\n\nHere's the SQL query:\n\n```sql\nSELECT p.weight\nFROM pets p\nJOIN has_pet hp ON p.pet_id = hp.pet_id\nJOIN student s ON hp.student_id = s.student_id\nWHERE p.pet_type = 'dog'\nORDER BY p.pet_age ASC\nLIMIT 1;\n```\n\nThis query works as follows:\n\n1. It joins the `pets` table with the `has_pet` table on the `pet_id` column.\n2. It then joins the resulting table with the `student` table on the `student_id` column.\n3. It filters the results to only include rows where the `pet_type` is 'dog'.\n4. It orders the remaining rows by `pet_age` in ascending order.\n5. Finally, it returns the `weight` of the first row, which corresponds to the youngest dog.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 3.1773529052734375,
+            "tokens_used": 366,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 3,
+          "question": "Show the name of singers whose birth year is either 1948 or 1949?",
+          "database": "singer",
+          "predicted_sql": "SELECT name\nFROM singer\nWHERE birth_year IN (1948, 1949);",
+          "gold_sql": "SELECT Name FROM singer WHERE Birth_Year  =  1948 OR Birth_Year  =  1949",
+          "llm_response": "To show the name of singers whose birth year is either 1948 or 1949, you can use the following SQL query:\n\n```sql\nSELECT name\nFROM singer\nWHERE birth_year IN (1948, 1949);\n```\n\nThis query selects the `name` column from the `singer` table where the `birth_year` is either 1948 or 1949. The `IN` operator is used to specify multiple values for the `WHERE` clause.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 1.8428764343261719,
+            "tokens_used": 227,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 4,
+          "question": "Which semesters do not have any student enrolled? List the semester name.",
+          "database": "student_transcripts_tracking",
+          "predicted_sql": "SELECT s.semester_name\nFROM semesters s\nLEFT JOIN student_enrolment se ON s.semester_id = se.semester_id\nWHERE se.semester_id IS NULL;",
+          "gold_sql": "SELECT semester_name FROM Semesters WHERE semester_id NOT IN( SELECT semester_id FROM Student_Enrolment )",
+          "llm_response": "To find the semesters that do not have any student enrolled, we need to join the `semesters` table with the `student_enrolment` table on the `semester id` foreign key. We then need to check if there are any matching rows in the `student_enrolment` table. If there are no matching rows, it means that the semester does not have any student enrolled.\n\nHere is the SQL query:\n\n```sql\nSELECT s.semester_name\nFROM semesters s\nLEFT JOIN student_enrolment se ON s.semester_id = se.semester_id\nWHERE se.semester_id IS NULL;\n```\n\nThis query works as follows:\n\n- The `LEFT JOIN` is used to include all rows from the `semesters` table, even if there are no matching rows in the `student_enrolment` table.\n- The `WHERE` clause checks if the `semester_id` column in the `student_enrolment` table is `NULL`. If it is `NULL`, it means that there are no matching rows, and therefore the semester does not have any student enrolled.\n- The `SELECT` clause only selects the `semester_name` column from the `semesters` table.\n\nThis query will return the names of the semesters that do not have any student enrolled.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 4.097792148590088,
+            "tokens_used": 694,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 5,
+          "question": "What is the language spoken by the largest percentage of people in each country?",
+          "database": "world_1",
+          "predicted_sql": "SELECT c.name, cl.language, cl.percentage\nFROM (\n  SELECT countrycode, language, percentage,\n         ROW_NUMBER() OVER (PARTITION BY countrycode ORDER BY percentage DESC) as rn\n  FROM countrylanguage\n) cl\nJOIN country c ON cl.countrycode = c.code\nWHERE cl.rn = 1;",
+          "gold_sql": "SELECT LANGUAGE ,  CountryCode ,  max(Percentage) FROM countrylanguage GROUP BY CountryCode",
+          "llm_response": "To find the language spoken by the largest percentage of people in each country, you can use the following SQL query:\n\n```sql\nSELECT c.name, cl.language, cl.percentage\nFROM (\n  SELECT countrycode, language, percentage,\n         ROW_NUMBER() OVER (PARTITION BY countrycode ORDER BY percentage DESC) as rn\n  FROM countrylanguage\n) cl\nJOIN country c ON cl.countrycode = c.code\nWHERE cl.rn = 1;\n```\n\nHowever, since the `ROW_NUMBER()` function is not available in SQLite, you can use the following query instead:\n\n```sql\nSELECT c.name, cl.language, cl.percentage\nFROM (\n  SELECT countrycode, language, percentage,\n         CASE\n           WHEN (SELECT COUNT(*) FROM countrylanguage WHERE countrycode = countrycode AND percentage > cl.percentage) = 0 THEN 1\n           ELSE 0\n         END as rn\n  FROM countrylanguage cl\n) cl\nJOIN country c ON cl.countrycode = c.code\nWHERE cl.rn = 1;\n```\n\nThis query will return the language spoken by the largest percentage of people in each country.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 3.380972385406494,
+            "tokens_used": 420,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 6,
+          "question": "How many TV Channel using language English?",
+          "database": "tvshow",
+          "predicted_sql": "SELECT COUNT(*) \nFROM tv_channel \nWHERE language = 'English';",
+          "gold_sql": "SELECT count(*) FROM TV_Channel WHERE LANGUAGE = \"English\";",
+          "llm_response": "Based on the analysis, it seems like there's a foreign key relationship between the 'tv channel' table and the 'tv series' table, but the 'id' column is referenced twice. However, I'll assume that the foreign key relationship is between the 'tv channel' table and the 'tv series' table, and the 'id' column in the 'tv series' table is referencing the 'id' column in the 'tv channel' table.\n\nHowever, to answer the question \"How many TV Channel using language English?\", we need to query the 'tv channel' table directly. Here's the SQL query:\n\n```sql\nSELECT COUNT(*) \nFROM tv_channel \nWHERE language = 'English';\n```\n\nThis query will return the number of TV channels that use the language 'English'.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 2.7633697986602783,
+            "tokens_used": 339,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 7,
+          "question": "What is the average age for all students who do not own any pets ?",
+          "database": "pets_1",
+          "predicted_sql": "SELECT AVG(age) \nFROM student \nWHERE student.id NOT IN (SELECT student.id \n                          FROM student \n                          JOIN has_pet ON student.id = has_pet.student_id \n                          JOIN pets ON has_pet.pet_id = pets.pet_id);",
+          "gold_sql": "select avg(age) from student where stuid not in (select stuid from has_pet)",
+          "llm_response": "To find the average age for all students who do not own any pets, we need to first find the students who do not own any pets and then calculate the average age for those students.\n\nHere's the SQL query:\n\n```sql\nSELECT AVG(age) \nFROM student \nWHERE student.id NOT IN (SELECT student.id \n                          FROM student \n                          JOIN has_pet ON student.id = has_pet.student_id \n                          JOIN pets ON has_pet.pet_id = pets.pet_id);\n```\n\nHowever, the above query may not be efficient if the tables are large because it uses a subquery with a NOT IN clause, which can be slow.\n\nA more efficient way to write this query is to use a LEFT JOIN and check for NULL values:\n\n```sql\nSELECT AVG(s.age) \nFROM student s \nLEFT JOIN has_pet hp ON s.id = hp.student_id \nLEFT JOIN pets p ON hp.pet_id = p.pet_id \nWHERE hp.student_id IS NULL;\n```\n\nThis query works by joining the student table with the has_pet and pets tables on the student_id and pet_id columns, respectively. The LEFT JOIN ensures that all students are included, even if they don't have a pet. The WHERE clause then filters out the students who do have a pet (i.e., the rows where hp.student_id is not NULL). The AVG function is then used to calculate the average age of the remaining students.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 4.301267862319946,
+            "tokens_used": 435,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 8,
+          "question": "What is the code of the country with the most players?",
+          "database": "wta_1",
+          "predicted_sql": "SELECT country_code, COUNT(*) as num_players\nFROM players\nGROUP BY country_code\nORDER BY num_players DESC\nLIMIT 1;",
+          "gold_sql": "SELECT country_code FROM players GROUP BY country_code ORDER BY count(*) DESC LIMIT 1",
+          "llm_response": "To find the code of the country with the most players, you can use the following SQL query:\n\n```sql\nSELECT country_code, COUNT(*) as num_players\nFROM players\nGROUP BY country_code\nORDER BY num_players DESC\nLIMIT 1;\n```\n\nThis query works as follows:\n\n- `SELECT country_code, COUNT(*) as num_players`: Selects the country code and counts the number of players for each country.\n- `FROM players`: Specifies the table to query.\n- `GROUP BY country_code`: Groups the results by country code.\n- `ORDER BY num_players DESC`: Orders the results in descending order by the number of players.\n- `LIMIT 1`: Returns only the top row, which corresponds to the country with the most players.\n\nNote: If there are multiple countries with the same highest number of players, this query will return only one of them. If you want to return all countries with the highest number of players, you can use a subquery or a window function.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 2.9477174282073975,
+            "tokens_used": 449,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 9,
+          "question": "How many cities in each district have a population that is above the average population across all cities?",
+          "database": "world_1",
+          "predicted_sql": "SELECT \n  c.district, \n  COUNT(c.id) as num_cities,\n  SUM(CASE WHEN c.population > (SELECT AVG(population) FROM city) THEN 1 ELSE 0 END) as num_cities_above_avg\nFROM \n  city c\nGROUP BY \n  c.district;",
+          "gold_sql": "SELECT count(*) ,  District FROM city WHERE Population  >  (SELECT avg(Population) FROM city) GROUP BY District",
+          "llm_response": "To solve this problem, we need to calculate the average population across all cities first, and then use this value to filter the cities in each district. Here's the SQL query:\n\n```sql\nSELECT \n  c.district, \n  COUNT(c.id) as num_cities,\n  SUM(CASE WHEN c.population > (SELECT AVG(population) FROM city) THEN 1 ELSE 0 END) as num_cities_above_avg\nFROM \n  city c\nGROUP BY \n  c.district;\n```\n\nThis query works as follows:\n\n1. It selects the district, the total number of cities in each district, and the number of cities in each district that have a population above the average population across all cities.\n2. It uses a subquery to calculate the average population across all cities.\n3. It uses a CASE statement to count the number of cities in each district that have a population above the average population.\n4. It groups the results by district.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 2.892843723297119,
+            "tokens_used": 388,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 10,
+          "question": "What are the names of the people who teach math courses?",
+          "database": "course_teach",
+          "predicted_sql": "SELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course = 'Math';",
+          "gold_sql": "SELECT T3.Name FROM course_arrange AS T1 JOIN course AS T2 ON T1.Course_ID  =  T2.Course_ID JOIN teacher AS T3 ON T1.Teacher_ID  =  T3.Teacher_ID WHERE T2.Course  =  \"Math\"",
+          "llm_response": "To find the names of people who teach math courses, we need to join the `course` table with the `course_arrange` table to get the teacher IDs, then join the `teacher` table with the `course_arrange` table to get the teacher names. We also need to filter the courses to only include math courses.\n\nHere's the SQL query:\n\n```sql\nSELECT t.name\nFROM teacher t\nJOIN course_arrange ca ON t.teacher_id = ca.teacher_id\nJOIN course c ON ca.course_id = c.course_id\nWHERE c.course = 'Math';\n```\n\nThis query will return the names of all teachers who teach math courses.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 2.3555095195770264,
+            "tokens_used": 270,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 11,
+          "question": "Give the country codes for countries in which people speak langauges that are not English.",
+          "database": "world_1",
+          "predicted_sql": "SELECT c.code\nFROM country c\nJOIN countrylanguage cl ON c.code = cl.countrycode\nWHERE cl.language != 'English' AND cl.isofficial = 1;",
+          "gold_sql": "SELECT DISTINCT CountryCode FROM countrylanguage WHERE LANGUAGE != \"English\"",
+          "llm_response": "To solve this problem, we need to join the `countrylanguage` table with the `country` table and filter out the countries where English is the official language. We also need to exclude countries where English is not an official language but has a high percentage of speakers.\n\nHere's the SQL query:\n\n```sql\nSELECT c.code\nFROM country c\nJOIN countrylanguage cl ON c.code = cl.countrycode\nWHERE cl.language != 'English' AND cl.isofficial = 1;\n```\n\nHowever, this query will not give us the desired result because it will exclude countries where English is not an official language but has a high percentage of speakers. To solve this problem, we need to join the `countrylanguage` table with itself to get the percentage of English speakers in each country.\n\nHere's the corrected SQL query:\n\n```sql\nSELECT c.code\nFROM country c\nJOIN countrylanguage cl1 ON c.code = cl1.countrycode\nJOIN countrylanguage cl2 ON c.code = cl2.countrycode\nWHERE cl1.language = 'English' AND cl2.language != 'English'\nAND cl1.isofficial = 1 AND cl2.isofficial = 1\nAND cl2.percentage > 50;\n```\n\nHowever, this query will not work because the `countrylanguage` table does not have a column named `percentage`. The `percentage` column is actually in the `countrylanguage` table, but it is not a separate table. It is a column in the `countrylanguage` table.\n\nHere's the corrected SQL query:\n\n```sql\nSELECT c.code\nFROM country c\nJOIN countrylanguage cl1 ON c.code = cl1.countrycode\nJOIN countrylanguage cl2 ON c.code = cl2.countrycode\nWHERE cl1.language = 'English' AND cl2.language != 'English'\nAND cl1.isofficial = 1 AND cl2.isofficial = 1\nAND cl2.percentage > 50;\n```\n\nHowever, this query will not work because the `countrylanguage` table does not have a column named `percentage`. The `percentage` column is actually in the `countrylanguage` table, but it is not a separate table. It is a column in the `countrylanguage` table.\n\nHere's the corrected SQL query:\n\n```sql\nSELECT c.code\nFROM country c\nJOIN countrylanguage cl1 ON c.code = cl1.countrycode\nJOIN countrylanguage cl2 ON c.code = cl2.countrycode\nWHERE cl1.language = 'English' AND cl2.language != 'English'\nAND cl1.isofficial = 1 AND cl2.isofficial = 1\nAND cl2.percentage > (SELECT AVG(percentage) FROM countrylanguage WHERE language = 'English');\n```\n\nHowever, this query will not work because the `countrylanguage` table does not have a column named `percentage`. The `percentage` column is actually in the `countrylanguage` table, but it is not a separate table. It is a column in the `countrylanguage` table.\n\nHere's the corrected SQL query:\n\n```sql\nSELECT c.code\nFROM country c\nJOIN countrylanguage cl1 ON c.code = cl1.countrycode\nJOIN countrylanguage cl2 ON c.code = cl2.countrycode\nWHERE cl1.language = 'English' AND cl2.language != 'English'\nAND cl1.isofficial = 1 AND cl2.isofficial = 1\nAND cl2.percentage > (SELECT AVG(percentage) FROM countrylanguage WHERE language = 'English' AND isofficial = 1);\n```\n\nHowever, this query will not work because the `countrylanguage` table does not have a column named `percentage`. The `percentage` column is actually in the `countrylanguage` table, but it is not a separate table. It is a column in the `countrylanguage` table.\n\nHere's the corrected SQL query:\n\n```sql\nSELECT c.code\nFROM country c\nJOIN countrylanguage cl1 ON c.code = cl1.countrycode\nJOIN countrylanguage cl2 ON c.code = cl2.countrycode\nWHERE cl1.language = 'English' AND cl2.language != 'English'\nAND cl1.isofficial = 1 AND cl2.isofficial = 1\nAND cl2.percentage > (SELECT AVG(percentage) FROM countrylanguage WHERE language = 'English' AND isofficial = 1);\n```\n\nHowever, this query will not work because the `countrylanguage` table does not have a column named `percentage`. The `percentage` column is actually in the `countrylanguage` table, but it is not a separate table. It is a column in the `countrylanguage` table.\n\nHere's the corrected SQL query:\n\n```sql\nSELECT c.code\nFROM country c\nJOIN countrylanguage cl1 ON c.code = cl1.countrycode\nJOIN countrylanguage cl2 ON c.code = cl2.countrycode\nWHERE cl1.language = 'English' AND cl2.language != 'English'\nAND cl1.isofficial = 1 AND cl2.isofficial",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 12.902185678482056,
+            "tokens_used": 1213,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 12,
+          "question": "What is the grade of each high schooler?",
+          "database": "network_1",
+          "predicted_sql": "SELECT grade\nFROM network_1.high_schooler;",
+          "gold_sql": "SELECT grade FROM Highschooler",
+          "llm_response": "To get the grade of each high schooler, you can use a simple SELECT statement. Since the grade is stored in the 'high schooler' table, you can directly query it. Here's the SQL query:\n\n```sql\nSELECT grade\nFROM network_1.high_schooler;\n```\n\nThis query will return all the grades of the high schoolers in the 'high schooler' table. If you want to get the grades along with the names of the high schoolers, you can modify the query as follows:\n\n```sql\nSELECT name, grade\nFROM network_1.high_schooler;\n```",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 1.9507687091827393,
+            "tokens_used": 261,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 13,
+          "question": "For each stadium, how many concerts play there?",
+          "database": "concert_singer",
+          "predicted_sql": "SELECT s.name, COUNT(c.concert_id) as num_concerts\nFROM stadium s\nJOIN concert c ON s.stadium_id = c.stadium_id\nGROUP BY s.name;",
+          "gold_sql": "SELECT T2.name ,  count(*) FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id GROUP BY T1.stadium_id",
+          "llm_response": "To answer the question, we need to join the `stadium` table with the `concert` table and then count the number of concerts for each stadium. We can use the `JOIN` clause to achieve this. Here's the SQL query:\n\n```sql\nSELECT s.name, COUNT(c.concert_id) as num_concerts\nFROM stadium s\nJOIN concert c ON s.stadium_id = c.stadium_id\nGROUP BY s.name;\n```\n\nThis query will return the name of each stadium and the number of concerts that have been played there. The `GROUP BY` clause is used to group the results by the stadium name, and the `COUNT` function is used to count the number of concerts for each stadium.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 2.4569015502929688,
+            "tokens_used": 325,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 14,
+          "question": "Give the names of nations that speak both English and French.",
+          "database": "world_1",
+          "predicted_sql": "SELECT c.name\nFROM country c\nJOIN countrylanguage cl1 ON c.code = cl1.countrycode\nJOIN countrylanguage cl2 ON c.code = cl2.countrycode\nWHERE cl1.language = 'English' AND cl2.language = 'French'\nGROUP BY c.name\nHAVING COUNT(DISTINCT cl1.countrycode) > 1 AND COUNT(DISTINCT cl2.countrycode) > 1;",
+          "gold_sql": "SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T2.Language  =  \"English\" INTERSECT SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T2.Language  =  \"French\"",
+          "llm_response": "To solve this problem, we need to join the `countrylanguage` table with the `country` table and filter the results to include only countries that speak both English and French. We also need to use the `GROUP BY` clause to group the results by country and use the `HAVING` clause to filter the results to include only countries that speak both languages.\n\nHere is the SQL query:\n\n```sql\nSELECT c.name\nFROM country c\nJOIN countrylanguage cl1 ON c.code = cl1.countrycode\nJOIN countrylanguage cl2 ON c.code = cl2.countrycode\nWHERE cl1.language = 'English' AND cl2.language = 'French'\nGROUP BY c.name\nHAVING COUNT(DISTINCT cl1.countrycode) > 1 AND COUNT(DISTINCT cl2.countrycode) > 1;\n```\n\nThis query works as follows:\n\n1. It joins the `country` table with the `countrylanguage` table twice, once for English and once for French.\n2. It filters the results to include only rows where the language is English or French.\n3. It groups the results by country.\n4. It uses the `HAVING` clause to filter the results to include only countries that speak both English and French. The `COUNT(DISTINCT cl1.countrycode)` and `COUNT(DISTINCT cl2.countrycode)` expressions count the number of distinct rows for each language, and the `> 1` condition ensures that the country speaks both languages.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 4.097343921661377,
+            "tokens_used": 487,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        },
+        {
+          "entry_id": 15,
+          "question": "What is the best rank of losers across all matches?",
+          "database": "wta_1",
+          "predicted_sql": "SELECT MAX(winner_rank) AS best_loser_rank\nFROM matches;",
+          "gold_sql": "SELECT min(loser_rank) FROM matches",
+          "llm_response": "To find the best rank of losers across all matches, you can use the following SQL query:\n\n```sql\nSELECT MAX(winner_rank) AS best_loser_rank\nFROM matches;\n```\n\nHowever, this query will return the best rank of the winners, not the losers. To get the best rank of the losers, you need to use the `loser_rank` column from the `matches` table. Here's the corrected query:\n\n```sql\nSELECT MAX(loser_rank) AS best_loser_rank\nFROM matches;\n```\n\nThis query will return the highest rank of the losers across all matches.",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 1.9472851753234863,
+            "tokens_used": 368,
+            "model": "meta-llama/llama-3.1-8b-instruct"
+          }
+        }
+      ]
+    }
+  },
+  "summary": {
+    "model_comparison": {
+      "meta-llama/llama-3.1-8b-instruct": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 6.986799990336101,
+        "total_tokens_sum": 70839,
+        "error_rate_mean": 0.0
+      }
+    },
+    "strategy_comparison": {
+      "multi_stage_simple": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 3.3208911259969076,
+        "total_tokens_sum": 7540,
+        "error_rate_mean": 0.0
+      },
+      "multi_stage": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 12.861327489217123,
+        "total_tokens_sum": 29571,
+        "error_rate_mean": 0.0
+      },
+      "multi_stage_no_analysis": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 8.384258254369099,
+        "total_tokens_sum": 13834,
+        "error_rate_mean": 0.0
+      },
+      "multi_stage_no_verification": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 7.046631956100464,
+        "total_tokens_sum": 19894,
+        "error_rate_mean": 0.0
+      }
+    }
+  },
+  "timestamp": "2025-11-18T19:16:14.390613"
+}

@@ -1,0 +1,164 @@
+{
+  "config": {
+    "name": "strategy_comparison",
+    "models": [
+      "qwen/qwen3-coder-30b-a3b-instruct"
+    ],
+    "strategies": [
+      "multi_stage_simple"
+    ],
+    "max_examples": 5,
+    "spider_path": "spider",
+    "split": "dev"
+  },
+  "experiments": {
+    "qwen3-coder-30b-a3b-instruct_multi_stage_simple": {
+      "summary": {
+        "total_examples": 5,
+        "exact_match_count": 0,
+        "exact_match_accuracy": 0.0,
+        "component_match_count": 0,
+        "component_match_accuracy": 0.0,
+        "execution_match_count": 0,
+        "execution_match_accuracy": 0.0,
+        "successful_examples": 5
+      },
+      "entries": [
+        {
+          "entry_id": 1,
+          "question": "Find the id, last name and cell phone of the professionals who live in the state of Indiana or have performed more than two treatments.",
+          "database": "dog_kennels",
+          "predicted_sql": "SELECT DISTINCT p.professional_id, p.last_name, p.cell_number\nFROM professionals p\nLEFT JOIN treatments t ON p.professional_id = t.professional_id\nWHERE p.state = 'IN' \n   OR p.professional_id IN (\n       SELECT professional_id\n       FROM treatments\n       GROUP BY professional_id\n       HAVING COUNT(*) > 2\n   )",
+          "gold_sql": "SELECT professional_id ,  last_name ,  cell_number FROM Professionals WHERE state  =  'Indiana' UNION SELECT T1.professional_id ,  T1.last_name ,  T1.cell_number FROM Professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id GROUP BY T1.professional_id HAVING count(*)  >  2",
+          "llm_response": "Looking at the analysis, I need to find professionals who either:\n1. Live in the state of Indiana, OR\n2. Have performed more than two treatments\n\nLet me analyze the relevant tables:\n- `professionals` table has: professional id, role code, first name, street, city, state, zip code, last name, email address, home phone, cell number\n- `treatments` table has: treatment id, dog id, professional id, treatment type code, date of treatment, cost of treatment\n\nI need to join these tables and apply the appropriate filters.\n\n```sql\nSELECT DISTINCT p.professional_id, p.last_name, p.cell_number\nFROM professionals p\nLEFT JOIN treatments t ON p.professional_id = t.professional_id\nWHERE p.state = 'IN' \n   OR p.professional_id IN (\n       SELECT professional_id\n       FROM treatments\n       GROUP BY professional_id\n       HAVING COUNT(*) > 2\n   )\n```",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 3.2450075149536133,
+            "tokens_used": 511,
+            "model": "qwen/qwen3-coder-30b-a3b-instruct"
+          }
+        },
+        {
+          "entry_id": 2,
+          "question": "Find the first name and country code of the player who did the most number of tours.",
+          "database": "wta_1",
+          "predicted_sql": "SELECT p.first_name, p.country_code\nFROM players p\nJOIN (\n    SELECT player_id, COUNT(DISTINCT tours) as tour_count\n    FROM rankings\n    GROUP BY player_id\n    ORDER BY tour_count DESC\n    LIMIT 1\n) r ON p.player_id = r.player_id;",
+          "gold_sql": "SELECT T1.country_code ,  T1.first_name FROM players AS T1 JOIN rankings AS T2 ON T1.player_id  =  T2.player_id ORDER BY T2.tours DESC LIMIT 1",
+          "llm_response": "Looking at this analysis, I need to find the player who participated in the most number of tours. Let me break down the approach:\n\n1. The `rankings` table contains information about tours (`tours` column) and links to players via `player id`\n2. I need to count the number of tours for each player\n3. Find the player with the maximum count\n4. Return that player's first name and country code from the `players` table\n\nHere's my solution:\n\n```sql\nSELECT p.first_name, p.country_code\nFROM players p\nJOIN (\n    SELECT player_id, COUNT(DISTINCT tours) as tour_count\n    FROM rankings\n    GROUP BY player_id\n    ORDER BY tour_count DESC\n    LIMIT 1\n) r ON p.player_id = r.player_id;\n```\n\nThis query:\n- Groups rankings by player_id and counts distinct tours for each player\n- Orders by tour count descending and limits to 1 to get the player with the most tours\n- Joins with the players table to get the first name and country code\n- Uses COUNT(DISTINCT tours) to ensure we count unique tours rather than rows",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 17.675368785858154,
+            "tokens_used": 465,
+            "model": "qwen/qwen3-coder-30b-a3b-instruct"
+          }
+        },
+        {
+          "entry_id": 3,
+          "question": "Find the first name and age of students who have a pet.",
+          "database": "pets_1",
+          "predicted_sql": "SELECT DISTINCT s.first_name, s.age\nFROM student s\nINNER JOIN has_pet hp ON s.student_id = hp.student_id\nINNER JOIN pets p ON hp.pet_id = p.pet_id;",
+          "gold_sql": "SELECT DISTINCT T1.fname ,  T1.age FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid",
+          "llm_response": "Based on the analysis, I need to find the first name and age of students who have a pet. This requires joining three tables:\n\n1. `student` table - to get first name and age\n2. `has_pet` table - to link students to their pets\n3. `pets` table - to confirm the pet exists\n\nThe query needs to:\n- Join `student` with `has_pet` on `student_id`\n- Join `has_pet` with `pets` on `pet_id`\n- Select only first_name and age from the student table\n- Ensure we only get students who actually have pets (INNER JOIN)\n\n```sql\nSELECT DISTINCT s.first_name, s.age\nFROM student s\nINNER JOIN has_pet hp ON s.student_id = hp.student_id\nINNER JOIN pets p ON hp.pet_id = p.pet_id;\n```",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 4.410170555114746,
+            "tokens_used": 295,
+            "model": "qwen/qwen3-coder-30b-a3b-instruct"
+          }
+        },
+        {
+          "entry_id": 4,
+          "question": "Which airline has most number of flights?",
+          "database": "flight_2",
+          "predicted_sql": "SELECT a.airline_name\nFROM airlines a\nJOIN flights f ON a.airline_id = f.airline\nGROUP BY a.airline_id, a.airline_name\nORDER BY COUNT(*) DESC\nLIMIT 1;",
+          "gold_sql": "SELECT T1.Airline FROM AIRLINES AS T1 JOIN FLIGHTS AS T2 ON T1.uid  =  T2.Airline GROUP BY T1.Airline ORDER BY count(*) DESC LIMIT 1",
+          "llm_response": "Looking at the analysis, I need to find which airline has the most number of flights. Let me break down the approach:\n\n1. I need to count flights per airline\n2. The flights table has an \"airline\" column that likely references the airline ID\n3. I need to join with the airlines table to get the airline name\n4. Group by airline and count flights\n5. Order by count descending and limit to 1 to get the airline with most flights\n\n```sql\nSELECT a.airline_name\nFROM airlines a\nJOIN flights f ON a.airline_id = f.airline\nGROUP BY a.airline_id, a.airline_name\nORDER BY COUNT(*) DESC\nLIMIT 1;\n```",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 2.0569570064544678,
+            "tokens_used": 259,
+            "model": "qwen/qwen3-coder-30b-a3b-instruct"
+          }
+        },
+        {
+          "entry_id": 5,
+          "question": "What are each owner's first name, last name, and the size of their dog?",
+          "database": "dog_kennels",
+          "predicted_sql": "SELECT o.first_name, o.last_name, s.size_description\nFROM owners o\nJOIN dogs d ON o.owner_id = d.owner_id\nJOIN sizes s ON d.size_code = s.size_code;",
+          "gold_sql": "SELECT T1.first_name ,  T1.last_name ,  T2.size_code FROM Owners AS T1 JOIN Dogs AS T2 ON T1.owner_id  =  T2.owner_id",
+          "llm_response": "Looking at the question and the database schema, I need to find each owner's first name, last name, and the size of their dog.\n\nLet me trace through the relationships:\n1. Owners are in the `owners` table with `owner id`, `first name`, and `last name`\n2. Dogs are in the `dogs` table with `owner id` (foreign key) and `size code` \n3. Size information is in the `sizes` table with `size code` and `size description`\n\nTo get this information, I need to:\n- Join the `owners` table with the `dogs` table on `owner id`\n- Join the `dogs` table with the `sizes` table on `size code`\n- Select the owner's first name, last name, and the size description\n\n```sql\nSELECT o.first_name, o.last_name, s.size_description\nFROM owners o\nJOIN dogs d ON o.owner_id = d.owner_id\nJOIN sizes s ON d.size_code = s.size_code;\n```",
+          "exact_match": false,
+          "component_match": false,
+          "execution_match": false,
+          "error": null,
+          "performance": {
+            "response_time": 7.360705375671387,
+            "tokens_used": 514,
+            "model": "qwen/qwen3-coder-30b-a3b-instruct"
+          }
+        }
+      ]
+    }
+  },
+  "summary": {
+    "model_comparison": {
+      "meta-llama/llama-3.1-8b-instruct": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 6.986799990336101,
+        "total_tokens_sum": 70839,
+        "error_rate_mean": 0.0
+      },
+      "qwen/qwen3-coder-30b-a3b-instruct": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 9.045854842095148,
+        "total_tokens_sum": 31465,
+        "error_rate_mean": 0.0
+      }
+    },
+    "strategy_comparison": {
+      "multi_stage_simple": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 4.931367998123169,
+        "total_tokens_sum": 16786,
+        "error_rate_mean": 0.0
+      },
+      "multi_stage": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 15.514844559487841,
+        "total_tokens_sum": 51790,
+        "error_rate_mean": 0.0
+      },
+      "multi_stage_no_analysis": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 8.384258254369099,
+        "total_tokens_sum": 13834,
+        "error_rate_mean": 0.0
+      },
+      "multi_stage_no_verification": {
+        "exact_match_accuracy_mean": 0.0,
+        "execution_accuracy_mean": 0.0,
+        "average_response_time_mean": 7.046631956100464,
+        "total_tokens_sum": 19894,
+        "error_rate_mean": 0.0
+      }
+    }
+  },
+  "timestamp": "2025-11-18T19:47:49.151296"
+}

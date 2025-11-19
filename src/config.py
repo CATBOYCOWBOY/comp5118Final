@@ -5,9 +5,14 @@ Simple configuration system with hardcoded model lists and basic Python types.
 # Hardcoded model list
 AVAILABLE_MODELS = [
     "meta-llama/llama-3.2-3b-instruct",
+    "mistralai/mistral-7b-instruct-v0.3",
+    "meta-llama/llama-3.1-8b-instruct",
+    "deepseek/deepseek-r1-0528-qwen3-8b",
     "meta-llama/llama-3.2-11b-vision-instruct",
-    "deepseek/deepseek-r1",
-    "qwen/qwen-2.5-72b-instruct"
+    "google/gemma-3-12b-it",
+    "qwen/qwen-2.5-14b-instruct",
+    "google/gemma-3-27b-it",
+    "qwen/qwen3-coder-30b-a3b-instruct",
 ]
 
 # Default model parameters

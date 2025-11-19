@@ -136,6 +136,7 @@ class NL2SQLTestbench:
 
         query_results = []
         llm_responses = []
+        extracted_sqls = []
 
         # Use tqdm for progress tracking
         pbar = tqdm(examples, desc=f"{model_name.split('/')[-1]} + {strategy_name}")
@@ -149,13 +150,15 @@ class NL2SQLTestbench:
                     continue
 
                 # Run multi-stage prompting
-                query_result, llm_response = await self._handle_multistage_prompting(
+                query_result, llm_response, extracted_sql = await self._handle_multistage_prompting(
                     example, schema, strategy, model_params
                 )
 
+                # Always append to maintain list synchronization
                 if query_result and llm_response:
                     query_results.append(query_result)
                     llm_responses.append(llm_response)
+                    extracted_sqls.append(extracted_sql if extracted_sql else None)
 
                     # Record in tracker
                     self.performance_manager.record_query_result(
@@ -164,6 +167,25 @@ class NL2SQLTestbench:
                         strategy_name,
                         model_name
                     )
+                else:
+                    # Debug logging for failed queries
+                    print(f"\n=== DEBUG: Failed query {i+1} ===")
+                    print(f"Model: {model_name}")
+                    print(f"Question: {example.question}")
+                    print(f"Database: {example.db_id}")
+                    if llm_response:
+                        print(f"LLM Response Success: {llm_response.success}")
+                        print(f"LLM Response Error: {llm_response.error}")
+                        print(f"LLM Response Content: {repr(llm_response.content[:500])}...")
+                    else:
+                        print("LLM Response: None")
+                    if query_result:
+                        print(f"Query Result Error: {query_result.error}")
+                        print(f"Extracted SQL: {repr(query_result.predicted_sql)}")
+                    else:
+                        print("Query Result: None")
+                    print("================================\n")
+
 
                 # Update progress
                 if progress_callback:
@@ -181,11 +203,47 @@ class NL2SQLTestbench:
                 print(f"Error processing example {i}: {e}")
                 continue
 
+        # Calculate summary metrics
+        total_examples = len(query_results)
+        exact_matches = sum(1 for r in query_results if r.exact_match)
+        component_matches = sum(1 for r in query_results if r.component_match)
+        execution_matches = sum(1 for r in query_results if r.execution_match)
+
+        # Merge query results with LLM responses for cleaner output
+        merged_entries = []
+        for i, (query_result, llm_response, extracted_sql) in enumerate(zip(query_results, llm_responses, extracted_sqls)):
+            merged_entry = {
+                "entry_id": i + 1,
+                "question": query_result.question,
+                "database": query_result.db_id,
+                "predicted_sql": query_result.predicted_sql,
+                "extracted_sql": extracted_sql,
+                "gold_sql": query_result.gold_sql,
+                "llm_response": llm_response.content,
+                "exact_match": query_result.exact_match,
+                "component_match": query_result.component_match,
+                "execution_match": query_result.execution_match,
+                "error": query_result.error,
+                "performance": {
+                    "response_time": llm_response.response_time,
+                    "tokens_used": llm_response.usage.get("total_tokens", 0),
+                    "model": llm_response.model
+                }
+            }
+            merged_entries.append(merged_entry)
+
         return {
-            "query_results": query_results,
-            "llm_responses": llm_responses,
-            "total_examples": len(examples),
-            "successful_examples": len(query_results)
+            "summary": {
+                "total_examples": total_examples,
+                "exact_match_count": exact_matches,
+                "exact_match_accuracy": exact_matches / total_examples if total_examples > 0 else 0.0,
+                "component_match_count": component_matches,
+                "component_match_accuracy": component_matches / total_examples if total_examples > 0 else 0.0,
+                "execution_match_count": execution_matches,
+                "execution_match_accuracy": execution_matches / total_examples if total_examples > 0 else 0.0,
+                "successful_examples": len(query_results)
+            },
+            "entries": merged_entries
         }
 
 
@@ -231,12 +289,26 @@ class NL2SQLTestbench:
             retry_count=model_params["retry_count"]
         )
 
+        # Debug: Print raw SQL response for failed cases
         if not sql_response.success:
+            print(f"\n=== DEBUG: SQL Generation Failed ===")
+            print(f"Model: {model_params['model']}")
+            print(f"Success: {sql_response.success}")
+            print(f"Error: {sql_response.error}")
+            print(f"Content: {repr(sql_response.content)}")
+            print(f"Usage: {sql_response.usage}")
+            print("===================================\n")
             return None, sql_response
 
         # Extract SQL
         extracted_sql = strategy.extract_sql_from_response(sql_response.content)
         if not extracted_sql:
+            print(f"\n=== DEBUG: SQL Extraction Failed ===")
+            print(f"Model: {model_params['model']}")
+            print(f"Response Success: {sql_response.success}")
+            print(f"Response Content: {repr(sql_response.content)}")
+            print(f"Content Length: {len(sql_response.content)}")
+            print("===================================\n")
             query_result = QueryResult(
                 predicted_sql="",
                 gold_sql=example.query,
@@ -254,6 +326,7 @@ class NL2SQLTestbench:
         if strategy.use_verification:
             verification_prompt = strategy.generate_verification_prompt(
                 example.question,
+                schema,
                 extracted_sql
             )
             verification_response = await self.client.complete_async(
@@ -308,14 +381,13 @@ class NL2SQLTestbench:
             success=True
         )
 
-        return query_result, combined_response
+        return query_result, combined_response, extracted_sql
 
     def _generate_experiment_summary(self) -> Dict[str, Any]:
         """Generate summary of all experiments."""
         return {
             "model_comparison": self.performance_manager.get_model_comparison(),
-            "strategy_comparison": self.performance_manager.get_strategy_comparison(),
-            "results": self.performance_manager.load_results()
+            "strategy_comparison": self.performance_manager.get_strategy_comparison()
         }
 
     async def _save_experiment_results(self, results: Dict[str, Any], experiment_name: str) -> None:
