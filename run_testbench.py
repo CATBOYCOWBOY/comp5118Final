@@ -13,8 +13,8 @@ from typing import Optional, List
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
-from src.spider1_testbench import Spider1Testbench
-from src.config import AVAILABLE_MODELS
+from src.gathering.spider1_testbench import Spider1Testbench
+from src.gathering.config import AVAILABLE_MODELS
 
 
 async def run_quick_test(args: argparse.Namespace) -> None:

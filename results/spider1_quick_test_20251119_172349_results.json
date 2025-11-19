@@ -1,0 +1,188 @@
+{
+  "timestamp": "2025-11-19T17:23:49.526439",
+  "dataset_type": "spider1",
+  "experiments": {
+    "config": {
+      "name": "spider1_quick_test",
+      "models": [
+        "meta-llama/llama-3.1-8b-instruct"
+      ],
+      "strategy": "spider1_basic",
+      "max_examples": 12
+    },
+    "experiments": {
+      "llama-3.1-8b-instruct_spider1_basic": {
+        "summary": {
+          "total_examples": 12,
+          "successful_predictions": 12,
+          "test_suite_accuracy": 0.667,
+          "exact_match_accuracy": 0.667
+        },
+        "entries": [
+          {
+            "instance_id": "concert_singer_0",
+            "question": "How many singers do we have?",
+            "database": "concert_singer",
+            "predicted_sql": "SELECT COUNT(*) FROM singer",
+            "gold_sql": "SELECT count(*) FROM singer",
+            "llm_response": "SELECT COUNT(*) FROM singer",
+            "performance": {
+              "response_time": 1.320199966430664,
+              "tokens_used": 5.2,
+              "model": "meta-llama/llama-3.1-8b-instruct"
+            }
+          },
+          {
+            "instance_id": "concert_singer_1",
+            "question": "What is the total number of singers?",
+            "database": "concert_singer",
+            "predicted_sql": "SELECT COUNT(*) FROM singer",
+            "gold_sql": "SELECT count(*) FROM singer",
+            "llm_response": "SELECT COUNT(*) FROM singer",
+            "performance": {
+              "response_time": 0.7284483909606934,
+              "tokens_used": 5.2,
+              "model": "meta-llama/llama-3.1-8b-instruct"
+            }
+          },
+          {
+            "instance_id": "concert_singer_2",
+            "question": "Show name, country, age for all singers ordered by age from the oldest to the youngest.",
+            "database": "concert_singer",
+            "predicted_sql": "SELECT Name, Country, Age FROM singer ORDER BY Age DESC",
+            "gold_sql": "SELECT name ,  country ,  age FROM singer ORDER BY age DESC",
+            "llm_response": "SELECT Name, Country, Age \nFROM singer \nORDER BY Age DESC",
+            "performance": {
+              "response_time": 0.8755073547363281,
+              "tokens_used": 13.0,
+              "model": "meta-llama/llama-3.1-8b-instruct"
+            }
+          },
+          {
+            "instance_id": "concert_singer_3",
+            "question": "What are the names, countries, and ages for every singer in descending order of age?",
+            "database": "concert_singer",
+            "predicted_sql": "SELECT Name, Country, Age FROM singer ORDER BY Age DESC",
+            "gold_sql": "SELECT name ,  country ,  age FROM singer ORDER BY age DESC",
+            "llm_response": "SELECT Name, Country, Age \nFROM singer \nORDER BY Age DESC",
+            "performance": {
+              "response_time": 0.9235022068023682,
+              "tokens_used": 13.0,
+              "model": "meta-llama/llama-3.1-8b-instruct"
+            }
+          },
+          {
+            "instance_id": "concert_singer_4",
+            "question": "What is the average, minimum, and maximum age of all singers from France?",
+            "database": "concert_singer",
+            "predicted_sql": "SELECT AVG(Age) , MIN(Age) , MAX(Age) FROM singer WHERE Country = 'France'",
+            "gold_sql": "SELECT avg(age) ,  min(age) ,  max(age) FROM singer WHERE country  =  'France'",
+            "llm_response": "SELECT AVG(Age) , MIN(Age) , MAX(Age) \nFROM singer \nWHERE Country = 'France';",
+            "performance": {
+              "response_time": 0.919609546661377,
+              "tokens_used": 15.600000000000001,
+              "model": "meta-llama/llama-3.1-8b-instruct"
+            }
+          },
+          {
+            "instance_id": "concert_singer_5",
+            "question": "What is the average, minimum, and maximum age for all French singers?",
+            "database": "concert_singer",
+            "predicted_sql": "SELECT AVG(Age) , MIN(Age) , MAX(Age) FROM singer WHERE Country = 'France'",
+            "gold_sql": "SELECT avg(age) ,  min(age) ,  max(age) FROM singer WHERE country  =  'France'",
+            "llm_response": "SELECT AVG(Age) , MIN(Age) , MAX(Age) \nFROM singer \nWHERE Country = 'France';",
+            "performance": {
+              "response_time": 1.1283109188079834,
+              "tokens_used": 15.600000000000001,
+              "model": "meta-llama/llama-3.1-8b-instruct"
+            }
+          },
+          {
+            "instance_id": "concert_singer_6",
+            "question": "Show the name and the release year of the song by the youngest singer.",
+            "database": "concert_singer",
+            "predicted_sql": "SELECT T1.Name, T1.Song_release_year FROM singer AS T1 JOIN singer_in_concert AS T2 ON T1.Singer_ID = T2.Singer_ID JOIN concert AS T3 ON T2.concert_ID = T3.concert_ID WHERE T1.Age = (SELECT MIN(T1.Age) FROM singer AS T1)",
+            "gold_sql": "SELECT song_name ,  song_release_year FROM singer ORDER BY age LIMIT 1",
+            "llm_response": "SELECT T1.Name, T1.Song_release_year \nFROM singer AS T1 \nJOIN singer_in_concert AS T2 ON T1.Singer_ID = T2.Singer_ID \nJOIN concert AS T3 ON T2.concert_ID = T3.concert_ID \nWHERE T1.Age = (SELECT MIN(T1.Age) FROM singer AS T1)",
+            "performance": {
+              "response_time": 1.634512186050415,
+              "tokens_used": 41.6,
+              "model": "meta-llama/llama-3.1-8b-instruct"
+            }
+          },
+          {
+            "instance_id": "concert_singer_7",
+            "question": "What are the names and release years for all the songs of the youngest singer?",
+            "database": "concert_singer",
+            "predicted_sql": "SELECT T2.Name, T2.\"Song_Name\", T2.\"Song_release_year\" FROM singer_in_concert AS T1 JOIN singer AS T2 ON T1.Singer_ID = T2.Singer_ID JOIN concert AS T3 ON T1.concert_ID = T3.concert_ID WHERE T2.Age = ( SELECT MIN(Age) FROM singer )",
+            "gold_sql": "SELECT song_name ,  song_release_year FROM singer ORDER BY age LIMIT 1",
+            "llm_response": "SELECT T2.Name, T2.\"Song_Name\", T2.\"Song_release_year\" \nFROM singer_in_concert AS T1 \nJOIN singer AS T2 ON T1.Singer_ID = T2.Singer_ID \nJOIN concert AS T3 ON T1.concert_ID = T3.concert_ID \nWHERE T2.Age = ( SELECT MIN(Age) FROM singer )",
+            "performance": {
+              "response_time": 1.5345370769500732,
+              "tokens_used": 42.9,
+              "model": "meta-llama/llama-3.1-8b-instruct"
+            }
+          },
+          {
+            "instance_id": "concert_singer_8",
+            "question": "What are all distinct countries where singers above age 20 are from?",
+            "database": "concert_singer",
+            "predicted_sql": "SELECT DISTINCT T1.Country FROM singer AS T1 JOIN singer_in_concert AS T2 ON T1.Singer_ID = T2.Singer_ID JOIN concert AS T3 ON T2.concert_ID = T3.concert_ID WHERE T1.Age > 20",
+            "gold_sql": "SELECT DISTINCT country FROM singer WHERE age  >  20",
+            "llm_response": "SELECT DISTINCT T1.Country \nFROM singer AS T1 \nJOIN singer_in_concert AS T2 ON T1.Singer_ID = T2.Singer_ID \nJOIN concert AS T3 ON T2.concert_ID = T3.concert_ID \nWHERE T1.Age > 20",
+            "performance": {
+              "response_time": 1.2351572513580322,
+              "tokens_used": 35.1,
+              "model": "meta-llama/llama-3.1-8b-instruct"
+            }
+          },
+          {
+            "instance_id": "concert_singer_9",
+            "question": "What are  the different countries with singers above age 20?",
+            "database": "concert_singer",
+            "predicted_sql": "SELECT DISTINCT T1.Country FROM singer AS T1 JOIN singer_in_concert AS T2 ON T1.Singer_ID = T2.Singer_ID WHERE T1.Age > 20",
+            "gold_sql": "SELECT DISTINCT country FROM singer WHERE age  >  20",
+            "llm_response": "SELECT DISTINCT T1.Country \nFROM singer AS T1 \nJOIN singer_in_concert AS T2 ON T1.Singer_ID = T2.Singer_ID \nWHERE T1.Age > 20",
+            "performance": {
+              "response_time": 1.0653579235076904,
+              "tokens_used": 24.7,
+              "model": "meta-llama/llama-3.1-8b-instruct"
+            }
+          },
+          {
+            "instance_id": "concert_singer_10",
+            "question": "Show all countries and the number of singers in each country.",
+            "database": "concert_singer",
+            "predicted_sql": "SELECT T1.Country, COUNT(*) FROM singer AS T1 GROUP BY T1.Country",
+            "gold_sql": "SELECT country ,  count(*) FROM singer GROUP BY country",
+            "llm_response": "SELECT T1.Country, COUNT(*) FROM singer AS T1 GROUP BY T1.Country",
+            "performance": {
+              "response_time": 0.8720099925994873,
+              "tokens_used": 13.0,
+              "model": "meta-llama/llama-3.1-8b-instruct"
+            }
+          },
+          {
+            "instance_id": "concert_singer_11",
+            "question": "How many singers are from each country?",
+            "database": "concert_singer",
+            "predicted_sql": "SELECT Country, COUNT(*) FROM singer GROUP BY Country",
+            "gold_sql": "SELECT country ,  count(*) FROM singer GROUP BY country",
+            "llm_response": "SELECT Country, COUNT(*) FROM singer GROUP BY Country",
+            "performance": {
+              "response_time": 0.8189840316772461,
+              "tokens_used": 10.4,
+              "model": "meta-llama/llama-3.1-8b-instruct"
+            }
+          }
+        ],
+        "evaluation_details": {
+          "test_suite_accuracy": 0.667,
+          "exact_match_accuracy": 0.667,
+          "total_examples": 12,
+          "evaluation_output": "medium pred: SELECT T1.Name, T1.Song_release_year FROM singer AS T1 JOIN singer_in_concert AS T2 ON T1.Singer_ID = T2.Singer_ID JOIN concert AS T3 ON T2.concert_ID = T3.concert_ID WHERE T1.Age = (SELECT MIN(T1.Age) FROM singer AS T1)\nmedium gold: SELECT song_name ,  song_release_year FROM singer ORDER BY age LIMIT 1\n\nmedium pred: SELECT T2.Name, T2.\"Song_Name\", T2.\"Song_release_year\" FROM singer_in_concert AS T1 JOIN singer AS T2 ON T1.Singer_ID = T2.Singer_ID JOIN concert AS T3 ON T1.concert_ID = T3.concert_ID WHERE T2.Age = ( SELECT MIN(Age) FROM singer )\nmedium gold: SELECT song_name ,  song_release_year FROM singer ORDER BY age LIMIT 1\n\neasy pred: SELECT DISTINCT T1.Country FROM singer AS T1 JOIN singer_in_concert AS T2 ON T1.Singer_ID = T2.Singer_ID JOIN concert AS T3 ON T2.concert_ID = T3.concert_ID WHERE T1.Age > 20\neasy gold: SELECT DISTINCT country FROM singer WHERE age  >  20\n\neasy pred: SELECT DISTINCT T1.Country FROM singer AS T1 JOIN singer_in_concert AS T2 ON T1.Singer_ID = T2.Singer_ID WHERE T1.Age > 20\neasy gold: SELECT DISTINCT country FROM singer WHERE age  >  20\n\n                     easy                 medium               hard                 extra                all                 \ncount                4                    8                    0                    0                    12                  \n=====================   EXECUTION ACCURACY     =====================\nexecution            0.500                0.750                0.000                0.000                0.667               \n\n====================== EXACT MATCHING ACCURACY =====================\nexact match          0.500                0.750                0.000                0.000                0.667               \n\n---------------------PARTIAL MATCHING ACCURACY----------------------\nselect               1.000                0.857                0.000                0.000                0.909               \nselect(no AGG)       1.000                0.857                0.000                0.000                0.909               \nwhere                1.000                0.667                0.000                0.000                0.800               \nwhere(no OP)         1.000                0.667                0.000                0.000                0.800               \ngroup(no Having)     0.000                1.000                0.000                0.000                1.000               \ngroup                0.000                1.000                0.000                0.000                1.000               \norder                0.000                1.000                0.000                0.000                1.000               \nand/or               1.000                1.000                0.000                0.000                1.000               \nIUEN                 0.000                0.000                0.000                0.000                0.000               \nkeywords             1.000                0.857                0.000                0.000                0.889               \n---------------------- PARTIAL MATCHING RECALL ----------------------\nselect               1.000                0.750                0.000                0.000                0.833               \nselect(no AGG)       1.000                0.750                0.000                0.000                0.833               \nwhere                1.000                1.000                0.000                0.000                1.000               \nwhere(no OP)         1.000                1.000                0.000                0.000                1.000               \ngroup(no Having)     0.000                1.000                0.000                0.000                1.000               \ngroup                0.000                1.000                0.000                0.000                1.000               \norder                0.000                0.500                0.000                0.000                0.500               \nand/or               1.000                1.000                0.000                0.000                1.000               \nIUEN                 0.000                0.000                0.000                0.000                0.000               \nkeywords             1.000                0.750                0.000                0.000                0.800               \n---------------------- PARTIAL MATCHING F1 --------------------------\nselect               1.000                0.800                0.000                0.000                0.870               \nselect(no AGG)       1.000                0.800                0.000                0.000                0.870               \nwhere                1.000                0.800                0.000                0.000                0.889               \nwhere(no OP)         1.000                0.800                0.000                0.000                0.889               \ngroup(no Having)     1.000                1.000                0.000                0.000                1.000               \ngroup                1.000                1.000                0.000                0.000                1.000               \norder                1.000                0.667                0.000                0.000                0.667               \nand/or               1.000                1.000                0.000                0.000                1.000               \nIUEN                 1.000                1.000                0.000                0.000                1.000               \nkeywords             1.000                0.800                0.000                0.000                0.842               \n"
+        }
+      }
+    }
+  }
+}
