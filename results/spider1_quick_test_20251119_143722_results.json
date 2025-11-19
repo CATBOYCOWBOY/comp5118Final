@@ -1,0 +1,44 @@
+{
+  "timestamp": "2025-11-19T14:37:22.922968",
+  "dataset_type": "spider1",
+  "experiments": {
+    "config": {
+      "name": "spider1_quick_test",
+      "models": [
+        "qwen/qwen3-coder-30b-a3b-instruct"
+      ],
+      "strategy": "spider1_basic",
+      "max_examples": 1
+    },
+    "experiments": {
+      "qwen3-coder-30b-a3b-instruct_spider1_basic": {
+        "summary": {
+          "total_examples": 1,
+          "successful_predictions": 1,
+          "test_suite_accuracy": 0.0,
+          "exact_match_accuracy": 0.0
+        },
+        "entries": [
+          {
+            "instance_id": "concert_singer_0",
+            "question": "How many singers do we have?",
+            "database": "concert_singer",
+            "predicted_sql": "SELECT COUNT(*) FROM singer",
+            "gold_sql": "SELECT count(*) FROM singer",
+            "llm_response": "SELECT COUNT(*) FROM singer",
+            "performance": {
+              "response_time": 1.286116600036621,
+              "tokens_used": 5.2,
+              "model": "qwen/qwen3-coder-30b-a3b-instruct"
+            }
+          }
+        ],
+        "evaluation_details": {
+          "error": "Test suite evaluation failed: Traceback (most recent call last):\n  File \"/home/catboycowboy/code/comp5118/final/test-suite-sql-eval/evaluation.py\", line 938, in <module>\n    evaluate(args.gold, args.pred, args.db, args.etype, kmaps, args.plug_value, args.keep_distinct, args.progress_bar_for_each_datapoint)\n  File \"/home/catboycowboy/code/comp5118/final/test-suite-sql-eval/evaluation.py\", line 574, in evaluate\n    g_sql = get_sql(schema, g_str)\n            ^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/catboycowboy/code/comp5118/final/test-suite-sql-eval/process_sql.py\", line 555, in get_sql\n    toks = tokenize(query)\n           ^^^^^^^^^^^^^^^\n  File \"/home/catboycowboy/code/comp5118/final/test-suite-sql-eval/process_sql.py\", line 132, in tokenize\n    toks = [word.lower() for word in word_tokenize(string)]\n                                     ^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/catboycowboy/code/comp5118/final/.venv/lib/python3.12/site-packages/nltk/tokenize/__init__.py\", line 142, in word_tokenize\n    sentences = [text] if preserve_line else sent_tokenize(text, language)\n                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/catboycowboy/code/comp5118/final/.venv/lib/python3.12/site-packages/nltk/tokenize/__init__.py\", line 119, in sent_tokenize\n    tokenizer = _get_punkt_tokenizer(language)\n                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/catboycowboy/code/comp5118/final/.venv/lib/python3.12/site-packages/nltk/tokenize/__init__.py\", line 105, in _get_punkt_tokenizer\n    return PunktTokenizer(language)\n           ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/catboycowboy/code/comp5118/final/.venv/lib/python3.12/site-packages/nltk/tokenize/punkt.py\", line 1744, in __init__\n    self.load_lang(lang)\n  File \"/home/catboycowboy/code/comp5118/final/.venv/lib/python3.12/site-packages/nltk/tokenize/punkt.py\", line 1749, in load_lang\n    lang_dir = find(f\"tokenizers/punkt_tab/{lang}/\")\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/catboycowboy/code/comp5118/final/.venv/lib/python3.12/site-packages/nltk/data.py\", line 579, in find\n    raise LookupError(resource_not_found)\nLookupError: \n**********************************************************************\n  Resource \u001b[93mpunkt_tab\u001b[0m not found.\n  Please use the NLTK Downloader to obtain the resource:\n\n  \u001b[31m>>> import nltk\n  >>> nltk.download('punkt_tab')\n  \u001b[0m\n  For more information see: https://www.nltk.org/data.html\n\n  Attempted to load \u001b[93mtokenizers/punkt_tab/english/\u001b[0m\n\n  Searched in:\n    - '/home/catboycowboy/nltk_data'\n    - '/home/catboycowboy/code/comp5118/final/.venv/nltk_data'\n    - '/home/catboycowboy/code/comp5118/final/.venv/share/nltk_data'\n    - '/home/catboycowboy/code/comp5118/final/.venv/lib/nltk_data'\n    - '/usr/share/nltk_data'\n    - '/usr/local/share/nltk_data'\n    - '/usr/lib/nltk_data'\n    - '/usr/local/lib/nltk_data'\n**********************************************************************\n\n",
+          "test_suite_accuracy": 0.0,
+          "exact_match_accuracy": 0.0
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "timestamp": "2025-11-19T14:36:53.286178",
+  "dataset_type": "spider1",
+  "experiments": {
+    "config": {
+      "name": "spider1_quick_test",
+      "models": [
+        "qwen/qwen3-coder-30b-a3b-instruct"
+      ],
+      "strategy": "spider1_basic",
+      "max_examples": 3
+    },
+    "experiments": {
+      "qwen3-coder-30b-a3b-instruct_spider1_basic": {
+        "summary": {
+          "total_examples": 3,
+          "successful_predictions": 3,
+          "test_suite_accuracy": 0.0,
+          "exact_match_accuracy": 0.0
+        },
+        "entries": [
+          {
+            "instance_id": "concert_singer_0",
+            "question": "How many singers do we have?",
+            "database": "concert_singer",
+            "predicted_sql": "SELECT COUNT(*) FROM singer",
+            "gold_sql": "SELECT count(*) FROM singer",
+            "llm_response": "SELECT COUNT(*) FROM singer",
+            "performance": {
+              "response_time": 7.326257944107056,
+              "tokens_used": 5.2,
+              "model": "qwen/qwen3-coder-30b-a3b-instruct"
+            }
+          },
+          {
+            "instance_id": "concert_singer_1",
+            "question": "What is the total number of singers?",
+            "database": "concert_singer",
+            "predicted_sql": "SELECT COUNT(*) FROM singer",
+            "gold_sql": "SELECT count(*) FROM singer",
+            "llm_response": "SELECT COUNT(*) FROM singer",
+            "performance": {
+              "response_time": 0.7981760501861572,
+              "tokens_used": 5.2,
+              "model": "qwen/qwen3-coder-30b-a3b-instruct"
+            }
+          },
+          {
+            "instance_id": "concert_singer_2",
+            "question": "Show name, country, age for all singers ordered by age from the oldest to the youngest.",
+            "database": "concert_singer",
+            "predicted_sql": "SELECT Name, Country, Age FROM singer ORDER BY Age DESC",
+            "gold_sql": "SELECT name ,  country ,  age FROM singer ORDER BY age DESC",
+            "llm_response": "SELECT Name, Country, Age FROM singer ORDER BY Age DESC",
+            "performance": {
+              "response_time": 2.8729803562164307,
+              "tokens_used": 13.0,
+              "model": "qwen/qwen3-coder-30b-a3b-instruct"
+            }
+          }
+        ],
+        "evaluation_details": {
+          "error": "Test suite evaluation failed: /home/catboycowboy/code/comp5118/final/test-suite-sql-eval/exec_eval.py:127: SyntaxWarning: invalid escape sequence '\\s'\n  \"YEAR\\s*\\(\\s*CURDATE\\s*\\(\\s*\\)\\s*\\)\\s*\", \"2020\", query, flags=re.IGNORECASE\n/home/catboycowboy/code/comp5118/final/test-suite-sql-eval/parse.py:57: SyntaxWarning: invalid escape sequence '\\d'\n  float_nums = re.findall(\"[-+]?\\d*\\.\\d+\", query)\n/home/catboycowboy/code/comp5118/final/test-suite-sql-eval/parse.py:62: SyntaxWarning: invalid escape sequence '\\d'\n  int_nums = [i.strip() for i in re.findall(\"[^tT]\\d+\", query)]\n/home/catboycowboy/code/comp5118/final/test-suite-sql-eval/parse.py:70: SyntaxWarning: invalid escape sequence '\\d'\n  table = re.findall(\"[Tt]\\d+\\.\", tok)\n/home/catboycowboy/code/comp5118/final/test-suite-sql-eval/parse.py:206: SyntaxWarning: invalid escape sequence '\\.'\n  for table, col, val1, val2 in re.findall('(?:([^\\.\\s]*)\\.)?([^\\.\\s]+) between ([^\\s;]+) and ([^\\s;]+)', query, re.IGNORECASE):\nTraceback (most recent call last):\n  File \"/home/catboycowboy/code/comp5118/final/test-suite-sql-eval/evaluation.py\", line 936, in <module>\n    kmaps = build_foreign_key_map_from_json(args.table)\n            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/catboycowboy/code/comp5118/final/test-suite-sql-eval/evaluation.py\", line 907, in build_foreign_key_map_from_json\n    with open(table) as f:\n         ^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: 'spider/evaluation_examples/examples/tables.json'\n",
+          "test_suite_accuracy": 0.0,
+          "exact_match_accuracy": 0.0
+        }
+      }
+    }
+  }
+}

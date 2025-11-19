@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Spider2-lite Testbench CLI
+Spider Testbench CLI
 
-Command-line interface for running Spider2-lite NL2SQL evaluations.
+Command-line interface for running Spider1 and Spider2 NL2SQL evaluations.
 """
 
 import argparse
@@ -13,15 +13,15 @@ from typing import Optional, List
 
 sys.path.append(os.path.join(os.path.dirname(__file__), 'src'))
 
-from src.spider2_testbench import Spider2Testbench
+from src.spider1_testbench import Spider1Testbench
 from src.config import AVAILABLE_MODELS
 
 
 async def run_quick_test(args: argparse.Namespace) -> None:
-    """Run a quick Spider2-lite test."""
-    testbench = Spider2Testbench(spider2_path=args.spider2_path)
+    """Run a quick test."""
+    testbench = Spider1Testbench(spider_path=args.spider_path, test_suite_path=args.test_suite_path)
+    print(f"Running Spider1 quick test with {args.model}")
 
-    print(f"Running Spider2-lite quick test with {args.model}")
     results = await testbench.quick_test(
         model_name=args.model,
         max_examples=args.examples
@@ -30,11 +30,12 @@ async def run_quick_test(args: argparse.Namespace) -> None:
 
 
 async def run_model_comparison(args: argparse.Namespace) -> None:
-    """Run Spider2-lite model comparison."""
+    """Run model comparison."""
     models: List[str] = args.models if args.models else AVAILABLE_MODELS[:3]  # Limit to 3 for speed
-    testbench = Spider2Testbench(spider2_path=args.spider2_path)
 
-    print(f"Running Spider2-lite model comparison with {len(models)} models")
+    testbench = Spider1Testbench(spider_path=args.spider_path, test_suite_path=args.test_suite_path)
+    print(f"Running Spider1 model comparison with {len(models)} models")
+
     results = await testbench.compare_models(
         models=models,
         max_examples=args.examples
@@ -43,8 +44,8 @@ async def run_model_comparison(args: argparse.Namespace) -> None:
 
 
 async def show_dataset_info(args: argparse.Namespace) -> None:
-    """Show Spider2-lite dataset information."""
-    testbench = Spider2Testbench(spider2_path=args.spider2_path)
+    """Show dataset information."""
+    testbench = Spider1Testbench(spider_path=args.spider_path, test_suite_path=args.test_suite_path)
     stats = testbench.get_dataset_info()
 
 
@@ -59,15 +60,20 @@ def list_models() -> None:
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
-        description="Spider2-lite NL2SQL Testbench",
+        description="Spider1 NL2SQL Testbench with test-suite-sql-eval",
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
 
     # Global arguments
     parser.add_argument(
-        "--spider2-path",
-        default="Spider2",
-        help="Path to Spider2-lite dataset (default: Spider2)"
+        "--spider-path",
+        default="spider",
+        help="Path to Spider1 dataset (default: spider)"
+    )
+    parser.add_argument(
+        "--test-suite-path",
+        default="test-suite-sql-eval",
+        help="Path to test-suite-sql-eval (default: test-suite-sql-eval)"
     )
 
     subparsers = parser.add_subparsers(dest='command', help='Available commands')

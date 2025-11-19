@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Spider2-lite testbench for analyzing LLM performance on enterprise NL2SQL tasks using real-world databases. The project implements text-in-results-out evaluation with Novita AI's LLM service and provides comprehensive benchmarking of models on complex business analytics queries.
+This is a Spider1 testbench for analyzing LLM performance on traditional NL2SQL tasks using the Spider dataset. The project implements test-suite-sql-eval evaluation with Novita AI's LLM service and provides comprehensive benchmarking of models on SQL generation accuracy.
 
 ## Project Structure
 
