@@ -4,6 +4,7 @@ Spider1 testbench for traditional Text2SQL evaluation with test-suite-sql-eval.
 import asyncio
 import os
 import time
+import json
 from typing import Dict, List, Optional, Any, Tuple
 import uuid
 from datetime import datetime
@@ -32,10 +33,12 @@ class Spider1Testbench:
     async def run_experiment(
         self,
         config: Dict[str, Any]
-    ) -> Dict[str, Any]:
+    ) -> Tuple[Dict[str, Any], str]:
         """Run a Spider1 experiment with given configuration."""
 
         experiment_id = str(int(time.time() * 1000))  # Simple timestamp ID
+        run_dir = os.path.join("results", f"{config['name']}_{experiment_id}")
+        os.makedirs(run_dir, exist_ok=True)
         print(f"Started experiment: {config['name']}_{experiment_id}")
 
         # Get examples
@@ -58,15 +61,26 @@ class Spider1Testbench:
                 # Create strategy instance
                 strategy = Spider1Strategy(self.spider1_manager)
 
+                # Create results directory for this model/strategy combination
+                results_dir = self.spider1_manager.create_results_directory(
+                    run_dir, model_name, strategy_name
+                )
+
                 # Run evaluation
                 experiment_result = await self._run_single_experiment(
-                    model_name, strategy, strategy_name, examples, experiment_id
+                    model_name,
+                    strategy,
+                    strategy_name,
+                    examples,
+                    experiment_id,
+                    results_dir,
+                    config.get("evaluation")
                 )
 
                 results[f"{model_name.split('/')[-1]}_{strategy_name}"] = experiment_result
 
         print(f"Finished experiment: {config['name']}_{experiment_id}")
-        return results
+        return results, run_dir
 
     async def _run_single_experiment(
         self,
@@ -74,7 +88,9 @@ class Spider1Testbench:
         strategy: 'Spider1Strategy',
         strategy_name: str,
         examples: List[Spider1Example],
-        experiment_id: str
+        experiment_id: str,
+        results_dir: str,
+        evaluation_options: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
         """Run evaluation on examples with a specific model and strategy."""
 
@@ -160,9 +176,36 @@ class Spider1Testbench:
                 predictions.append(("SELECT 1", example.db_id))
                 gold_queries.append((example.query, example.db_id))
 
-        # Run test-suite evaluation
+        # Run test-suite evaluation (see test-suite-sql-eval README for format)
         print("Running test-suite evaluation...")
-        eval_results = self.spider1_manager.evaluate_with_test_suite(predictions, gold_queries)
+        eval_options = {
+            "etype": "all",
+            "plug_value": True,
+            "keep_distinct": False,
+        }
+        if evaluation_options:
+            eval_options.update(evaluation_options)
+        eval_results = self.spider1_manager.evaluate_with_test_suite(
+            predictions,
+            gold_queries,
+            results_dir,
+            plug_value=eval_options["plug_value"],
+            keep_distinct=eval_options["keep_distinct"],
+            etype=eval_options["etype"]
+        )
+
+        # Save experiment metadata to results directory
+        metadata_file = os.path.join(results_dir, "metadata.json")
+        metadata = {
+            "model_name": model_name,
+            "strategy_name": strategy_name,
+            "experiment_id": experiment_id,
+            "total_examples": len(examples),
+            "successful_predictions": successful_count,
+            "timestamp": experiment_results["entries"][0]["performance"]["response_time"] if experiment_results["entries"] else None
+        }
+        with open(metadata_file, 'w') as f:
+            json.dump(metadata, f, indent=2)
 
         # Update summary with test-suite results
         experiment_results["summary"]["successful_predictions"] = successful_count
@@ -186,7 +229,7 @@ class Spider1Testbench:
         }
 
         print(f"Running Spider1 quick test: {model_name} with {max_examples} examples")
-        results = await self.run_experiment(config)
+        results, run_dir = await self.run_experiment(config)
 
         # Print summary
         for exp_name, exp_results in results.items():
@@ -196,9 +239,8 @@ class Spider1Testbench:
             print(f"  Exact-match accuracy: {summary['exact_match_accuracy']:.3f}")
             print(f"  Successful predictions: {summary['successful_predictions']}/{summary['total_examples']}")
 
-        # Save results
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_file = f"results/spider1_quick_test_{timestamp}_results.json"
+        # Save results inside the run directory
+        output_file = os.path.join(run_dir, "results.json")
         self.save_results({"config": config, "experiments": results}, output_file)
 
         return results
@@ -222,7 +264,7 @@ class Spider1Testbench:
         }
 
         print(f"Running Spider1 model comparison with {len(models)} models")
-        results = await self.run_experiment(config)
+        results, run_dir = await self.run_experiment(config)
 
         # Print comparison summary
         print("\nModel Comparison Results:")
@@ -232,8 +274,7 @@ class Spider1Testbench:
             print(f"{exp_name:30} | Test-suite: {summary['test_suite_accuracy']:.3f} | Exact: {summary['exact_match_accuracy']:.3f} | Success: {summary['successful_predictions']}/{summary['total_examples']}")
 
         # Save results
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_file = f"results/spider1_model_comparison_{timestamp}_results.json"
+        output_file = os.path.join(run_dir, "results.json")
         self.save_results({"config": config, "experiments": results}, output_file)
 
         return results

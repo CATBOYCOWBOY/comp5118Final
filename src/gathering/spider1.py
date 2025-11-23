@@ -8,6 +8,11 @@ import subprocess
 from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass
 import tempfile
+from datetime import datetime
+import re
+
+# Import the normalization function
+from prompting_strategy import Spider1Strategy
 
 
 @dataclass
@@ -140,32 +145,82 @@ class Spider1Manager:
 
         return context
 
-    def evaluate_with_test_suite(self, predictions: List[Tuple[str, str]], gold_queries: List[Tuple[str, str]]) -> Dict[str, Any]:
+    def create_results_directory(self, base_run_dir: str, model_name: str, strategy_name: str) -> str:
+        """Create a structured results directory for a specific model/strategy run."""
+        model_safe = model_name.split('/')[-1].replace('-', '_')
+        strategy_safe = strategy_name.replace('-', '_')
+        results_dir = os.path.join(base_run_dir, f"{model_safe}_{strategy_safe}")
+        os.makedirs(results_dir, exist_ok=True)
+        return results_dir
+
+    def save_predictions_to_file(self, predictions: List[Tuple[str, str]], output_file: str) -> None:
+        """Save predictions to a text file, one per line."""
+        with open(output_file, 'w') as f:
+            for pred_sql, _ in predictions:
+                sanitized = Spider1Strategy.normalize_sql(pred_sql) if pred_sql else ""
+                f.write((sanitized or "SELECT 1") + '\n')
+
+    def evaluate_with_test_suite(
+        self,
+        predictions: List[Tuple[str, str]],
+        gold_queries: List[Tuple[str, str]],
+        results_dir: Optional[str] = None,
+        plug_value: bool = True,
+        keep_distinct: bool = False,
+        etype: str = "all"
+    ) -> Dict[str, Any]:
         """
         Evaluate predictions using test-suite-sql-eval.
 
         Args:
             predictions: List of (predicted_sql, db_id) tuples
             gold_queries: List of (gold_sql, db_id) tuples
+            results_dir: Optional results directory to save files to
+            plug_value: Whether to plug gold values into predictions (recommended when models don't emit values)
+            keep_distinct: Preserve DISTINCT keywords during evaluation
+            etype: Evaluation type passed to test-suite-sql-eval (exec, match, or all)
 
         Returns:
             Dictionary with evaluation results
         """
 
-        # Create temporary files for evaluation
-        with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as pred_file, \
-             tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as gold_file:
+        if len(predictions) != len(gold_queries):
+            raise ValueError(f"Prediction/gold length mismatch: {len(predictions)} predictions vs {len(gold_queries)} gold")
 
-            # Write predictions
-            for pred_sql, _ in predictions:
-                pred_file.write(pred_sql + '\n')
+        # If results_dir is provided, save files there, otherwise use temp files
+        if results_dir:
+            pred_file_path = os.path.join(results_dir, "predictions.txt")
+            gold_file_path = os.path.join(results_dir, "gold.txt")
+            abs_pred_file_path = os.path.abspath(pred_file_path)
+            abs_gold_file_path = os.path.abspath(gold_file_path)
 
-            # Write gold queries in format: "gold_sql \t db_id"
-            for gold_sql, db_id in gold_queries:
-                gold_file.write(f"{gold_sql}\t{db_id}\n")
+            # Save predictions file
+            self.save_predictions_to_file(predictions, pred_file_path)
 
-            pred_file_path = pred_file.name
-            gold_file_path = gold_file.name
+            # Save gold file
+            with open(gold_file_path, 'w') as gold_file:
+                for gold_sql, db_id in gold_queries:
+                    gold_file.write(f"{gold_sql.strip()}\t{db_id}\n")
+
+            cleanup_files = False
+        else:
+            # Create temporary files for evaluation (fallback)
+            with tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as pred_file, \
+                 tempfile.NamedTemporaryFile(mode='w', suffix='.txt', delete=False) as gold_file:
+
+                # Write predictions (normalized for better exact matching)
+                self.save_predictions_to_file(predictions, pred_file.name)
+
+                # Write gold queries in format: "gold_sql \t db_id" (keep original format)
+                for gold_sql, db_id in gold_queries:
+                    gold_file.write(f"{gold_sql.strip()}\t{db_id}\n")
+
+                pred_file_path = pred_file.name
+                gold_file_path = gold_file.name
+                abs_pred_file_path = pred_file_path
+                abs_gold_file_path = gold_file_path
+
+            cleanup_files = True
 
         try:
             # Run test-suite evaluation
@@ -177,13 +232,18 @@ class Spider1Manager:
 
             cmd = [
                 "python3", eval_script,
-                "--gold", gold_file_path,
-                "--pred", pred_file_path,
-                "--etype", "all",  # Both test suite and exact match
-                "--db", abs_db_dir,
-                "--table", abs_tables_file,
-                "--plug_value"  # Plug in gold values for fair comparison
+                "--gold", abs_gold_file_path,
+                "--pred", abs_pred_file_path,
+                "--etype", etype,
+                "--db", abs_db_dir
             ]
+
+            if etype in ("all", "match"):
+                cmd.extend(["--table", abs_tables_file])
+            if plug_value:
+                cmd.append("--plug_value")
+            if keep_distinct:
+                cmd.append("--keep_distinct")
 
             result = subprocess.run(cmd, capture_output=True, text=True, cwd=self.test_suite_path)
 
@@ -199,6 +259,12 @@ class Spider1Manager:
             test_suite_acc = self._extract_accuracy(output, "execution")
             exact_match_acc = self._extract_accuracy(output, "exact match")
 
+            # Save evaluation output if results_dir is provided
+            if results_dir:
+                eval_output_file = os.path.join(results_dir, "evaluation_output.txt")
+                with open(eval_output_file, 'w') as f:
+                    f.write(output)
+
             return {
                 "test_suite_accuracy": test_suite_acc,
                 "exact_match_accuracy": exact_match_acc,
@@ -207,39 +273,26 @@ class Spider1Manager:
             }
 
         finally:
-            # Clean up temporary files
-            try:
-                os.unlink(pred_file_path)
-                os.unlink(gold_file_path)
-            except OSError:
-                pass
+            # Clean up temporary files (only if using temp files)
+            if cleanup_files:
+                try:
+                    os.unlink(pred_file_path)
+                    os.unlink(gold_file_path)
+                except OSError:
+                    pass
 
     def _extract_accuracy(self, output: str, metric_name: str) -> float:
         """Extract accuracy value from test-suite-sql-eval output."""
-        lines = output.split('\n')
-
-        # Look for the execution and exact match accuracy sections
-        if "execution" in metric_name.lower():
-            # Find the execution accuracy line and extract the "all" column value
-            for line in lines:
-                if line.strip().startswith("execution"):
-                    parts = line.split()
-                    if len(parts) >= 5:  # Should have values for easy, medium, hard, extra, all
-                        try:
-                            return float(parts[-1])  # Last value should be "all"
-                        except ValueError:
-                            continue
-        elif "exact" in metric_name.lower() or "match" in metric_name.lower():
-            # Find the exact match accuracy line
-            for line in lines:
-                if line.strip().startswith("exact match"):
-                    parts = line.split()
-                    if len(parts) >= 5:
-                        try:
-                            return float(parts[-1])  # Last value should be "all"
-                        except ValueError:
-                            continue
-
+        target_prefix = "execution" if "execution" in metric_name.lower() else "exact match"
+        for line in output.splitlines():
+            stripped = line.strip().lower()
+            if stripped.startswith(target_prefix):
+                numbers = re.findall(r"\d+\.\d+|\d+", line)
+                if numbers:
+                    try:
+                        return float(numbers[-1])
+                    except ValueError:
+                        continue
         return 0.0
 
     def get_database_stats(self) -> Dict[str, Any]:
