@@ -24,7 +24,8 @@ async def run_quick_test(args: argparse.Namespace) -> None:
 
     results = await testbench.run_test(
         model_name=args.model,
-        max_examples=args.examples
+        max_examples=args.examples,
+        evaluate=args.evaluate
     )
     print("Test completed successfully!")
 
@@ -33,6 +34,16 @@ async def show_dataset_info(args: argparse.Namespace) -> None:
     """Show dataset information."""
     testbench = Spider1Testbench(spider_path=args.spider_path, test_suite_path=args.test_suite_path)
     stats = testbench.get_dataset_info()
+
+
+async def run_evaluate_run(args: argparse.Namespace) -> None:
+    """Recompute metrics for an existing run directory."""
+    testbench = Spider1Testbench(spider_path=args.spider_path, test_suite_path=args.test_suite_path)
+    experiments = testbench.evaluate_run(args.run_dir)
+    print(f"Evaluation updated for run: {args.run_dir}")
+    for key, exp in experiments.items():
+        summary = exp.get("summary", {})
+        print(f"{key}: exec={summary.get('test_suite_accuracy')} exact={summary.get('exact_match_accuracy')}")
 
 
 def list_models() -> None:
@@ -77,6 +88,19 @@ def main():
         default=10,
         help='Number of examples to test (default: 10)'
     )
+    run_parser.add_argument(
+        '--evaluate',
+        action='store_true',
+        help='Compute execution/exact-match immediately (default: generation only)'
+    )
+
+    # Re-evaluate an existing run
+    eval_parser = subparsers.add_parser('evaluate_run', help='Recompute metrics for an existing run directory')
+    eval_parser.add_argument(
+        '--run-dir',
+        required=True,
+        help='Path to a run directory under results/'
+    )
 
     # Dataset info command
     info_parser = subparsers.add_parser('info', help='Show dataset information')
@@ -92,6 +116,8 @@ def main():
 
     if args.command == 'run_test':
         asyncio.run(run_quick_test(args))
+    elif args.command == 'evaluate_run':
+        asyncio.run(run_evaluate_run(args))
     elif args.command == 'info':
         asyncio.run(show_dataset_info(args))
     elif args.command == 'list-models':

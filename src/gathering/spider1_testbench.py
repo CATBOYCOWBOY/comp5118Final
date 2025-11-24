@@ -7,8 +7,6 @@ import time
 import json
 import logging
 from typing import Dict, List, Optional, Any, Tuple
-import uuid
-from datetime import datetime
 
 import sys
 import os
@@ -53,6 +51,7 @@ class Spider1Testbench:
         results: Dict[str, Any] = {}
 
         strategies = [config['strategy']] if 'strategy' in config else config.get('strategies', ['spider1_basic'])
+        evaluate_now = config.get("evaluate", False) or config.get("evaluation") is not None
 
         for model_name in config['models']:
             for strategy_name in strategies:
@@ -65,6 +64,7 @@ class Spider1Testbench:
                 results_dir = self.spider1_manager.create_results_directory(
                     run_dir, model_name, strategy_name
                 )
+                exp_key = os.path.basename(results_dir)
 
                 experiment_results = {
                     "summary": {
@@ -154,7 +154,7 @@ class Spider1Testbench:
                         gold_queries.append((example.query, example.db_id))
 
                 # Run test-suite evaluation (see test-suite-sql-eval README for format)
-                print("Running test-suite evaluation...")
+                print("Running test-suite evaluation..." if evaluate_now else "Skipping evaluation (generation only).")
                 eval_options = {
                     "etype": "all",
                     "plug_value": True,
@@ -162,26 +162,34 @@ class Spider1Testbench:
                 }
                 if config.get("evaluation"):
                     eval_options.update(config["evaluation"])
-                self.logger.info(
-                    "Evaluating %d predictions with test-suite-sql-eval (etype=%s, plug_value=%s, keep_distinct=%s)",
-                    len(predictions),
-                    eval_options["etype"],
-                    eval_options["plug_value"],
-                    eval_options["keep_distinct"],
-                )
-                eval_results = self.spider1_manager.evaluate_with_test_suite(
-                    predictions,
-                    gold_queries,
-                    results_dir,
-                    plug_value=eval_options["plug_value"],
-                    keep_distinct=eval_options["keep_distinct"],
-                    etype=eval_options["etype"]
-                )
-                self.logger.info(
-                    "Evaluation completed: exec=%.3f exact=%.3f",
-                    eval_results.get("test_suite_accuracy", 0.0),
-                    eval_results.get("exact_match_accuracy", 0.0),
-                )
+
+                if evaluate_now:
+                    self.logger.info(
+                        "Evaluating %d predictions with test-suite-sql-eval (etype=%s, plug_value=%s, keep_distinct=%s)",
+                        len(predictions),
+                        eval_options["etype"],
+                        eval_options["plug_value"],
+                        eval_options["keep_distinct"],
+                    )
+                    eval_results = self.spider1_manager.evaluate_with_test_suite(
+                        predictions,
+                        gold_queries,
+                        results_dir,
+                        plug_value=eval_options["plug_value"],
+                        keep_distinct=eval_options["keep_distinct"],
+                        etype=eval_options["etype"]
+                    )
+                    self.logger.info(
+                        "Evaluation completed: exec=%.3f exact=%.3f",
+                        eval_results.get("test_suite_accuracy", 0.0),
+                        eval_results.get("exact_match_accuracy", 0.0),
+                    )
+                else:
+                    eval_results = {
+                        "status": "pending",
+                        "message": "Run evaluate_run to compute accuracies.",
+                        "options": eval_options,
+                    }
 
                 # Save experiment metadata to results directory
                 metadata_file = os.path.join(results_dir, "metadata.json")
@@ -198,11 +206,12 @@ class Spider1Testbench:
 
                 # Update summary with test-suite results
                 experiment_results["summary"]["successful_predictions"] = successful_count
-                experiment_results["summary"]["test_suite_accuracy"] = eval_results.get("test_suite_accuracy", 0.0)
-                experiment_results["summary"]["exact_match_accuracy"] = eval_results.get("exact_match_accuracy", 0.0)
+                experiment_results["summary"]["test_suite_accuracy"] = eval_results.get("test_suite_accuracy")
+                experiment_results["summary"]["exact_match_accuracy"] = eval_results.get("exact_match_accuracy")
                 experiment_results["evaluation_details"] = eval_results
+                experiment_results["results_dir"] = results_dir
 
-                results[f"{model_name.split('/')[-1]}_{strategy_name}"] = experiment_results
+                results[exp_key] = experiment_results
 
         print(f"Finished experiment: {config['name']}_{experiment_id}")
         return results, run_dir
@@ -211,8 +220,73 @@ class Spider1Testbench:
         """Simple token estimation (approximate)."""
         return len(text.split()) * 1.3  # Rough approximation
 
-    async def run_test(self, model_name: str, max_examples: int = 10) -> Dict[str, Any]:
-        """Run a test with Spider1."""
+    def _load_predictions_and_gold(self, predictions_path: str, gold_path: str) -> Tuple[List[Tuple[str, str]], List[Tuple[str, str]]]:
+        """Load predictions and gold SQL from files."""
+        with open(predictions_path, 'r') as f:
+            pred_lines = [line.strip() for line in f.readlines()]
+        gold_entries: List[Tuple[str, str]] = []
+        with open(gold_path, 'r') as f:
+            for line in f:
+                parts = line.strip().split('\t')
+                if len(parts) == 2:
+                    gold_entries.append((parts[0], parts[1]))
+        if len(pred_lines) != len(gold_entries):
+            raise ValueError(f"Prediction/gold length mismatch in {predictions_path} and {gold_path}")
+        predictions = [(pred_lines[i], gold_entries[i][1]) for i in range(len(pred_lines))]
+        return predictions, gold_entries
+
+    def evaluate_run(self, run_dir: str, evaluation_options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """Recompute execution and exact match accuracy for an existing run directory."""
+        results_file = os.path.join(run_dir, "results.json")
+        if not os.path.exists(results_file):
+            raise FileNotFoundError(f"results.json not found in {run_dir}")
+
+        with open(results_file, 'r') as f:
+            data = json.load(f)
+
+        experiments = data.get("experiments", {}).get("experiments", {})
+        eval_opts = {"etype": "all", "plug_value": True, "keep_distinct": False}
+        if evaluation_options:
+            eval_opts.update(evaluation_options)
+
+        for subdir in os.listdir(run_dir):
+            sub_path = os.path.join(run_dir, subdir)
+            if not os.path.isdir(sub_path):
+                continue
+            pred_path = os.path.join(sub_path, "predictions.txt")
+            gold_path = os.path.join(sub_path, "gold.txt")
+            if not (os.path.exists(pred_path) and os.path.exists(gold_path)):
+                continue
+
+            predictions, gold = self._load_predictions_and_gold(pred_path, gold_path)
+            self.logger.info(
+                "Re-evaluating %s with %d predictions (etype=%s, plug_value=%s, keep_distinct=%s)",
+                subdir, len(predictions), eval_opts["etype"], eval_opts["plug_value"], eval_opts["keep_distinct"]
+            )
+            eval_results = self.spider1_manager.evaluate_with_test_suite(
+                predictions,
+                gold,
+                sub_path,
+                plug_value=eval_opts["plug_value"],
+                keep_distinct=eval_opts["keep_distinct"],
+                etype=eval_opts["etype"]
+            )
+
+            exp = experiments.get(subdir, {"summary": {"total_examples": len(predictions), "successful_predictions": len(predictions)}})
+            exp.setdefault("summary", {})
+            exp["summary"]["test_suite_accuracy"] = eval_results.get("test_suite_accuracy")
+            exp["summary"]["exact_match_accuracy"] = eval_results.get("exact_match_accuracy")
+            exp["evaluation_details"] = eval_results
+            experiments[subdir] = exp
+
+        data.setdefault("experiments", {})["experiments"] = experiments
+        with open(results_file, 'w') as f:
+            json.dump(data, f, indent=2)
+
+        return experiments
+
+    async def run_test(self, model_name: str, max_examples: int = 10, evaluate: bool = False) -> Dict[str, Any]:
+        """Run a test with Spider1. Generation first; optional evaluation."""
         config = {
             "name": "spider1_run_test",
             "models": [model_name],
@@ -221,6 +295,8 @@ class Spider1Testbench:
         }
 
         print(f"Running Spider1 test: {model_name} with {max_examples} examples")
+        if evaluate:
+            config["evaluation"] = {"etype": "all", "plug_value": True, "keep_distinct": False}
         results, run_dir = await self.run_experiment(config)
 
         # Print summary

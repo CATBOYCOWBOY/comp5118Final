@@ -5,8 +5,9 @@ Spider2-lite configuration system with hardcoded model lists and basic Python ty
 # Hardcoded model list
 AVAILABLE_MODELS = [
     "meta-llama/llama-3.2-3b-instruct",
+    "qwen/qwen3-4b-fp8",
     "meta-llama/llama-3.1-8b-instruct",
-    "mistralai/mistral-nemo"
+    "qwen/qwen3-8b-fp8",
     "google/gemma-3-12b-it",
     "google/gemma-3-27b-it",
     "qwen/qwen3-coder-30b-a3b-instruct",
