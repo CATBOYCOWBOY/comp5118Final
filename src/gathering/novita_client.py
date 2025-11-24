@@ -6,6 +6,7 @@ import aiohttp
 import requests
 from openai import OpenAI
 from dataclasses import dataclass
+import logging
 
 NOVITA_BACKEND_URL = "https://api.novita.ai/openai"
 
@@ -38,6 +39,7 @@ class NovitaClient:
             base_url = NOVITA_BACKEND_URL,
             api_key = use_key
         )
+        self.logger = logging.getLogger("NovitaClient")
     
     def complete(self, prompt: str, model: str):
         response = self.client.chat.completions.create(
@@ -108,6 +110,8 @@ class NovitaClient:
                     success=True
                 )
             except Exception as e:
+                backoff = min(2 ** attempt, 10)
+                self.logger.warning("Completion error for model %s (attempt %d/%d): %s. Backing off %.1fs", model, attempt + 1, retry_count, e, backoff)
                 if attempt == retry_count - 1:
                     return LLMResponse(
                         content="",
@@ -117,7 +121,7 @@ class NovitaClient:
                         success=False,
                         error=str(e)
                     )
-                await asyncio.sleep(1)
+                await asyncio.sleep(backoff)
 
     async def close(self):
         """Close the client connection."""

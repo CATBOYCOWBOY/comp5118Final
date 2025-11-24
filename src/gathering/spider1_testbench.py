@@ -7,6 +7,7 @@ import time
 import json
 import logging
 from typing import Dict, List, Optional, Any, Tuple
+from datetime import datetime
 
 import sys
 import os
@@ -38,8 +39,12 @@ class Spider1Testbench:
     ) -> Tuple[Dict[str, Any], str]:
         """Run evaluation on examples for given model(s) and strategy(ies)."""
 
-        experiment_id = str(int(time.time() * 1000))  # Simple timestamp ID
-        run_dir = os.path.join("results", f"{config['name']}_{experiment_id}")
+        experiment_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+        if config.get("models"):
+            model_tag = config["models"][0].split("/")[-1].replace("-", "_")
+        else:
+            model_tag = config.get("name", "run")
+        run_dir = os.path.join("results", f"{model_tag}_test_{experiment_id}")
         os.makedirs(run_dir, exist_ok=True)
         print(f"Started experiment: {config['name']}_{experiment_id}")
 
@@ -185,6 +190,13 @@ class Spider1Testbench:
                         eval_results.get("exact_match_accuracy", 0.0),
                     )
                 else:
+                    # Save prediction and gold files for later evaluation
+                    pred_path = os.path.join(results_dir, "predictions.txt")
+                    gold_path = os.path.join(results_dir, "gold.txt")
+                    self.spider1_manager.save_predictions_to_file(predictions, pred_path)
+                    with open(gold_path, 'w') as f:
+                        for gold_sql, db_id in gold_queries:
+                            f.write(f"{gold_sql}\t{db_id}\n")
                     eval_results = {
                         "status": "pending",
                         "message": "Run evaluate_run to compute accuracies.",
@@ -299,17 +311,19 @@ class Spider1Testbench:
             config["evaluation"] = {"etype": "all", "plug_value": True, "keep_distinct": False}
         results, run_dir = await self.run_experiment(config)
 
+        # Save results even when evaluation is skipped
+        output_file = os.path.join(run_dir, "results.json")
+        self.save_results({"config": config, "experiments": results}, output_file)
+
         # Print summary
         for exp_name, exp_results in results.items():
             summary = exp_results["summary"]
+            exec_acc = summary.get("test_suite_accuracy") or 0.0
+            em_acc = summary.get("exact_match_accuracy") or 0.0
             print(f"Results:")
-            print(f"  Test-suite accuracy: {summary['test_suite_accuracy']:.3f}")
-            print(f"  Exact-match accuracy: {summary['exact_match_accuracy']:.3f}")
+            print(f"  Test-suite accuracy: {exec_acc:.3f}")
+            print(f"  Exact-match accuracy: {em_acc:.3f}")
             print(f"  Successful predictions: {summary['successful_predictions']}/{summary['total_examples']}")
-
-        # Save results inside the run directory
-        output_file = os.path.join(run_dir, "results.json")
-        self.save_results({"config": config, "experiments": results}, output_file)
 
         return results
 
