@@ -20,27 +20,13 @@ from src.gathering.config import AVAILABLE_MODELS
 async def run_quick_test(args: argparse.Namespace) -> None:
     """Run a quick test."""
     testbench = Spider1Testbench(spider_path=args.spider_path, test_suite_path=args.test_suite_path)
-    print(f"Running Spider1 quick test with {args.model}")
+    print(f"Running Spider1 test with {args.model}")
 
-    results = await testbench.quick_test(
+    results = await testbench.run_test(
         model_name=args.model,
         max_examples=args.examples
     )
-    print("Quick test completed successfully!")
-
-
-async def run_model_comparison(args: argparse.Namespace) -> None:
-    """Run model comparison."""
-    models: List[str] = args.models if args.models else AVAILABLE_MODELS[:3]  # Limit to 3 for speed
-
-    testbench = Spider1Testbench(spider_path=args.spider_path, test_suite_path=args.test_suite_path)
-    print(f"Running Spider1 model comparison with {len(models)} models")
-
-    results = await testbench.compare_models(
-        models=models,
-        max_examples=args.examples
-    )
-    print("Model comparison completed successfully!")
+    print("Test completed successfully!")
 
 
 async def show_dataset_info(args: argparse.Namespace) -> None:
@@ -78,32 +64,18 @@ def main():
 
     subparsers = parser.add_subparsers(dest='command', help='Available commands')
 
-    # Quick test command
-    quick_parser = subparsers.add_parser('quick', help='Run quick test with single model')
-    quick_parser.add_argument(
+    # Run test command
+    run_parser = subparsers.add_parser('run_test', help='Run test with single model')
+    run_parser.add_argument(
         '--model',
         required=True,
         help='Model to test'
     )
-    quick_parser.add_argument(
+    run_parser.add_argument(
         '--examples',
         type=int,
         default=10,
         help='Number of examples to test (default: 10)'
-    )
-
-    # Model comparison command
-    compare_parser = subparsers.add_parser('compare-models', help='Compare multiple models')
-    compare_parser.add_argument(
-        '--models',
-        nargs='+',
-        help='Models to compare (default: first 3 available models)'
-    )
-    compare_parser.add_argument(
-        '--examples',
-        type=int,
-        default=50,
-        help='Number of examples per model (default: 50)'
     )
 
     # Dataset info command
@@ -118,10 +90,8 @@ def main():
 
     args = parser.parse_args()
 
-    if args.command == 'quick':
+    if args.command == 'run_test':
         asyncio.run(run_quick_test(args))
-    elif args.command == 'compare-models':
-        asyncio.run(run_model_comparison(args))
     elif args.command == 'info':
         asyncio.run(show_dataset_info(args))
     elif args.command == 'list-models':
