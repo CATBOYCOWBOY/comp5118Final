@@ -5,7 +5,6 @@
 echo "Starting full Spider evaluation on all models..."
 
 models=(
-    "qwen/qwen3-4b-fp8"
     "qwen/qwen3-8b-fp8"
     "google/gemma-3-12b-it"
     "google/gemma-3-27b-it"

@@ -1,0 +1,8 @@
+{
+  "model_name": "qwen/qwen3-4b-fp8",
+  "strategy_name": "spider1_basic",
+  "experiment_id": "20251124_204540",
+  "total_examples": 1034,
+  "successful_predictions": 1027,
+  "timestamp": 4.4878175258636475
+}
