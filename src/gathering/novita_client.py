@@ -24,7 +24,7 @@ class NovitaClient:
     max_tokens: int
     client: OpenAI
 
-    def __init__(self, api_key: Optional[str] = None, temperature: float = 1.0, max_tokens: int = 1024):
+    def __init__(self, api_key: Optional[str] = None, temperature: float = 1.0, max_tokens: int = 2048):
         with open('NOVITA_API_KEY', 'r') as f:
             novita_key = f.readline().strip()
         if not novita_key or novita_key == "":
@@ -101,16 +101,27 @@ class NovitaClient:
                     stream=False
                 )
                 response_time = time.time() - start_time
+                content = response.choices[0].message.content
+
+                # Log API response details
+                self.logger.info(
+                    "API response for model %s: %.1fs, %d tokens, content_length=%d",
+                    model, response_time,
+                    response.usage.total_tokens if response.usage else 0,
+                    len(content) if content else 0
+                )
+                self.logger.debug("API response content preview: %s",
+                                (content[:200] + "...") if content and len(content) > 200 else content)
 
                 return LLMResponse(
-                    content=response.choices[0].message.content,
+                    content=content,
                     model=model,
                     usage=response.usage.model_dump() if response.usage else {},
                     response_time=response_time,
                     success=True
                 )
             except Exception as e:
-                backoff = min(2 ** attempt, 10)
+                backoff = min(2 ** attempt + (0.5 * attempt), 30)  # exponential with jitter-ish
                 self.logger.warning("Completion error for model %s (attempt %d/%d): %s. Backing off %.1fs", model, attempt + 1, retry_count, e, backoff)
                 if attempt == retry_count - 1:
                     return LLMResponse(

@@ -270,11 +270,13 @@ class Spider1Testbench:
             if not (os.path.exists(pred_path) and os.path.exists(gold_path)):
                 continue
 
+            self.logger.info("Loading predictions/gold for %s", subdir)
             predictions, gold = self._load_predictions_and_gold(pred_path, gold_path)
             self.logger.info(
                 "Re-evaluating %s with %d predictions (etype=%s, plug_value=%s, keep_distinct=%s)",
                 subdir, len(predictions), eval_opts["etype"], eval_opts["plug_value"], eval_opts["keep_distinct"]
             )
+            start = time.time()
             eval_results = self.spider1_manager.evaluate_with_test_suite(
                 predictions,
                 gold,
@@ -283,6 +285,7 @@ class Spider1Testbench:
                 keep_distinct=eval_opts["keep_distinct"],
                 etype=eval_opts["etype"]
             )
+            self.logger.info("Evaluation done for %s in %.1fs", subdir, time.time() - start)
 
             exp = experiments.get(subdir, {"summary": {"total_examples": len(predictions), "successful_predictions": len(predictions)}})
             exp.setdefault("summary", {})

@@ -17,7 +17,7 @@ AVAILABLE_MODELS = [
 # Default model parameters
 DEFAULT_MODEL_PARAMS = {
     "temperature": 0.1,
-    "max_tokens": 1024,
+    "max_tokens": 8192,
     "retry_count": 3
 }
 

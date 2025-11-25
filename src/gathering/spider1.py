@@ -10,6 +10,7 @@ from dataclasses import dataclass
 import tempfile
 from datetime import datetime
 import re
+import logging
 
 # Import the normalization function
 from prompting_strategy import Spider1Strategy
@@ -184,6 +185,7 @@ class Spider1Manager:
             Dictionary with evaluation results
         """
 
+        logger = logging.getLogger("Spider1Manager")
         if len(predictions) != len(gold_queries):
             raise ValueError(f"Prediction/gold length mismatch: {len(predictions)} predictions vs {len(gold_queries)} gold")
 
@@ -245,7 +247,19 @@ class Spider1Manager:
             if keep_distinct:
                 cmd.append("--keep_distinct")
 
-            result = subprocess.run(cmd, capture_output=True, text=True, cwd=self.test_suite_path)
+            # Add timeout to prevent hanging on problematic SQL queries (e.g., badly formatted JOINs)
+            # Use 30 seconds per example with a 30-minute maximum cap
+            timeout_seconds = min(1800, len(predictions) * 30)  # 30 min max, 30 sec per example
+            try:
+                result = subprocess.run(cmd, capture_output=True, text=True, cwd=self.test_suite_path, timeout=timeout_seconds)
+            except subprocess.TimeoutExpired:
+                logger.error("Evaluation timed out after %d seconds with %d examples. Likely problematic SQL queries causing hangs.", timeout_seconds, len(predictions))
+                return {
+                    "error": f"Evaluation timed out after {timeout_seconds}s - likely problematic SQL queries",
+                    "test_suite_accuracy": 0.0,
+                    "exact_match_accuracy": 0.0
+                }
+            logger.info("test-suite eval exited code %s; stdout len=%d stderr len=%d", result.returncode, len(result.stdout), len(result.stderr))
 
             if result.returncode != 0:
                 return {
