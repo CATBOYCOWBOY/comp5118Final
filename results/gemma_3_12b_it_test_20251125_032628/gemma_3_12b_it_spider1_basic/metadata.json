@@ -1,8 +1,0 @@
-{
-  "model_name": "google/gemma-3-12b-it",
-  "strategy_name": "spider1_basic",
-  "experiment_id": "20251125_032628",
-  "total_examples": 1034,
-  "successful_predictions": 705,
-  "timestamp": 1.4426045417785645
-}

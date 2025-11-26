@@ -1,8 +1,0 @@
-{
-  "model_name": "meta-llama/llama-3.1-8b-instruct",
-  "strategy_name": "spider1_basic",
-  "experiment_id": "1763933797462",
-  "total_examples": 1034,
-  "successful_predictions": 1034,
-  "timestamp": 1.0646107196807861
-}

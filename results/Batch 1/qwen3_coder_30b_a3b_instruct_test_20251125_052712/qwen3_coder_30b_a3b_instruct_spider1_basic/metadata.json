@@ -1,0 +1,8 @@
+{
+  "model_name": "qwen/qwen3-coder-30b-a3b-instruct",
+  "strategy_name": "spider1_basic",
+  "experiment_id": "20251125_052712",
+  "total_examples": 1034,
+  "successful_predictions": 1007,
+  "timestamp": 2.205173969268799
+}
