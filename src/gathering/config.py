@@ -12,6 +12,9 @@ AVAILABLE_MODELS = [
     "google/gemma-3-27b-it",
     "qwen/qwen3-coder-30b-a3b-instruct",
     "qwen/qwen3-32b-fp8",
+    "deepseek/deepseek-r1-distill-qwen-14b",
+    "qwen/qwen2.5-7b-instruct",
+    "openai/gpt-oss-20b"
 ]
 
 # Default model parameters

@@ -5,11 +5,8 @@
 echo "Starting full Spider evaluation on all models..."
 
 models=(
-    "qwen/qwen3-8b-fp8"
-    "google/gemma-3-12b-it"
-    "google/gemma-3-27b-it"
-    "qwen/qwen3-coder-30b-a3b-instruct"
-    "qwen/qwen3-32b-fp8"
+    "qwen/qwen2.5-7b-instruct"
+    "openai/gpt-oss-20b"
 )
 
 for model in "${models[@]}"; do

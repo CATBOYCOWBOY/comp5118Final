@@ -1,0 +1,1034 @@
+SELECT COUNT(DISTINCT Singer_ID) FROM singer
+SELECT COUNT(*) FROM singer
+SELECT Name, Country, Age FROM singer ORDER BY Age DESC
+SELECT Name, Country, Age FROM singer ORDER BY Age DESC
+SELECT AVG(Age) AS Average_Age, MIN(Age) AS Minimum_Age, MAX(Age) AS Maximum_Age FROM singer WHERE Country = 'France'
+SELECT MIN(Age) AS Minimum_Age, MAX(Age) AS Maximum_Age, AVG(Age) AS Average_Age FROM singer WHERE Country = 'French'
+SELECT Song_Name, Song_release_year FROM singer WHERE age = (SELECT MIN(age) FROM singer)
+SELECT Song_Name, Song_release_year FROM singer WHERE Singer_ID = (SELECT Singer_ID FROM singer WHERE Age = (SELECT MIN(Age) FROM singer))
+SELECT DISTINCT Country FROM singer WHERE Age > 20
+SELECT DISTINCT Country FROM singer WHERE Age > 20
+SELECT Country, COUNT(DISTINCT Singer_ID) AS NumberOfSingers FROM singer GROUP BY Country
+SELECT COUNT(*) AS NumberOfSingers FROM singer GROUP BY Country
+SELECT Song_Name FROM singer WHERE Age > (SELECT AVG(Age) FROM singer)
+SELECT Song_Name FROM singer WHERE Age > (SELECT AVG(Age) FROM singer)
+SELECT Location, Name FROM stadium WHERE Capacity >= 5000 AND Capacity <= 10000
+SELECT Location, Name FROM stadium WHERE Capacity BETWEEN 5000 AND 10000
+SELECT MAX(Capacity) AS Max_Capacity, AVG(Capacity) AS Avg_Capacity FROM stadium
+SELECT AVG(Capacity) AS Average_Capacity, MAX(Capacity) AS Maximum_Capacity FROM stadium
+SELECT Name, Capacity FROM stadium WHERE Average = (SELECT MAX(Average) FROM stadium)
+SELECT Name, Capacity FROM stadium WHERE Average = (SELECT MAX(Average) FROM stadium)
+SELECT COUNT(*) FROM concert WHERE Year IN ('2014', '2015')
+SELECT COUNT(*) FROM concert WHERE Year IN (2014, 2015)
+SELECT stadium.Name, COUNT(concert.concert_ID) AS NumberOfConcerts
+SELECT Stadium_ID, COUNT(*) AS Number_of_Concerts FROM concert GROUP BY Stadium_ID
+SELECT s.Name, s.Capacity
+SELECT stadium.Name, stadium.Capacity
+SELECT Year, COUNT(concert_ID) as concert_count
+SELECT Year FROM ( SELECT Year, COUNT(concert_ID) as concert_count FROM concert GROUP BY Year ) as concert_years WHERE concert_count = ( SELECT MAX(concert_count) FROM ( SELECT COUNT(concert_ID) as concert_count FROM concert GROUP BY Year ) as max_count )
+SELECT Name FROM stadium
+SELECT stadium.Name FROM stadium LEFT JOIN concert ON stadium.Stadium_ID = concert.Stadium_ID WHERE concert.concert_ID IS NULL
+SELECT Country FROM singer GROUP BY Country HAVING (COUNT(CASE WHEN Age > 40 THEN 1 END) >= 1) AND (COUNT(CASE WHEN Age < 30 THEN 1 END) >= 1)
+SELECT Name FROM stadium WHERE Stadium_ID NOT IN (SELECT Stadium_ID FROM concert WHERE Year = '2014')
+SELECT stadium.Name FROM stadium LEFT JOIN concert ON stadium.Stadium_ID = concert.Stadium_ID WHERE concert.Year != '2014' OR concert.Year IS NULL
+SELECT concert.concert_Name, concert.Theme, COUNT(DISTINCT singer_in_concert.Singer_ID) AS NumberOfSingers FROM concert LEFT JOIN singer_in_concert ON concert.concert_ID = singer_in_concert.concert_ID GROUP BY concert.concert_ID
+SELECT concert.concert_Name, concert.Theme, COUNT(DISTINCT singer_in_concert.Singer_ID) AS NumberOfSingers
+SELECT singer.Name, COUNT(singer_in_concert.concert_ID) AS NumberOfConcerts
+SELECT singer.Name, COUNT(singer_in_concert.concert_ID) AS Number_of_Concerts
+SELECT DISTINCT singer.Name FROM singer
+SELECT S.Name FROM singer AS S
+SELECT Name, Country FROM singer WHERE Song_Name LIKE '%Hey%';</think>
+SELECT Name, Country FROM singer WHERE Song_Name LIKE '%Hey%'
+SELECT Name, Location FROM stadium WHERE Stadium_ID IN (SELECT Stadium_ID FROM concert WHERE Year = '2014') AND Stadium_ID IN (SELECT Stadium_ID FROM concert WHERE Year = '2015')
+SELECT Name, Location FROM stadium WHERE Stadium_ID IN (SELECT Stadium_ID FROM concert WHERE Year = '2014') AND Stadium_ID IN (SELECT Stadium_ID FROM concert WHERE Year = '2015')
+SELECT COUNT(concert_ID) AS NumberOfConcerts
+SELECT COUNT(concert_ID) FROM concert JOIN stadium ON concert.Stadium_ID = stadium.Stadium_ID WHERE stadium.Capacity = (SELECT MAX(Capacity) FROM stadium)
+SELECT COUNT(*) FROM Pets WHERE weight > 10
+SELECT COUNT(*) FROM Pets WHERE weight > 10
+SELECT weight FROM Pets WHERE PetType = 'dog' AND pet_age = (SELECT MIN(pet_age) FROM Pets WHERE PetType = 'dog') LIMIT 1
+SELECT weight FROM Pets WHERE PetType = 'dog' ORDER BY pet_age ASC LIMIT 1
+SELECT PetType, MAX(weight) FROM Pets GROUP BY PetType
+SELECT PetType, MAX(weight) AS Max_Weight FROM Pets GROUP BY PetType
+SELECT COUNT(PetID) FROM Has_Pet JOIN Student ON Has_Pet.StuID = Student.StuID WHERE Student.Age > 20
+SELECT COUNT(*) FROM Has_Pet hp
+SELECT COUNT(DISTINCT p.PetID) AS DogPetCount
+SELECT COUNT(*) FROM Student JOIN Has_Pet ON Student.StuID = Has_Pet.StuID JOIN Pets ON Has_Pet.PetID = Pets.PetID WHERE Student.Sex = 'F' AND Pets.PetType = 'dog'
+SELECT COUNT(DISTINCT PetType) FROM Pets
+SELECT COUNT(DISTINCT PetType) FROM Pets
+SELECT Student.Fname FROM Student INNER JOIN Has_Pet ON Student.StuID = Has_Pet.StuID INNER JOIN Pets ON Has_Pet.PetID = Pets.PetID WHERE Pets.PetType IN ('cat', 'dog')
+SELECT Fname FROM Student JOIN Has_Pet ON Student.StuID = Has_Pet.StuID JOIN Pets ON Has_Pet.PetID = Pets.PetID WHERE PetType IN ('cat', 'dog')
+SELECT Fname FROM Student WHERE EXISTS (SELECT 1 FROM Has_Pet hp JOIN Pets p ON hp.PetID = p.PetID WHERE p.PetType = 'cat' AND hp.StuID = Student.StuID) AND EXISTS (SELECT 1 FROM Has_Pet hp JOIN Pets p ON hp.PetID = p.PetID WHERE p.PetType = 'dog' AND hp.StuID = Student.StuID)
+SELECT Fname FROM Student
+SELECT Major, Age FROM Student
+SELECT Major, Age FROM Student WHERE NOT EXISTS (SELECT 1 FROM Has_Pet hp JOIN Pets p ON hp.PetID = p.PetID WHERE hp.StuID = Student.StuID AND p.PetType = 'cat')
+SELECT StuID FROM Has_Pet INNER JOIN Pets ON Has_Pet.PetID = Pets.PetID WHERE PetType = 'Cat'
+SELECT StuID FROM Student WHERE StuID NOT IN (SELECT StuID FROM Has_Pet JOIN Pets ON Has_Pet.PetID = Pets.PetID WHERE PetType = 'cat')
+SELECT Student.Fname, Student.Age
+SELECT Student.Fname FROM Student JOIN Has_Pet ON Student.StuID = Has_Pet.StuID JOIN Pets ON Has_Pet.PetID = Pets.PetID WHERE Pets.PetType = 'Dog' AND NOT EXISTS ( SELECT 1 FROM Has_Pet hp JOIN Pets p ON hp.PetID = p.PetID WHERE hp.StuID = Student.StuID AND p.PetType = 'Cat' )
+SELECT PetType, weight, MIN(pet_age) FROM Pets
+SELECT PetType, weight FROM Pets WHERE pet_age = (SELECT MIN(pet_age) FROM Pets)
+SELECT PetID, weight FROM Pets WHERE pet_age > 1
+SELECT PetID, weight FROM Pets WHERE pet_age > 1
+SELECT PetType, AVG(pet_age) AS avg_age, MAX(pet_age) AS max_age FROM Pets GROUP BY PetType
+SELECT PetType, AVG(pet_age) AS average_age, MAX(pet_age) AS max_age FROM Has_Pet JOIN Pets ON Has_Pet.PetID = Pets.PetID GROUP BY PetType
+SELECT AVG(weight) AS average_weight, PetType FROM Pets GROUP BY PetType
+SELECT PetType, AVG(weight) AS average_weight FROM Pets GROUP BY PetType
+SELECT Student.Fname, Student.Age FROM Student JOIN Has_Pet ON Student.StuID = Has_Pet.StuID WHERE Has_Pet.PetID IS NOT NULL
+SELECT DISTINCT Student.Fname, Student.Age FROM Student JOIN Has_Pet ON Student.StuID = Has_Pet.StuID WHERE Has_Pet.PetID IS NOT NULL
+SELECT PetID FROM Has_Pet JOIN Student ON Has_Pet.StuID = Student.StuID WHERE LName = 'Smith'
+SELECT PetID FROM Pets JOIN Has_Pet ON Has_Pet.PetID = Pets.PetID JOIN Student ON Has_Pet.StuID = Student.StuID WHERE Student.LName = 'Smith'
+SELECT Student.StuID, COUNT(Has_Pet.PetID) AS NumberOfPets
+SELECT StuID, COUNT(PetID) AS NumberOfPets FROM Has_Pet GROUP BY StuID
+SELECT Fname, Sex FROM Student
+SELECT StuID FROM Has_Pet GROUP BY StuID HAVING COUNT(PetID) > 1
+SELECT Student.LName FROM Student JOIN Has_Pet ON Student.StuID = Has_Pet.StuID JOIN Pets ON Has_Pet.PetID = Pets.PetID WHERE Pets.PetType = 'cat' AND Pets.pet_age = 3
+SELECT Student.LName FROM Student INNER JOIN Has_Pet ON Student.StuID = Has_Pet.StuID INNER JOIN Pets ON Has_Pet.PetID = Pets.PetID WHERE Pets.PetType = 'cat' AND Pets.pet_age = 3
+SELECT Student.StuID, Age
+SELECT AVG(Age) AS AverageAge
+SELECT COUNT(*) FROM continents
+SELECT COUNT(*) FROM continents
+SELECT continents.ContId, continents.Continent, COUNT(countries.CountryId) AS NumberOfCountries
+SELECT continents.ContId, continents.Continent, COUNT(countries.CountryId) AS NumberOfCountries
+SELECT COUNT(CountryId) FROM countries
+SELECT COUNT(DISTINCT CountryId) FROM countries
+SELECT car_makers.Id AS MakerId, car_makers.Maker, car_makers.FullName, COUNT(model_list.ModelId) AS NumberOfModels
+SELECT car_makers.Id, car_makers.FullName, COUNT(DISTINCT model_list.Model) AS NumberOfModels
+SELECT Model FROM model_list JOIN car_makers ON model_list.Maker = car_makers.Id JOIN countries ON car_makers.Country = countries.CountryId JOIN continents ON countries.Continent = continents.ContId JOIN car_names ON model_list.Model = car_names.Model JOIN cars_data ON car_names.MakeId = cars_data.Id WHERE Horsepower = (SELECT MIN(Horsepower) FROM cars_data)
+SELECT car_names.Model FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId WHERE cars_data.Horsepower = (SELECT MIN(Horsepower) FROM cars_data)
+SELECT cars_data.Id, car_names.Model
+SELECT model_list.Model FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId JOIN model_list ON car_names.Model = model_list.Model WHERE cars_data.Weight < (SELECT AVG(Weight) FROM cars_data)
+SELECT DISTINCT car_makers.Maker FROM car_makers
+SELECT DISTINCT car_makers.Maker FROM car_makers
+SELECT car_names.Make AS Make, cars_data.Year AS Production_Time
+SELECT Make, MIN(Year) FROM car_names JOIN cars_data ON car_names.MakeId = cars_data.Id
+SELECT DISTINCT Model AS CarModel FROM car_names INNER JOIN cars_data ON car_names.MakeId = cars_data.Id WHERE Year > 1980
+SELECT Model FROM car_names JOIN cars_data ON MakeId = Id WHERE Year > 1980
+SELECT c.Continent AS ContinentName, COUNT(DISTINCT cm.Id) AS NumberOfMakers FROM car_makers cm
+SELECT continents.Continent, COUNT(car_makers.Id) AS NumberOfMakers
+SELECT countries.CountryName AS Country, COUNT(DISTINCT car_makers.Maker) AS NumberOfMakers
+SELECT countries.CountryName, COUNT(car_makers.Id) AS MakerCount
+SELECT COUNT(model_list.ModelId) AS ModelCount, car_makers.FullName FROM model_list JOIN car_makers ON model_list.Maker = car_makers.Id GROUP BY car_makers.Maker
+SELECT car_makers.Id, car_makers.FullName, COUNT(DISTINCT model_list.ModelId) AS NumberOfModels
+SELECT Accelerate FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId WHERE car_names.Make = 'AMC' AND car_names.Model = 'Hornet Sportabout (SW)'
+SELECT cars_data.Accelerate FROM car_names JOIN cars_data ON car_names.MakeId = cars_data.Id WHERE car_names.Model = 'amc hornet sportabout (sw)'
+SELECT COUNT(DISTINCT Maker) FROM car_makers WHERE Country = 'France'
+SELECT COUNT(DISTINCT Maker) FROM car_makers
+SELECT car_makers.Id, car_makers.Maker
+SELECT COUNT(ModelId) FROM model_list
+SELECT AVG(cars_data.MPG) FROM cars_data
+SELECT AVG(cars_data.MPG) AS AverageMPG FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId WHERE cars_data.Cylinders = 4
+SELECT MIN(Weight) AS MinimumWeight
+SELECT MIN(c.Weight) AS MinimumWeight
+SELECT car_makers.Maker, model_list.Model FROM car_makers LEFT JOIN model_list ON car_makers.Id = model_list.Maker
+SELECT Maker, Model FROM car_makers JOIN model_list ON car_makers.Id = model_list.Maker
+SELECT countries.CountryName, countries.CountryId
+SELECT countries.CountryId, countries.CountryName
+SELECT COUNT(Id) FROM cars_data WHERE Horsepower > 150;</think>
+SELECT COUNT(*) FROM cars_data WHERE CAST(Horsepower AS INTEGER) > 150
+SELECT cars_data.Year, AVG(cars_data.Weight) AS AverageWeight
+SELECT Year, AVG(Weight) AS AverageWeight
+SELECT c.CountryName FROM countries c JOIN continents cont ON c.Continent = cont.ContId WHERE cont.Continent = 'Europe' GROUP BY c.CountryName HAVING COUNT(m.Id) >= 3
+SELECT countries.CountryName FROM countries JOIN continents ON countries.Continent = continents.ContId WHERE continents.Continent = 'Europe' GROUP BY countries.CountryId HAVING COUNT(car_makers.CountryId) >= 3
+SELECT car_names.Make, MAX(cars_data.Horsepower) AS MaxHorsepower
+SELECT MAX(Horsepower) as MaxHP, Make
+SELECT car_names.Model, cars_data.MPG
+SELECT model_list.Model AS Model, cars_data.MPG AS MPG
+SELECT AVG(Horsepower) FROM cars_data INNER JOIN car_names ON cars_data.Id = car_names.MakeId WHERE Year < 1980
+SELECT AVG(Horsepower) FROM cars_data WHERE Year < 1980
+SELECT AVG(cars_data.edispl) FROM cars_data
+SELECT AVG(c.Edispl) FROM cars_data c
+SELECT MAX(Accelerate) AS Max_Accelerate, Cylinders
+SELECT MAX(Accelerate) AS Max_Accelerate, Cylinders FROM cars_data GROUP BY Cylinders
+SELECT Model, COUNT(DISTINCT Make) AS VersionCount
+SELECT Model, COUNT(*) AS NumberOfVersions FROM model_list JOIN car_names ON model_list.Model = car_names.Model GROUP BY Model ORDER BY NumberOfVersions DESC
+SELECT COUNT(*) FROM cars_data WHERE Cylinders > 4
+SELECT COUNT(*) FROM cars_data WHERE Cylinders > 4
+SELECT COUNT(Id) FROM cars_data WHERE Year = 1980
+SELECT COUNT(*) FROM cars_data
+SELECT COUNT(DISTINCT Model) FROM model_list WHERE Maker = (SELECT Id FROM car_makers WHERE FullName = 'American Motor Company')
+SELECT COUNT(DISTINCT model_list.Model) AS NumberOfModels
+SELECT car_makers.FullName, car_makers.Id
+SELECT Maker, Id FROM car_makers JOIN model_list ON car_makers.Id = model_list.Maker GROUP BY Maker HAVING COUNT(ModelId) > 3
+SELECT DISTINCT m.Model
+SELECT DISTINCT Model FROM (
+SELECT Year FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId WHERE Weight >= 3000 AND Weight <= 4000
+SELECT Year FROM cars_data GROUP BY Year HAVING MIN(Weight) < 4000 AND MAX(Weight) > 3000
+SELECT Horsepower FROM cars_data ORDER BY Accelerate DESC LIMIT 1
+SELECT Horsepower FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId WHERE Accelerate = (SELECT MAX(Accelerate) FROM cars_data)
+SELECT Cylinders FROM cars_data
+SELECT Cylinders FROM cars_data
+SELECT MAX(CAST(Horsepower AS INTEGER)) FROM cars_data
+SELECT COUNT(Id) FROM cars_data WHERE Accelerate > (SELECT MAX(Horsepower) FROM cars_data)
+SELECT COUNT(*) FROM countries
+SELECT COUNT(car_makers.Id) AS NumberOfMakers, countries.CountryId
+SELECT COUNT(*) FROM cars_data WHERE Cylinders > 6
+SELECT COUNT(*) FROM cars_data WHERE Cylinders > 6
+SELECT model_list.Model FROM cars_data JOIN car_names ON cars_data.MakeId = car_names.MakeId JOIN model_list ON car_names.ModelId = model_list.ModelId WHERE cars_data.Cylinders = 4 ORDER BY cars_data.Horsepower DESC LIMIT 1
+SELECT model FROM model_list
+SELECT car_names.MakeId, car_names.Make FROM car_names
+SELECT cn.MakeId, cn.Make FROM cars_data AS c JOIN car_names AS cn ON c.Id = cn.MakeId WHERE c.Cylinders < 4 AND c.Horsepower > (SELECT MIN(Horsepower) FROM cars_data) ORDER BY cn.MakeId
+SELECT MAX(cars_data.MPG) FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId WHERE cars_data.Cylinders = 8 OR cars_data.Year < 1980
+SELECT MAX(MPG) FROM cars_data WHERE Cylinders = 8 OR Year < 1980
+SELECT cn.Model FROM cars_data AS c
+SELECT DISTINCT model_list.Model FROM cars_data
+SELECT countries.CountryName FROM countries LEFT JOIN car_makers ON countries.CountryName = car_makers.Country WHERE car_makers.Country IS NULL
+SELECT CountryName FROM countries WHERE CountryId NOT IN ( SELECT CountryId FROM car_makers )
+with model_list to get model counts per maker, and also join car_makers with countries to get the country</think>
+SELECT cm.Id AS MakerId, cm.Maker
+SELECT countries.CountryId, countries.CountryName
+SELECT countries.CountryId, countries.CountryName
+SELECT Country FROM airlines WHERE Airline = "JetBlue Airways"
+SELECT Country FROM airlines WHERE Airline = 'Jetblue Airways'
+SELECT Abbreviation FROM airlines WHERE Airline = 'JetBlue Airways'
+SELECT Abbreviation FROM airlines WHERE Airline = 'JetBlue Airways'
+SELECT Airline, Abbreviation FROM airlines WHERE Country = 'USA'
+SELECT Airline, Abbreviation FROM airlines WHERE Country = 'USA'
+SELECT AirportCode, AirportName FROM airports WHERE City = 'Anthony'
+SELECT AirportCode, AirportName FROM airports WHERE City = 'Anthony'
+SELECT COUNT(uid) FROM airlines
+SELECT COUNT(uid) FROM airlines
+SELECT COUNT(*) FROM airports
+SELECT COUNT(*) FROM airports
+SELECT COUNT(*) FROM flights
+SELECT COUNT(*) FROM flights
+SELECT Airline FROM airlines WHERE Abbreviation = 'UAL'
+SELECT Airline FROM airlines WHERE Abbreviation = 'UAL'
+SELECT COUNT(uid) FROM airlines WHERE Country = 'USA'
+SELECT COUNT(uid) FROM airlines WHERE Country = 'USA'
+SELECT City, Country FROM airports WHERE AirportName = 'Alton'
+SELECT City, Country FROM airports WHERE AirportName = 'Alton'
+SELECT AirportName FROM airports WHERE AirportCode = 'AKO'
+SELECT AirportName FROM airports WHERE AirportCode = 'AKO'
+SELECT AirportName FROM airports WHERE City = 'Aberdeen'
+SELECT AirportName FROM airports WHERE City = 'Aberdeen'
+SELECT COUNT(FlightNo) FROM flights WHERE SourceAirport = 'APG'
+SELECT COUNT(*) FROM flights WHERE SourceAirport = 'APG'
+SELECT COUNT(*) FROM flights WHERE DestAirport = 'ATO'
+SELECT COUNT(*) FROM flights WHERE DestAirport = 'ATO'
+SELECT COUNT(*) FROM flights WHERE SourceAirport = (SELECT AirportCode FROM airports WHERE City = 'Aberdeen')
+SELECT COUNT(FlightNo) FROM flights JOIN airports ON flights.SourceAirport = airports.AirportCode WHERE airports.City = 'Aberdeen'
+SELECT COUNT(DISTINCT FlightNo) FROM flights JOIN airports ON flights.DestAirport = airports.AirportCode WHERE airports.City = 'Aberdeen'
+SELECT COUNT(*) FROM flights JOIN airports ON flights.DestAirport = airports.AirportCode WHERE airports.City = 'Aberdeen'
+SELECT COUNT(*) FROM flights
+SELECT COUNT(*) FROM flights
+SELECT COUNT(flights.FlightNo) FROM airlines AS a JOIN flights ON a.uid = flights.Airline WHERE a.Airline = 'JetBlue Airways'
+SELECT COUNT(*) FROM flights WHERE Airline = (SELECT uid FROM airlines WHERE Airline = 'JetBlue Airways')
+SELECT COUNT(*) FROM flights
+SELECT COUNT(*) FROM flights
+SELECT COUNT(*) FROM flights JOIN airlines ON flights.Airline = airlines.uid JOIN airports ON flights.SourceAirport = airports.AirportCode WHERE airlines.Airline = 'United Airlines' AND airports.AirportCode = 'AHD'
+SELECT COUNT(*) FROM flights JOIN airlines ON flights.Airline = airlines.uid WHERE airlines.Airline = 'United Airlines' AND flights.SourceAirport = 'AHD'
+SELECT COUNT(*) FROM flights
+SELECT COUNT(*) FROM flights
+SELECT airports.City, COUNT(*) AS NumberOfFlights
+SELECT a.City, COUNT(*) AS Count FROM flights f JOIN airports a ON f.DestAirport = a.AirportCode GROUP BY a.City ORDER BY Count DESC LIMIT 1
+SELECT City, COUNT(*) AS DepartingFlightsCount
+SELECT City, COUNT(*) as flight_count
+SELECT AirportCode, COUNT(*) FROM (
+WITH flight_counts AS (
+SELECT AirportCode, COUNT(*) AS flight_count
+SELECT AirportCode, COUNT(*) FROM (
+SELECT airlines.Airline, COUNT(flights.FlightNo) AS NumberOfFlights
+SELECT airlines.Airline, COUNT(*) as flight_count
+SELECT a.Abbreviation, a.Country FROM airlines a JOIN flights f ON a.uid = f.Airline GROUP BY a.Airline HAVING COUNT(f.FlightNo) = (SELECT MIN(COUNT(f.FlightNo)) FROM flights f JOIN airlines a ON f.Airline = a.uid GROUP BY f.Airline)
+WITH flight_counts AS (
+SELECT DISTINCT airlines.Airline FROM airlines JOIN flights ON airlines.uid = flights.Airline JOIN airports ON flights.SourceAirport = airports.AirportCode WHERE airports.AirportCode = 'AHD'
+SELECT DISTINCT Airline FROM airlines
+SELECT a.Airline FROM airlines a
+SELECT DISTINCT Airline FROM airlines JOIN flights ON airlines.uid = flights.Airline JOIN airports ON flights.DestAirport = airports.AirportCode WHERE airports.AirportCode = 'AHD'
+SELECT Airline FROM flights
+SELECT Airline FROM flights WHERE SourceAirport = 'APG' AND Airline IN (SELECT Airline FROM flights WHERE SourceAirport = 'CVO')
+SELECT DISTINCT a.Airline FROM flights f JOIN airlines a ON f.Airline = a.uid WHERE f.SourceAirport = 'CVO' AND a.Airline NOT IN (SELECT a2.Airline FROM flights f2 JOIN airlines a2 ON f2.Airline = a2.uid WHERE f2.SourceAirport = 'APG')
+SELECT DISTINCT a.Airline
+SELECT Airline FROM airlines JOIN flights ON airlines.uid = flights.Airline GROUP BY airlines.uid HAVING COUNT(DISTINCT flights.FlightNo) >= 10
+SELECT airlines.Airline FROM flights JOIN airlines ON flights.Airline = airlines.uid GROUP BY flights.Airline HAVING COUNT(*) >= 10
+SELECT Airline, COUNT(FlightNo) as flight_count
+SELECT airlines.Airline FROM flights
+SELECT flights.FlightNo FROM flights JOIN airlines ON flights.Airline = airlines.uid WHERE airlines.Airline = 'United Airlines'
+SELECT FlightNo FROM flights
+SELECT FlightNo FROM flights WHERE SourceAirport = 'APG'
+SELECT FlightNo FROM flights WHERE SourceAirport = 'APG'
+SELECT FlightNo FROM flights WHERE DestAirport = 'APG'
+SELECT FlightNo FROM flights WHERE DestAirport = 'APG'
+SELECT flights.FlightNo FROM flights JOIN airports ON flights.SourceAirport = airports.AirportCode WHERE airports.City = 'Aberdeen'
+SELECT flights.FlightNo FROM flights JOIN airports ON flights.SourceAirport = airports.AirportCode WHERE airports.City = 'Aberdeen'
+SELECT flights.FlightNo FROM flights JOIN airports ON flights.DestAirport = airports.AirportCode WHERE airports.City = "Aberdeen"
+SELECT FlightNo FROM flights JOIN airports ON flights.DestAirport = airports.AirportCode WHERE airports.City = 'Aberdeen'
+SELECT COUNT(*) FROM flights f
+SELECT COUNT(DISTINCT FlightNo) FROM flights WHERE DestAirport IN ('ABD', 'ABI')
+SELECT AirportName FROM airports
+SELECT AirportCode FROM airports
+SELECT COUNT(Employee_ID) FROM employee
+SELECT COUNT(*) FROM employee
+SELECT Name FROM employee ORDER BY Age ASC
+SELECT Name FROM employee ORDER BY Age ASC
+SELECT COUNT(Employee_ID) AS NumberOfEmployees, City FROM employee GROUP BY City
+SELECT COUNT(Employee_ID) AS NumberOfEmployees, City FROM employee GROUP BY City
+SELECT City FROM employee WHERE Age < 30 GROUP BY City HAVING COUNT(*) > 1
+SELECT City FROM employee WHERE Age < 30 GROUP BY City HAVING COUNT(*) > 1
+SELECT COUNT(*) AS Shop_Count, Location FROM shop GROUP BY Location
+SELECT COUNT(Shop_ID) AS Shop_Count FROM shop GROUP BY Location
+SELECT Manager_name, District FROM shop WHERE Shop_ID = (SELECT Shop_ID FROM shop ORDER BY Number_products DESC LIMIT 1)
+SELECT Manager_name, District
+SELECT MIN(Number_products), MAX(Number_products) FROM shop
+SELECT MIN(Number_products) AS Min_Products, MAX(Number_products) AS Max_Products FROM shop
+SELECT Name, Location, District FROM shop ORDER BY Number_products DESC
+SELECT Name, Location, District FROM shop ORDER BY Number_products DESC
+SELECT Name FROM shop WHERE Number_products > (SELECT AVG(Number_products) FROM shop)
+SELECT Shop_ID, Name FROM shop WHERE Number_products > (SELECT AVG(Number_products) FROM shop)
+SELECT Name FROM employee JOIN evaluation ON employee.Employee_ID = evaluation.Employee_ID GROUP BY Employee_ID ORDER BY COUNT(*) DESC LIMIT 1
+SELECT Employee_ID, COUNT(*) as Award_Count
+SELECT Name FROM employee JOIN evaluation ON employee.Employee_ID = evaluation.Employee_ID WHERE evaluation.Bonus = (SELECT MAX(Bonus) FROM evaluation)
+SELECT Name FROM employee JOIN evaluation ON employee.Employee_ID = evaluation.Employee_ID WHERE evaluation.Bonus = (SELECT MAX(Bonus) FROM evaluation) LIMIT 1
+SELECT employee.Name FROM employee
+SELECT Name FROM employee
+SELECT shop.Name, COUNT(hiring.Employee_ID) as employee_count
+SELECT shop.Name, COUNT(DISTINCT hiring.Employee_ID) AS employee_count
+SELECT Name FROM shop WHERE Shop_ID NOT IN (SELECT Shop_ID FROM hiring)
+SELECT shop.Name FROM shop WHERE shop.Shop_ID NOT IN (SELECT Shop_ID FROM hiring)
+with no hires would have a count of zero
+SELECT shop.Shop_ID, shop.Name, COUNT(DISTINCT hiring.Employee_ID) AS NumberOfEmployees
+SELECT SUM(Bonus) FROM evaluation
+SELECT SUM(Bonus) FROM evaluation
+SELECT hiring.*, employee.Name, employee.Age, employee.City, shop.Name AS Shop_Name, shop.Location, shop.District, shop.Number_products, shop.Manager_name
+SELECT h.*, e.Name AS Employee_Name, e.Age AS Employee_Age, e.City AS Employee_City, s.Name AS Shop_Name, s.Location AS Shop_Location, s.District AS Shop_District, s.Number_products AS Number_of_Products FROM hiring h
+SELECT District FROM shop GROUP BY District HAVING (COUNT(CASE WHEN Number_products < 3000 THEN 1 ELSE NULL END)) >= 1 AND (COUNT(CASE WHEN Number_products > 10000 THEN 1 ELSE NULL END)) >= 1
+SELECT District FROM shop
+SELECT COUNT(DISTINCT Location) FROM shop
+SELECT COUNT(DISTINCT Location) FROM shop
+SELECT COUNT(Document_ID) FROM Documents
+SELECT COUNT(Document_ID) FROM Documents
+SELECT Document_ID, Document_Name, Document_Description FROM Documents
+SELECT Document_ID, Document_Name, Document_Description FROM Documents
+SELECT Document_Name, Template_ID FROM Documents WHERE Document_Description LIKE '%w%'
+SELECT Document_Name, Template_ID FROM Documents WHERE Document_Description LIKE '%w%'
+SELECT Document_ID, Template_ID, Document_Description FROM Documents WHERE Document_Name = "Robbin CV"
+SELECT Document_ID, Template_ID, Document_Description FROM Documents WHERE Document_Name = 'Robbin CV'
+SELECT COUNT(DISTINCT Template_ID) FROM Documents
+SELECT COUNT(DISTINCT Template_ID) FROM Documents
+SELECT COUNT(Documents.Document_ID) FROM Templates
+SELECT COUNT(Documents.Document_ID) FROM Documents JOIN Templates ON Documents.Template_ID = Templates.Template_ID WHERE Templates.Template_Type_Code = 'PPT'
+SELECT Template_ID, COUNT(Document_ID) AS Document_Count FROM Documents GROUP BY Template_ID
+SELECT Template_ID, COUNT(*) AS Usage_Count FROM Documents GROUP BY Template_ID
+SELECT Templates.Template_ID, Ref_Template_Types.Template_Type_Code
+SELECT Templates.Template_ID, Templates.Template_Type_Code
+SELECT Template_ID FROM Documents GROUP BY Template_ID HAVING COUNT(*) > 1
+SELECT Template_ID FROM Documents GROUP BY Template_ID HAVING COUNT(*) > 1
+SELECT Template_ID FROM Templates
+SELECT Template_ID FROM Templates LEFT JOIN Documents ON Templates.Template_ID = Documents.Template_ID WHERE Documents.Document_ID IS NULL
+SELECT COUNT(DISTINCT Template_ID) FROM Templates
+SELECT COUNT(*) FROM Templates
+SELECT Template_ID, Version_Number, Template_Type_Code FROM Templates
+SELECT Template_ID, Version_Number, Template_Type_Code FROM Templates
+SELECT DISTINCT Template_Type_Code FROM Templates
+SELECT DISTINCT Template_Type_Code FROM Ref_Template_Types
+SELECT Templates.Template_ID FROM Templates JOIN Ref_Template_Types ON Templates.Template_Type_Code = Ref_Template_Types.Template_Type_Code WHERE Template_Type_Code IN ('PP', 'PPT')
+SELECT Template_ID FROM Templates WHERE Template_Type_Code IN ('PP', 'PPT')
+SELECT COUNT(*) FROM Templates WHERE Template_Type_Code = 'CV'
+SELECT COUNT(*) FROM Templates WHERE Template_Type_Code = 'CV'
+SELECT Version_Number, Template_Type_Code FROM Templates WHERE Version_Number > 5;</think>
+SELECT Version_Number, Template_Type_Code FROM Templates WHERE Version_Number > 5
+SELECT rt.Template_Type_Code AS Template_Type_Code, COUNT(t.Template_ID) AS Num_Templates FROM Ref_Template_Types rt LEFT JOIN Templates t ON rt.Template_Type_Code = t.Template_Type_Code GROUP BY rt.Template_Type_Code
+SELECT Ref_Template_Types.Template_Type_Code, COUNT(Templates.Template_ID) AS Template_Count
+SELECT Template_Type_Code, COUNT(*) as Template_Count
+SELECT Template_Type_Code, COUNT(Template_ID) AS Template_Count FROM Templates GROUP BY Template_Type_Code ORDER BY Template_Count DESC LIMIT 1
+SELECT Template_Type_Code FROM Ref_Template_Types
+SELECT Template_Type_Code FROM Templates GROUP BY Template_Type_Code HAVING COUNT(Template_ID) < 3
+SELECT MIN(Version_Number) AS Version, Template_Type_Code FROM Templates
+SELECT MIN(Version_Number), Template_Type_Code FROM Templates
+SELECT Template_Type_Code FROM Templates WHERE Template_ID IN (SELECT Template_ID FROM Documents WHERE Document_Name = 'Data base')
+SELECT T.Template_Type_Code FROM Documents D JOIN Templates T ON D.Template_ID = T.Template_ID WHERE D.Document_Name = 'Data base'
+SELECT D.Document_Name FROM Documents AS D
+SELECT D.Document_Name FROM Documents AS D
+SELECT Ref_Template_Types.Template_Type_Code, COUNT(Documents.Document_ID) as Document_Count
+SELECT Ref_Template_Types.Template_Type_Code, COUNT(Documents.Document_ID) as Document_Count
+SELECT Templates.Template_Type_Code, COUNT(Documents.Document_ID) AS Document_Count
+SELECT Template_Type_Code FROM Ref_Template_Types
+SELECT Template_Type_Code FROM Templates WHERE Template_ID NOT IN (SELECT Template_ID FROM Documents)
+SELECT Template_Type_Code FROM Ref_Template_Types
+SELECT Template_Type_Code, Template_Type_Description FROM Ref_Template_Types
+SELECT Template_Type_Code, Template_Type_Description FROM Ref_Template_Types
+SELECT Template_Type_Description FROM Ref_Template_Types WHERE Template_Type_Code = 'AD'
+SELECT Template_Type_Description FROM Ref_Template_Types WHERE Template_Type_Code = 'AD'
+SELECT Template_Type_Code FROM Ref_Template_Types WHERE Template_Type_Description = 'Book'
+SELECT Template_Type_Code FROM Ref_Template_Types WHERE Template_Type_Description = 'Book'
+SELECT DISTINCT r.Template_Type_Description
+SELECT DISTINCT Template_Type_Description FROM Templates INNER JOIN Documents ON Templates.Template_ID = Documents.Template_ID
+SELECT Templates.Template_ID FROM Templates INNER JOIN Ref_Template_Types ON Templates.Template_Type_Code = Ref_Template_Types.Template_Type_Code WHERE Ref_Template_Types.Template_Type_Description = 'Presentation'
+SELECT Templates.Template_ID FROM Templates JOIN Ref_Template_Types ON Templates.Template_Type_Code = Ref_Template_Types.Template_Type_Code WHERE Ref_Template_Types.Template_Type_Description = 'Presentation'
+SELECT COUNT(Paragraph_ID) FROM Paragraphs
+SELECT COUNT(Paragraph_ID) FROM Paragraphs
+SELECT COUNT(Paragraph_ID) FROM Paragraphs
+SELECT COUNT(Paragraph_ID) FROM Paragraphs JOIN Documents ON Paragraphs.Document_ID = Documents.Document_ID WHERE Document_Name = 'Summer Show'
+SELECT p.Paragraph_ID, p.Paragraph_Text, d.Document_Name, d.Document_Description, t.Template_Details, rt.Template_Type_Description, t.Date_Effective_From, t.Date_Effective_To
+SELECT Paragraph_Text, Document_Name, Document_Description, Template_Type_Description
+SELECT p.Paragraph_ID, p.Paragraph_Text
+SELECT Paragraph_ID, Paragraph_Text FROM Paragraphs
+SELECT Paragraph_Text FROM Paragraphs
+SELECT Paragraph_Text FROM Paragraphs JOIN Documents ON Paragraphs.Document_ID = Documents.Document_ID WHERE Document_Name = 'Customer reviews'
+SELECT Documents.Document_ID, COUNT(Paragraph_ID) AS Num_Paragraphs
+SELECT Document_ID, COUNT(Paragraph_ID) AS Paragraph_Count FROM Paragraphs GROUP BY Document_ID ORDER BY Document_ID
+SELECT Documents.Document_ID, Document_Name, COUNT(Paragraph_ID) AS NumberOfParagraphs
+SELECT Documents.Document_ID, Documents.Document_Name, COUNT(Paragraphs.Paragraph_ID) AS Num_Paragraphs
+SELECT Document_ID FROM Paragraphs GROUP BY Document_ID HAVING COUNT(Paragraph_ID) >= 2
+SELECT Document_ID FROM Paragraphs GROUP BY Document_ID HAVING COUNT(*) >= 2
+SELECT Documents.Document_ID, Documents.Document_Name
+SELECT d.Document_ID, d.Document_Name
+SELECT Document_ID, COUNT(Paragraph_ID) as Paragraph_Count
+SELECT Document_ID, COUNT(Paragraph_ID) AS Num_Paragraphs FROM Paragraphs GROUP BY Document_ID ORDER BY Num_Paragraphs ASC LIMIT 1
+SELECT Document_ID FROM Paragraphs GROUP BY Document_ID HAVING COUNT(Paragraph_ID) BETWEEN 1 AND 2
+SELECT Document_ID FROM Paragraphs GROUP BY Document_ID HAVING COUNT(Paragraph_ID) BETWEEN 1 AND 2
+SELECT DISTINCT Documents.Document_ID FROM Paragraphs
+SELECT DISTINCT d.Document_ID FROM Documents AS d
+SELECT COUNT(Teacher_ID) FROM teacher
+SELECT COUNT(Teacher_ID) FROM teacher
+SELECT Name FROM teacher ORDER BY Age ASC
+SELECT Name FROM teacher ORDER BY Age ASC
+SELECT Age, Hometown FROM teacher
+SELECT Age, Hometown FROM teacher
+SELECT Name FROM teacher WHERE Hometown != 'Little Lever Urban District'
+SELECT Name FROM teacher WHERE Hometown != 'Little Lever Urban District'
+SELECT Name FROM teacher WHERE Age LIKE '32' OR Age LIKE '33'
+SELECT Name FROM teacher WHERE Age IN ('32', '33')
+SELECT Hometown FROM teacher WHERE Age = (SELECT MIN(CAST(Age AS INT)) FROM teacher)
+SELECT Hometown FROM teacher WHERE Age = (SELECT MIN(Age) FROM teacher)
+SELECT Hometown, COUNT(Teacher_ID) AS Teacher_Count FROM teacher GROUP BY Hometown
+SELECT Hometown, COUNT(Name) AS Teacher_Count FROM teacher GROUP BY Hometown
+SELECT Hometown, COUNT(*) AS Count FROM teacher GROUP BY Hometown ORDER BY Count DESC LIMIT 1
+SELECT Hometown, COUNT(*) AS Teacher_Count FROM teacher GROUP BY Hometown ORDER BY Teacher_Count DESC
+SELECT Hometown FROM teacher GROUP BY Hometown HAVING COUNT(*) >= 2
+SELECT Hometown FROM teacher GROUP BY Hometown HAVING COUNT(*) >= 2
+SELECT teacher.Name, course.Course FROM teacher
+SELECT teacher.Name, course.Course FROM teacher JOIN course_arrange ON teacher.Teacher_ID = course_arrange.Teacher_ID JOIN course ON course_arrange.Course_ID = course.Course_ID
+SELECT teacher.Name, course.Course FROM teacher JOIN course_arrange ON teacher.Teacher_ID = course_arrange.Teacher_ID JOIN course ON course_arrange.Course_ID = course.Course_ID ORDER BY teacher.Name ASC
+SELECT teacher.Name, course.Course FROM teacher JOIN course_arrange ON teacher.Teacher_ID = course_arrange.Teacher_ID JOIN course ON course_arrange.Course_ID = course.Course_ID ORDER BY teacher.Name
+SELECT teacher.Name FROM teacher JOIN course_arrange ON teacher.Teacher_ID = course_arrange.Teacher_ID JOIN course ON course_arrange.Course_ID = course.Course_ID WHERE course.Course = 'math'
+SELECT teacher.Name FROM teacher JOIN course_arrange ON teacher.Teacher_ID = course_arrange.Teacher_ID JOIN course ON course_arrange.Course_ID = course.Course_ID WHERE course.Course = 'math'
+SELECT teacher.Name, COUNT(DISTINCT course_arrange.Course_ID) AS NumberOfCourses
+SELECT teacher.Name, COUNT(course_arrange.Course_ID) AS NumberOfCourses
+SELECT teacher.Name FROM teacher JOIN course_arrange ON teacher.Teacher_ID = course_arrange.Teacher_ID GROUP BY teacher.Teacher_ID HAVING COUNT(course_arrange.Course_ID) >= 2
+SELECT teacher.Name FROM teacher
+SELECT Name FROM teacher LEFT JOIN course_arrange ON teacher.Teacher_ID = course_arrange.Teacher_ID WHERE course_arrange.Teacher_ID IS NULL
+SELECT teacher.Name FROM teacher
+SELECT COUNT(*) FROM visitor WHERE Age < 30
+SELECT Name FROM visitor WHERE Level_of_membership > 4 ORDER BY Level_of_membership DESC
+SELECT AVG(Age) FROM visitor WHERE Level_of_membership <= 4
+SELECT Name, Level_of_membership FROM visitor WHERE Level_of_membership > 4 ORDER BY Age DESC
+SELECT Museum_ID, Name FROM museum ORDER BY Num_of_Staff DESC LIMIT 1
+SELECT AVG(Num_of_Staff) FROM museum WHERE Open_Year < '2009'
+SELECT Open_Year, Num_of_Staff FROM museum WHERE Name = 'Plaza Museum'
+SELECT Name FROM museum WHERE Num_of_Staff > (SELECT MIN(Num_of_Staff) FROM museum WHERE Open_Year > '2010')
+SELECT visitor.ID, visitor.Name, visitor.Age FROM visitor JOIN visit ON visitor.ID = visit.visitor_ID GROUP BY visit.visitor_ID HAVING COUNT(*) > 1
+SELECT visitor.ID, Name, Level_of_membership
+SELECT museum.Museum_ID, museum.Name FROM museum JOIN visit ON museum.Museum_ID = visit.Museum_ID WHERE (SELECT MAX(visit_count) FROM (SELECT COUNT(*) AS visit_count FROM visit GROUP BY Museum_ID)) = COUNT(*)
+SELECT museum.Museum_ID, Name FROM museum
+SELECT Name, Age FROM visitor
+SELECT AVG(Num_of_Ticket) AS Average_Tickets, MAX(Num_of_Ticket) AS Maximum_Tickets FROM visit
+SELECT SUM(visit.Total_spent) AS Total_Ticket_Expense
+SELECT visitor.Name FROM visitor
+SELECT visitor_ID FROM visit WHERE Museum_ID IN (SELECT Museum_ID FROM museum WHERE Open_Year > '2010')
+SELECT COUNT(Museum_ID) FROM museum WHERE CAST(Open_Year AS INTEGER) > 2013 OR CAST(Open_Year AS INTEGER) < 2008
+SELECT COUNT(player_id) FROM players
+SELECT COUNT(DISTINCT player_id) FROM players
+SELECT COUNT(*) FROM matches
+SELECT COUNT(*) FROM matches
+SELECT first_name, birth_date FROM players WHERE country_code = 'USA'
+SELECT first_name, birth_date FROM players WHERE country_code = 'USA'
+SELECT AVG(winner_age) AS "Average Winner Age", AVG(loser_age) AS "Average Loser Age" FROM matches
+SELECT AVG(winner_age) AS average_winner_age, AVG(loser_age) AS average_loser_age FROM matches
+SELECT AVG(winner_rank) FROM matches
+SELECT AVG(winner_rank) FROM matches
+SELECT MAX(loser_rank) FROM matches
+SELECT MIN(loser_rank) FROM matches
+SELECT COUNT(DISTINCT country_code) FROM players
+SELECT COUNT(DISTINCT country_code) FROM players
+SELECT COUNT(DISTINCT loser_name) FROM matches
+SELECT COUNT(DISTINCT loser_name) FROM matches
+SELECT tourney_name FROM matches GROUP BY tourney_id HAVING COUNT(*) > 10
+SELECT DISTINCT tourney_name FROM matches GROUP BY tourney_name HAVING COUNT(*) > 10
+SELECT first_name, last_name
+SELECT p.first_name || ' ' || p.last_name AS player_name
+SELECT COUNT(match_num) FROM matches WHERE year IN (2013, 2016)
+SELECT COUNT(*) FROM matches WHERE year IN (2013, 2016)
+SELECT p.country_code, p.first_name FROM matches m JOIN players p ON m.winner_id = p.player_id WHERE m.tourney_name IN ('WTA Championships', 'Australian Open') GROUP BY m.winner_id HAVING COUNT(DISTINCT m.tourney_name) = 2
+SELECT first_name, country_code FROM players WHERE player_id IN (SELECT winner_id FROM matches WHERE tourney_name = 'WTA Championships') AND player_id IN (SELECT winner_id FROM matches WHERE tourney_name = 'Australian Open')
+SELECT first_name, country_code
+SELECT first_name, country_code FROM players ORDER BY birth_date ASC LIMIT 1
+SELECT first_name, last_name FROM players ORDER BY birth_date
+SELECT first_name || ' ' || last_name AS full_name, birth_date FROM players ORDER BY birth_date
+SELECT first_name, last_name FROM players WHERE hand = 'L' ORDER BY birth_date
+SELECT CONCAT(first_name, ' ', last_name) AS full_name, birth_date FROM players WHERE hand = 'left' ORDER BY birth_date
+SELECT players.first_name, players.country_code
+with the highest of those
+SELECT year, COUNT(*) AS num_matches FROM matches GROUP BY year ORDER BY num_matches DESC LIMIT 1
+SELECT year, COUNT(*) AS matches_count FROM matches GROUP BY year ORDER BY matches_count DESC
+SELECT winner_name, rank_points
+SELECT p.first_name, p.last_name, r.ranking_points
+SELECT winner_name FROM matches
+SELECT players.first_name || ' ' || players.last_name AS winner_name
+SELECT winner_name, loser_name FROM matches WHERE minutes = (SELECT MAX(minutes) FROM matches)
+SELECT winner_name, loser_name
+SELECT players.first_name, AVG(rankings.ranking) AS avg_ranking
+SELECT players.first_name, AVG(rankings.ranking) AS average_ranking FROM players JOIN rankings ON players.player_id = rankings.player_id GROUP BY players.player_id, players.first_name
+SELECT players.first_name, SUM(rankings.ranking_points) AS total_ranking_points
+SELECT players.first_name, SUM(rankings.ranking_points) AS total_ranking_points
+SELECT COUNT(*) AS player_count FROM players GROUP BY country_code
+SELECT country_code, COUNT(player_id) FROM players GROUP BY country_code
+SELECT country_code, COUNT(*) AS player_count
+SELECT country_code FROM players GROUP BY country_code ORDER BY COUNT(player_id) DESC LIMIT 1
+SELECT country_code FROM players GROUP BY country_code HAVING COUNT(*) > 50
+SELECT country_code, COUNT(player_id) as player_count
+SELECT ranking_date, SUM(tours) AS total_tours FROM rankings GROUP BY ranking_date
+SELECT ranking_date, SUM(tours) FROM rankings GROUP BY ranking_date
+SELECT COUNT(*) AS total_matches, year FROM matches GROUP BY year
+SELECT year, COUNT(*) as match_count
+SELECT p.first_name, p.last_name, r.ranking
+SELECT p.first_name || ' ' || p.last_name AS winner_name, r.ranking AS rank
+SELECT COUNT(DISTINCT m.winner_id) FROM matches AS m JOIN players AS p ON m.winner_id = p.player_id WHERE p.hand = 'left' AND m.tourney_name = 'WTA Championships'
+SELECT COUNT(DISTINCT m.winner_id) FROM matches AS m JOIN players AS p ON m.winner_id = p.player_id WHERE p.hand = 'left' AND m.tourney_level = 'championship'
+SELECT players.first_name, players.country_code, players.birth_date FROM matches JOIN players ON matches.winner_id = players.player_id JOIN rankings ON players.player_id = rankings.player_id WHERE rankings.ranking_points = (SELECT MAX(ranking_points) FROM rankings)
+SELECT p.first_name, p.country_code, p.birth_date FROM players p JOIN matches m ON p.player_id = m.winner_id WHERE m.winner_rank_points = (SELECT MAX(winner_rank_points) FROM matches)
+SELECT hand, COUNT(*) AS hand_count FROM players GROUP BY hand
+SELECT COUNT(*) AS count, hand FROM players GROUP BY hand
+SELECT COUNT(*) FROM ship WHERE disposition_of_ship = 'Captured'
+SELECT name, tonnage FROM ship ORDER BY name DESC
+SELECT name, date, result FROM battle
+SELECT MAX(total_deaths) AS max_death, MIN(total_deaths) AS min_death
+SELECT AVG(injured) FROM death
+SELECT death.killed, death.injured FROM death INNER JOIN ship ON death.caused_by_ship_id = ship.id WHERE ship.tonnage = 't'
+SELECT name, result FROM battle WHERE bulgarian_commander != 'Boril'
+SELECT DISTINCT battle.id, battle.name FROM battle JOIN ship ON battle.id = ship.lost_in_battle WHERE ship.ship_type = 'Brig'
+SELECT battle.id, battle.name FROM battle
+SELECT ship.id AS ship_id, ship.name AS name
+SELECT DISTINCT name FROM battle WHERE bulgarian_commander = 'Kaloyan' AND latin_commander = 'Baldwin I'
+SELECT COUNT(DISTINCT result) FROM battle
+SELECT COUNT(id) FROM battle WHERE NOT EXISTS (SELECT 1 FROM ship WHERE tonnage = '225' AND lost_in_battle = battle.id)
+SELECT battle.name, battle.date FROM battle
+SELECT battle.name, battle.result, battle.bulgarian_commander
+SELECT note FROM death WHERE note LIKE '%East%'
+SELECT line_1, line_2 FROM Addresses
+SELECT line_1, line_2 FROM Addresses
+SELECT COUNT(*) FROM Courses
+SELECT COUNT(course_id) FROM Courses
+SELECT course_description FROM Courses WHERE course_name = 'math'
+SELECT course_description FROM Courses WHERE course_name LIKE '%math%' OR course_name LIKE '%Math%';</think>
+SELECT zip_postcode FROM Addresses WHERE city = 'Port Chelsea'
+SELECT zip_postcode FROM Addresses WHERE city = 'Port Chelsea'
+SELECT Departments.department_id, Departments.department_name, COUNT(Degree_Programs.degree_program_id) AS degree_count
+SELECT Departments.department_id, Departments.department_name, COUNT(Degree_Programs.degree_program_id) AS degree_count
+SELECT COUNT(DISTINCT department_id) FROM Degree_Programs
+SELECT COUNT(DISTINCT department_id) FROM Degree_Programs
+SELECT COUNT(DISTINCT degree_summary_name) FROM Degree_Programs
+SELECT COUNT(DISTINCT degree_summary_name) FROM Degree_Programs
+SELECT COUNT(*) FROM Degree_Programs dp
+SELECT COUNT(*) FROM Degree_Programs
+SELECT section_name, section_description FROM Sections
+SELECT section_name, section_description FROM Sections
+SELECT course_id, course_name FROM Courses
+SELECT course_id, course_name FROM Courses
+SELECT section_name FROM Sections ORDER BY section_name DESC
+SELECT section_name FROM Sections ORDER BY section_name DESC
+SELECT Semesters.semester_id, Semesters.semester_name, COUNT(*) AS student_count
+SELECT semester_id, COUNT(student_id) as student_count
+SELECT department_description FROM Departments WHERE department_name LIKE '%the computer%'
+SELECT department_description FROM Departments WHERE department_name LIKE '%computer%'
+SELECT s.student_id, s.first_name, s.middle_name, s.last_name
+SELECT Students.student_id, first_name, middle_name, last_name
+SELECT s.first_name, s.middle_name, s.last_name
+SELECT Students.first_name, Students.middle_name, Students.last_name FROM Students
+SELECT degree_summary_name FROM Degree_Programs
+SELECT degree_summary_name FROM Degree_Programs
+SELECT dp.degree_program_id, dp.degree_summary_name
+WITH enrolment_counts AS (
+SELECT Students.student_id, first_name, middle_name, last_name, COUNT(*) AS total_enrollments
+SELECT Students.student_id, first_name, middle_name, last_name, COUNT(*) AS number_of_enrollments
+SELECT semester_name FROM Semesters
+SELECT s.semester_name FROM Semesters s LEFT JOIN Student_Enrolment se ON s.semester_id = se.semester_id WHERE se.student_enrolment_id IS NULL
+SELECT DISTINCT course_name FROM Courses JOIN Student_Enrolment_Courses ON Courses.course_id = Student_Enrolment_Courses.course_id
+SELECT DISTINCT course_name FROM Courses WHERE course_id IN (SELECT course_id FROM Student_Enrolment_Courses)
+SELECT course_name FROM Courses
+SELECT c.course_name AS course_name, COUNT(se.student_course_id) AS student_count
+SELECT Students.last_name FROM Students
+SELECT last_name FROM Students
+SELECT t.transcript_id, t.transcript_date
+SELECT transcript_id, transcript_date FROM Transcripts JOIN Transcript_Contents ON Transcripts.transcript_id = Transcript_Contents.transcript_id GROUP BY Transcript_Contents.transcript_id HAVING COUNT(*) >= 2
+SELECT cell_mobile_number FROM Students WHERE first_name = 'Timmothy' AND last_name = 'Ward'
+SELECT cell_mobile_number FROM Students WHERE first_name = 'Timmothy' AND last_name = 'Ward'
+SELECT first_name, middle_name, last_name FROM Students ORDER BY date_first_registered ASC LIMIT 1
+SELECT first_name, middle_name, last_name FROM Students ORDER BY date_first_registered ASC LIMIT 1
+SELECT first_name, middle_name, last_name FROM Students s
+SELECT first_name, middle_name, last_name FROM Students ORDER BY date_left ASC LIMIT 1
+SELECT first_name FROM Students WHERE current_address_id != permanent_address_id
+SELECT first_name FROM Students WHERE current_address_id != permanent_address_id
+SELECT a.address_id, a.line_1, a.line_2, a.line_3, a.city, a.zip_postcode, a.state_province_county, a.country, a.other_address_details
+SELECT address_id, COUNT(*) as student_count
+SELECT AVG(transcript_date) FROM Transcripts
+SELECT AVG(julianday(transcript_date)) FROM Transcripts
+SELECT transcript_date, other_details FROM Transcripts ORDER BY transcript_date LIMIT 1
+SELECT MIN(t.transcript_date) AS earliest_transcript_date,
+SELECT COUNT(DISTINCT transcript_id) FROM Transcript_Contents
+SELECT COUNT(*) FROM Transcripts
+SELECT MAX(transcript_date) AS last_transcript_release_date FROM Transcripts
+SELECT MAX(transcript_date) FROM Transcripts
+SELECT student_course_id, COUNT(*) as transcript_count
+WITH course_counts AS (
+SELECT t.transcript_id, t.transcript_date
+SELECT t.transcript_id, t.transcript_date
+SELECT s1.semester_id FROM Student_Enrolment s JOIN Degree_Programs d ON s.degree_program_id = d.degree_program_id JOIN Departments dep ON d.department_id = dep.department_id WHERE dep.department_name LIKE 'Master%' UNION SELECT s2.semester_id FROM Student_Enrolment s JOIN Degree_Programs d ON s.degree_program_id = d.degree_program_id JOIN Departments dep ON d.department_id = dep.department_id WHERE dep.department_name LIKE 'Bachelor%'
+SELECT semester_id FROM Semesters WHERE
+SELECT COUNT(DISTINCT current_address_id) FROM Students
+SELECT address_id, line_1, line_2, etc. FROM Addresses WHERE address_id IN (SELECT current_address_id FROM Students) OR address_id IN (SELECT permanent_address_id FROM Students).
+SELECT * FROM Students ORDER BY last_name DESC, first_name DESC, middle_name DESC
+SELECT other_student_details FROM Students ORDER BY last_name DESC
+SELECT * FROM Sections WHERE section_name = 'H'
+SELECT section_description FROM Sections WHERE section_name = 'h'
+SELECT first_name FROM Students JOIN Addresses ON permanent_address_id = address_id WHERE country = 'Haiti' OR cell_mobile_number = '09700166582'
+SELECT Students.first_name FROM Students JOIN Addresses Addr ON Students.permanent_address_id = Addr.address_id WHERE Addr.country = 'Haiti' OR Students.cell_mobile_number = '09700166582'
+SELECT Title FROM Cartoon ORDER BY Title
+SELECT Title FROM Cartoon ORDER BY Title
+SELECT Title, Directed_by FROM Cartoon WHERE Directed_by = 'Ben Jones'
+SELECT Title FROM Cartoon WHERE Directed_by = 'Ben Jones'
+SELECT COUNT(*) FROM Cartoon WHERE Written_by = 'Joseph Kuhr'
+SELECT COUNT(*) FROM Cartoon WHERE Written_by = 'Joseph Kuhr'
+SELECT Title, Directed_by FROM Cartoon ORDER BY Original_air_date
+SELECT Title, Directed_by FROM Cartoon ORDER BY Original_air_date
+SELECT Title FROM Cartoon WHERE Directed_by IN ('Ben Jones', 'Brandon Vietti')
+SELECT Title FROM Cartoon WHERE Directed_by IN ('Ben Jones', 'Brandon Vietti')
+SELECT Country, COUNT(id) AS Number_of_Channels FROM TV_Channel GROUP BY Country ORDER BY Number_of_Channels DESC LIMIT 1
+SELECT Country, COUNT(*) AS ChannelCount
+SELECT COUNT(DISTINCT series_name) AS unique_series_names, COUNT(DISTINCT Content) AS unique_contents FROM TV_Channel
+SELECT COUNT(DISTINCT series_name) AS unique_series, COUNT(DISTINCT Content) AS unique_content FROM TV_Channel
+SELECT Content FROM TV_Channel WHERE series_name = 'Sky Radio'
+SELECT Content FROM TV_Channel WHERE series_name = 'Sky Radio'
+SELECT Package_Option FROM TV_Channel WHERE series_name = 'Sky Radio'
+SELECT Package_Option FROM TV_Channel WHERE series_name = 'Sky Radio'
+SELECT COUNT(*) FROM TV_Channel WHERE Language = 'English'
+SELECT COUNT(*) FROM TV_Channel WHERE Language = 'English'
+SELECT Language, COUNT(DISTINCT id) AS Channel_Count
+SELECT Language, COUNT(*) AS Channel_Count
+SELECT Language, COUNT(DISTINCT Channel) as Channel_Count
+SELECT Language, COUNT(id) AS Channel_Count FROM TV_Channel WHERE Language IS NOT NULL GROUP BY Language
+SELECT TV_Channel.series_name FROM TV_Channel INNER JOIN Cartoon ON TV_Channel.id = Cartoon.Channel WHERE Cartoon.Title = "The Rise of the Blue Beetle!"
+SELECT series_name FROM TV_Channel
+SELECT Cartoon.Title FROM Cartoon JOIN TV_Channel ON Cartoon.Channel = TV_Channel.id WHERE TV_Channel.series_name = "Sky Radio"
+SELECT Cartoon.Title FROM Cartoon JOIN TV_Channel ON Cartoon.Channel = TV_Channel.id WHERE TV_Channel.series_name = "Sky Radio"
+SELECT Episode FROM TV_series ORDER BY Rating
+SELECT * FROM TV_series ORDER BY Rating DESC
+SELECT Episode, Rating FROM TV_series ORDER BY CAST(Rating AS FLOAT) DESC LIMIT 3
+SELECT Episode, Share FROM TV_series ORDER BY Share DESC LIMIT 3
+SELECT MIN(Share) AS Minimum_Share, MAX(Share) AS Maximum_Share FROM TV_series
+SELECT MAX(Share) AS Max_Share, MIN(Share) AS Min_Share FROM TV_series
+SELECT Air_Date FROM TV_series WHERE Episode = "A Love of a Lifetime"
+SELECT Air_Date FROM TV_series WHERE Episode = 'A Love of a Lifetime'
+SELECT Weekly_Rank FROM TV_series WHERE Episode = 'A Love of a Lifetime'
+SELECT Weekly_Rank FROM TV_series INNER JOIN TV_Channel ON TV_series.Channel = TV_Channel.id WHERE Episode = 'A Love of a Lifetime'
+SELECT TV_Channel.series_name FROM TV_Channel JOIN TV_series ON TV_Channel.id = TV_series.Channel WHERE TV_series.Episode = "A Love of a Lifetime"
+SELECT TV_Channel.series_name FROM TV_Channel INNER JOIN TV_series ON TV_Channel.id = TV_series.Channel WHERE TV_series.Episode = 'A Love of a Lifetime'
+SELECT Episode FROM TV_series JOIN TV_Channel ON TV_series.Channel = TV_Channel.id WHERE TV_Channel.series_name = 'Sky Radio'
+SELECT TS.Episode FROM TV_series AS TS INNER JOIN TV_Channel AS TC ON TS.Channel = TC.id WHERE TC.series_name = "Sky Radio"
+SELECT COUNT(*) AS NumberOfCartoons, Directed_by AS Director FROM Cartoon GROUP BY Directed_by
+SELECT Directed_by, COUNT(*) FROM Cartoon GROUP BY Directed_by
+SELECT Production_code, Channel FROM Cartoon ORDER BY Original_air_date DESC LIMIT 1
+SELECT Cartoon.Production_code, TV_Channel.series_name
+SELECT Package_Option, series_name FROM TV_Channel WHERE Hight_definition_TV = 'Yes'
+SELECT Package_Option, series_name FROM TV_Channel WHERE Hight_definition_TV = 'Yes'
+SELECT DISTINCT TV_Channel.Country FROM Cartoon JOIN TV_Channel ON Cartoon.Channel = TV_Channel.id WHERE Cartoon.Written_by = 'Todd Casey'
+SELECT DISTINCT tvc.Country
+SELECT DISTINCT Country FROM TV_Channel WHERE id NOT IN (SELECT Channel FROM Cartoon WHERE Directed_by = 'Todd Casey')
+SELECT DISTINCT Country FROM TV_Channel
+SELECT DISTINCT TV_Channel.series_name, TV_Channel.Country
+SELECT DISTINCT t.series_name, t.Country
+SELECT Pixel_aspect_ratio_PAR, Country FROM TV_Channel WHERE Language != 'English'
+SELECT Pixel_aspect_ratio_PAR, Country FROM TV_Channel WHERE Language != 'English'
+SELECT id FROM TV_Channel GROUP BY Country HAVING COUNT(*) > 2
+SELECT Channel FROM TV_series UNION SELECT Channel FROM Cartoon
+SELECT id FROM TV_Channel WHERE id NOT IN (SELECT Channel FROM Cartoon WHERE Directed_by = 'Ben Jones')
+SELECT DISTINCT TV_Channel.id FROM TV_Channel WHERE TV_Channel.id NOT IN (SELECT Cartoon.Channel FROM Cartoon WHERE Cartoon.Directed_by = 'Ben Jones')
+SELECT Package_Option FROM TV_Channel WHERE id NOT IN (SELECT Channel FROM Cartoon WHERE Directed_by = 'Ben Jones')
+SELECT Package_Option FROM TV_Channel WHERE id NOT IN (SELECT Channel FROM Cartoon WHERE Directed_by = 'Ben Jones')
+SELECT COUNT(DISTINCT Poker_Player_ID) AS Total_Poker_Players FROM poker_player
+SELECT COUNT(Poker_Player_ID) FROM poker_player
+SELECT Earnings FROM poker_player ORDER BY Earnings DESC
+SELECT Earnings FROM poker_player ORDER BY Earnings DESC
+SELECT Final_Table_Made, Best_Finish FROM poker_player
+SELECT Final_Table_Made, Best_Finish FROM poker_player
+SELECT AVG(Earnings) FROM poker_player
+SELECT AVG(Earnings) FROM poker_player
+SELECT Money_Rank FROM poker_player WHERE Earnings = (SELECT MAX(Earnings) FROM poker_player)
+SELECT Money_Rank FROM poker_player WHERE Earnings = (SELECT MAX(Earnings) FROM poker_player)
+SELECT MAX(Final_Table_Made) FROM poker_player WHERE Earnings < 200000
+SELECT MAX(Final_Table_Made) FROM poker_player WHERE Earnings < 200000
+SELECT people.Name FROM poker_player JOIN people ON poker_player.People_ID = people.People_ID
+SELECT Name FROM people JOIN poker_player ON people.People_ID = poker_player.People_ID
+SELECT people.Name FROM poker_player JOIN people ON poker_player.People_ID = people.People_ID WHERE poker_player.Earnings > 300000
+SELECT people.Name FROM poker_player JOIN people ON poker_player.People_ID = people.People_ID WHERE poker_player.Earnings > 300000
+SELECT people.Name, poker_player.Final_Table_Made FROM people JOIN poker_player ON people.People_ID = poker_player.People_ID ORDER BY poker_player.Final_Table_Made ASC
+SELECT people.Name FROM people JOIN poker_player ON people.People_ID = poker_player.People_ID ORDER BY poker_player.Final_Table_Made
+SELECT p.Birth_Date FROM people p JOIN poker_player pp ON p.People_ID = pp.People_ID ORDER BY pp.Earnings ASC LIMIT 1
+SELECT p.Birth_Date FROM people p JOIN poker_player pp ON p.People_ID = pp.People_ID WHERE pp.Earnings = (SELECT MIN(Earnings) FROM poker_player)
+SELECT Money_Rank FROM poker_player
+SELECT ppp.Money_Rank FROM people p JOIN poker_player ppp ON p.People_ID = ppp.People_ID WHERE p.Height = (SELECT MAX(Height) FROM people)
+SELECT AVG(Earnings) FROM poker_player JOIN people ON poker_player.People_ID = people.People_ID WHERE people.Height > 200
+SELECT AVG(Earnings) FROM poker_player JOIN people ON poker_player.People_ID = people.People_ID WHERE people.Height > 200
+SELECT Name FROM people JOIN poker_player ON people.People_ID = poker_player.People_ID ORDER BY Earnings DESC
+SELECT people.Name FROM poker_player JOIN people ON poker_player.People_ID = people.People_ID ORDER BY poker_player.Earnings DESC
+SELECT Nationality, COUNT(people_id) AS Nationality_Count FROM people GROUP BY Nationality
+SELECT Nationality, COUNT(*) AS Nationality_Count FROM people GROUP BY Nationality
+SELECT Nationality, COUNT(*) AS Nationality_Count FROM people GROUP BY Nationality ORDER BY Nationality_Count DESC LIMIT 1
+SELECT Nationality, COUNT(*) FROM people GROUP BY Nationality ORDER BY COUNT(*) DESC LIMIT 1
+SELECT Nationality FROM people GROUP BY Nationality HAVING COUNT(*) >= 2
+SELECT Nationality FROM people GROUP BY Nationality HAVING COUNT(*) >= 2
+SELECT Name, Birth_Date FROM people ORDER BY Name ASC
+SELECT Name, Birth_Date FROM people ORDER BY Name
+SELECT Name FROM people WHERE Nationality <> "Russia"
+SELECT people.Name FROM poker_player JOIN people ON poker_player.People_ID = people.People_ID WHERE people.Nationality != "Russia"
+SELECT Name FROM people LEFT JOIN poker_player ON people.People_ID = poker_player.People_ID WHERE poker_player.People_ID IS NULL
+SELECT Name FROM people
+SELECT COUNT(DISTINCT Nationality) FROM people
+SELECT COUNT(DISTINCT Nationality) FROM people
+SELECT COUNT(DISTINCT state) FROM AREA_CODE_STATE
+SELECT contestant_number, contestant_name FROM CONTESTANTS ORDER BY contestant_name DESC
+SELECT vote_id, phone_number, state FROM VOTES
+SELECT MAX(area_code) AS max_area_code, MIN(area_code) AS min_area_code FROM AREA_CODE_STATE
+SELECT MAX(created) FROM VOTES WHERE state = 'CA'
+SELECT contestant_name FROM CONTESTANTS WHERE contestant_name != 'Jessie Alloway'
+SELECT DISTINCT state, MIN(created) AS create_time FROM VOTES GROUP BY state
+SELECT contestant_number, contestant_name FROM CONTESTANTS JOIN VOTES ON contestant_number = contestant_number GROUP BY contestant_number HAVING COUNT(*) >= 2
+SELECT c.contestant_number, c.contestant_name FROM contestants c JOIN votes v ON c.contestant_number = v.contestant_number GROUP BY c.contestant_number ORDER BY COUNT(v.vote_id) ASC LIMIT 1
+SELECT COUNT(*) FROM VOTES WHERE state IN ('NY', 'CA')
+SELECT COUNT(*) FROM CONTESTANTS WHERE contestant_number NOT IN (SELECT contestant_number FROM VOTES)
+SELECT area_code FROM VOTES
+SELECT VOTES.created, VOTES.state, VOTES.phone_number FROM VOTES INNER JOIN CONTESTANTS ON VOTES.contestant_number = CONTESTANTS.contestant_number WHERE CONTESTANTS.contestant_name = 'Tabatha Gehling'
+SELECT area_code FROM AREA_CODE_STATE
+SELECT contestant_name FROM CONTESTANTS WHERE contestant_name LIKE '%Al%'
+SELECT Name FROM country WHERE IndepYear > 1950
+SELECT Name FROM country WHERE IndepYear > 1950
+SELECT COUNT(*) FROM country WHERE GovernmentForm = 'Republic'
+SELECT COUNT(*) FROM country WHERE GovernmentForm LIKE '%Republic%'
+SELECT SUM(SurfaceArea) FROM country WHERE Region = 'Caribbean'
+SELECT SUM(SurfaceArea) FROM country WHERE Continent = 'Caribbean'
+SELECT Continent FROM country WHERE Name = 'Anguilla'
+SELECT Continent FROM country WHERE Name = 'Anguilla'
+SELECT country.Region FROM city INNER JOIN country ON city.CountryCode = country.Code WHERE city.Name = 'Kabul'
+SELECT Region FROM country JOIN city ON country.Code = city.CountryCode WHERE city.Name = 'Kabul'
+SELECT Language FROM countrylanguage WHERE CountryCode = (SELECT Code FROM country WHERE Name = 'Aruba') ORDER BY Percentage DESC LIMIT 1
+SELECT Language FROM countrylanguage
+SELECT Population, LifeExpectancy FROM country WHERE Name = 'Brazil'
+SELECT Population, LifeExpectancy FROM country WHERE Name = 'Brazil'
+SELECT Region, Population FROM country WHERE Name = 'Angola'
+SELECT Region, Population FROM country WHERE Name = 'Angola'
+SELECT AVG(LifeExpectancy) FROM country WHERE Region = 'Central Africa'
+SELECT AVG(LifeExpectancy) AS AverageLifeExpectancy FROM country WHERE Region = 'Central Africa'
+SELECT Name FROM country WHERE Continent = 'Asia' ORDER BY LifeExpectancy ASC LIMIT 1
+SELECT Name FROM country WHERE LifeExpectancy = (SELECT MIN(LifeExpectancy) FROM country WHERE Continent = 'Asia') AND Continent = 'Asia'
+SELECT SUM(Population) AS TotalPopulation, MAX(GNP) AS MaxGNP FROM country WHERE Continent = 'Asia'
+SELECT SUM(city.Population) AS TotalPopulation, MAX(country.GNP) AS MaxGNP
+SELECT AVG(LifeExpectancy) FROM country WHERE Continent = 'Africa' AND GovernmentForm LIKE 'Republic'
+SELECT AVG(LifeExpectancy) FROM country WHERE Continent = 'Africa' AND GovernmentForm = 'Republic';</think>
+SELECT SUM(SurfaceArea) FROM country WHERE Continent IN ('Asia', 'Europe')
+SELECT SUM(SurfaceArea) FROM country WHERE Continent IN ('Asia', 'Europe')
+SELECT Population FROM city WHERE District = 'Gelderland'
+SELECT SUM(Population) FROM city WHERE District = 'Gelderland'
+SELECT AVG(GNP) AS Average_GNP, SUM(Population) AS Total_Population FROM country WHERE GovernmentForm = 'US territory'
+SELECT AVG(GNP) AS Mean_GNP, SUM(Population) AS Total_Population
+SELECT COUNT(DISTINCT Language) FROM countrylanguage
+SELECT COUNT(DISTINCT Language) FROM countrylanguage
+SELECT COUNT(DISTINCT GovernmentForm) FROM country WHERE Continent = 'Africa'
+SELECT DISTINCT GovernmentForm FROM country WHERE Continent = 'Africa'
+SELECT COUNT(DISTINCT Language) AS TotalLanguages FROM countrylanguage WHERE CountryCode = 'AW'
+SELECT COUNT(DISTINCT Language) FROM countrylanguage WHERE CountryCode = (SELECT Code FROM country WHERE Name = 'Aruba')
+SELECT COUNT(*) AS OfficialLanguages FROM countrylanguage WHERE CountryCode = (SELECT Code FROM country WHERE Name = 'Afghanistan') AND IsOfficial = 'Yes'
+SELECT COUNT(Language) FROM countrylanguage WHERE CountryCode = (SELECT Code FROM country WHERE Name = 'Afghanistan') AND IsOfficial = 'Yes'
+SELECT Name FROM country JOIN (SELECT CountryCode, COUNT(DISTINCT Language) AS lang_count FROM countrylanguage GROUP BY CountryCode) AS lang ON country.Code = lang.CountryCode ORDER BY lang_count DESC LIMIT 1
+SELECT Name FROM country WHERE Code = (SELECT CountryCode FROM countrylanguage GROUP BY CountryCode ORDER BY COUNT(DISTINCT Language) DESC LIMIT 1)
+SELECT Continent, COUNT(DISTINCT Language) AS LanguageCount
+SELECT continent, COUNT(DISTINCT language) AS language_count
+SELECT COUNT(DISTINCT cl1.CountryCode) FROM countrylanguage AS cl1 JOIN countrylanguage AS cl2 ON cl1.CountryCode = cl2.CountryCode WHERE cl1.Language = 'English' AND cl2.Language = 'Dutch'
+SELECT COUNT(DISTINCT cl1.CountryCode)
+SELECT c.Name FROM country c JOIN countrylanguage cl ON c.Code = cl.CountryCode WHERE cl.Language IN ('English', 'French') GROUP BY c.Code HAVING COUNT(DISTINCT cl.Language) = 2
+SELECT Name FROM country WHERE EXISTS (SELECT 1 FROM countrylanguage WHERE CountryCode = country.Code AND Language = 'English') AND EXISTS (SELECT 1 FROM countrylanguage WHERE CountryCode = country.Code AND Language = 'French')
+SELECT Name FROM country WHERE EXISTS (SELECT * FROM countrylanguage WHERE CountryCode = country.Code AND Language = 'English' AND IsOfficial = 'T') AND EXISTS (SELECT * FROM countrylanguage WHERE CountryCode = country.Code AND Language = 'French' AND IsOfficial = 'T')
+SELECT c.Name FROM country c JOIN countrylanguage cl1 ON c.Code = cl1.CountryCode JOIN countrylanguage cl2 ON c.Code = cl2.CountryCode WHERE cl1.Language = 'English' AND cl1.IsOfficial = 'YES' AND cl2.Language = 'French' AND cl2.IsOfficial = 'YES'
+SELECT COUNT(DISTINCT Continent) FROM countrylanguage AS cl JOIN country AS c ON cl.CountryCode = c.Code WHERE cl.Language = 'Chinese'
+SELECT COUNT(DISTINCT Continent) FROM country JOIN countrylanguage ON country.Code = countrylanguage.CountryCode WHERE Language = 'Chinese'
+SELECT DISTINCT Region FROM country JOIN countrylanguage ON country.Code = countrylanguage.CountryCode WHERE Language IN ('English', 'Dutch')
+SELECT DISTINCT Region FROM country WHERE Code IN (SELECT CountryCode FROM countrylanguage WHERE Language = 'Dutch' OR Language = 'English' AND IsOfficial = 'T') GROUP BY Region
+SELECT DISTINCT country.Name FROM country
+SELECT country.Name FROM country JOIN countrylanguage ON country.Code = countrylanguage.CountryCode WHERE (countrylanguage.Language = 'English' OR countrylanguage.Language = 'Dutch') AND countrylanguage.IsOfficial = 'YES'
+SELECT Language, SUM(Percentage) AS total_percentage
+SELECT Language, COUNT(*) as CountryCount
+SELECT Language FROM countrylanguage
+SELECT cl.Language FROM countrylanguage cl WHERE (SELECT COUNT(DISTINCT cl.CountryCode) FROM countrylanguage WHERE Language = cl.Language) = 1 AND cl.CountryCode IN ( SELECT c.Code FROM country c WHERE c.GovernmentForm = 'Republic' )
+SELECT city.* FROM city WHERE Population = (SELECT MAX(Population) FROM city c JOIN countrylanguage cl ON c.CountryCode = cl.CountryCode WHERE cl.Language = 'English')
+SELECT city.Name, city.Population FROM city
+SELECT Name, Population, LifeExpectancy FROM country WHERE Continent = 'Asia' ORDER BY SurfaceArea DESC LIMIT 1
+SELECT Name, Population, LifeExpectancy FROM country WHERE Continent = 'Asia' AND SurfaceArea = (SELECT MAX(SurfaceArea) FROM country WHERE Continent = 'Asia')
+SELECT AVG(country.LifeExpectancy) FROM country
+SELECT AVG(LifeExpectancy) AS MeanLifeExpectancy
+SELECT SUM(country.Population) FROM country WHERE country.Code NOT IN ( SELECT CountryCode FROM countrylanguage WHERE Language = 'English' AND IsOfficial = 'Yes' )
+SELECT CountryCode FROM countrylanguage WHERE Language = 'English' AND IsOfficial = 'YES'
+SELECT Language FROM countrylanguage WHERE IsOfficial = 'Yes' AND CountryCode IN (SELECT Code FROM country WHERE HeadOfState = 'Beatrix')
+SELECT Language FROM countrylanguage
+SELECT COUNT(DISTINCT Language) FROM countrylanguage JOIN country ON countrylanguage.CountryCode = country.Code WHERE country.IndepYear < 1930 AND countrylanguage.IsOfficial = 'T'
+SELECT COUNT(DISTINCT cl.Language) AS total_languages
+SELECT Code, Name, SurfaceArea FROM country WHERE SurfaceArea > (SELECT MAX(SurfaceArea) FROM country WHERE Region = 'Europe')
+SELECT * FROM country WHERE SurfaceArea > (SELECT MAX(SurfaceArea) FROM country WHERE Continent = 'Europe')
+SELECT Name FROM country WHERE Continent = 'Africa' AND Population < (SELECT MIN(Population) FROM country WHERE Continent = 'Asia')
+SELECT Name FROM country WHERE Continent = 'Africa' AND Population < (SELECT MIN(Population) FROM country WHERE Continent = 'Asia')
+SELECT Name FROM country WHERE Continent = 'Asia' AND Population > (SELECT MAX(Population) FROM country WHERE Continent = 'Africa')
+SELECT Code, Name, Population FROM country WHERE Continent = 'Asia' AND Population > (SELECT MAX(Population) FROM country WHERE Continent = 'Africa')
+SELECT Code FROM country WHERE Code NOT IN (SELECT CountryCode FROM countrylanguage WHERE Language = 'English')
+SELECT c.Code FROM country c LEFT JOIN countrylanguage cl ON c.Code = cl.CountryCode AND cl.Language = 'English' WHERE cl.CountryCode IS NULL
+SELECT DISTINCT CountryCode FROM countrylanguage WHERE Language != 'English'
+SELECT DISTINCT CountryCode FROM countrylanguage WHERE Language != 'English'
+SELECT c.Code FROM country c
+SELECT Code FROM country WHERE GovernmentForm != 'Republic' AND NOT EXISTS (SELECT 1 FROM countrylanguage WHERE countrylanguage.CountryCode = country.Code AND Language = 'English' AND IsOfficial = 'T')
+SELECT city.Name FROM city JOIN country ON city.CountryCode = country.Code WHERE country.Region = 'Europe' AND NOT EXISTS ( SELECT 1 FROM countrylanguage WHERE countrylanguage.CountryCode = country.Code AND Language = 'English' AND IsOfficial = 'T' )
+SELECT city.Name FROM city JOIN country ON city.CountryCode = country.Code WHERE country.Continent = 'Europe' AND NOT EXISTS ( SELECT 1 FROM countrylanguage WHERE countrylanguage.CountryCode = country.Code AND Language = 'English' AND IsOfficial = '1' )
+SELECT DISTINCT city.Name FROM city INNER JOIN country ON city.CountryCode = country.Code INNER JOIN countrylanguage ON country.Code = countrylanguage.CountryCode WHERE countrylanguage.Language = 'Chinese' AND countrylanguage.IsOfficial = 'Yes' AND country.Continent = 'Asia'
+SELECT city.Name FROM city
+SELECT Name, IndepYear, SurfaceArea FROM country ORDER BY Population ASC LIMIT 1
+SELECT Name, IndepYear, SurfaceArea FROM country WHERE Population = (SELECT MIN(Population) FROM country)
+SELECT Population, Name, HeadOfState FROM country WHERE SurfaceArea = (SELECT MAX(SurfaceArea) FROM country)
+SELECT Name, Population, HeadOfState FROM country ORDER BY SurfaceArea DESC LIMIT 1
+SELECT country.Name, COUNT(DISTINCT countrylanguage.Language) AS NumberOfLanguages
+SELECT country.Name, COUNT(DISTINCT countrylanguage.Language) AS NumberOfLanguages
+SELECT District, COUNT(*) AS NumberOfCities FROM city WHERE Population > (SELECT AVG(Population) FROM city) GROUP BY District
+SELECT District, COUNT(*) as NumberOfCities
+SELECT country.GovernmentForm AS GovernmentForm, SUM(city.Population) AS TotalPopulation
+SELECT GovernmentForm, SUM(city.Population) as TotalPopulation
+SELECT Continent, AVG(LifeExpectancy) as Avg_Expectancy, SUM(Population) as Total_Population
+SELECT Continent, SUM(Population) AS TotalPopulation, AVG(LifeExpectancy) AS AverageLifeExpectancy
+SELECT Name, SurfaceArea FROM country ORDER BY SurfaceArea DESC LIMIT 5
+SELECT Name, SurfaceArea FROM country ORDER BY SurfaceArea DESC LIMIT 5
+SELECT Name FROM country ORDER BY Population DESC LIMIT 3
+SELECT Name FROM country ORDER BY Population DESC LIMIT 3
+SELECT Name FROM country ORDER BY Population ASC LIMIT 3
+SELECT Name FROM country ORDER BY Population ASC LIMIT 3
+SELECT COUNT(*) FROM country WHERE Continent = 'Asia'
+SELECT COUNT(*) FROM country WHERE Continent = 'Asia'
+SELECT Name FROM country WHERE Continent = 'Europe' AND Population = 80000
+SELECT Name FROM country WHERE Continent = 'Europe' AND Population = 80000
+SELECT SUM(Population) AS TotalPopulation, AVG(SurfaceArea) AS AverageArea FROM country WHERE Continent = 'North America' AND SurfaceArea > 3000
+SELECT SUM(Population) AS TotalPopulation, AVG(SurfaceArea) AS AverageSurfaceArea FROM country WHERE Region = 'North America' AND SurfaceArea > 3000
+SELECT Name FROM city WHERE Population BETWEEN 160000 AND 900000
+SELECT Name FROM city WHERE Population BETWEEN 160000 AND 900000
+SELECT Language, COUNT(DISTINCT CountryCode) AS CountryCount
+SELECT Language, COUNT(*) AS CountryCount FROM countrylanguage GROUP BY Language ORDER BY CountryCount DESC LIMIT 1
+SELECT c.Name AS Country, cl.Language AS PrimaryLanguage FROM country c JOIN ( SELECT CountryCode, Language, Percentage, ROW_NUMBER() OVER (PARTITION BY CountryCode ORDER BY Percentage DESC) AS rn FROM countrylanguage ) cl ON c.Code = cl.CountryCode WHERE cl.rn = 1 ORDER BY c.Code
+SELECT cl.CountryCode, cl.Language
+SELECT COUNT(DISTINCT cl.CountryCode)
+SELECT COUNT(DISTINCT cl.CountryCode)
+SELECT CountryCode FROM countrylanguage WHERE Language = 'Spanish' AND Percentage = (SELECT MAX(Percentage) FROM countrylanguage WHERE Language = 'Spanish')
+SELECT CountryCode FROM countrylanguage WHERE Language = 'Spanish' AND IsOfficial = 'YES'
+SELECT COUNT(*) FROM conductor
+SELECT COUNT(Conductor_ID) FROM conductor
+SELECT Name FROM conductor ORDER BY Age ASC
+SELECT Name FROM conductor ORDER BY Age
+SELECT Name FROM conductor WHERE Nationality != 'USA'
+SELECT Name FROM conductor WHERE Nationality != 'USA'
+SELECT Record_Company FROM orchestra ORDER BY Year_of_Founded DESC
+SELECT Record_Company FROM orchestra ORDER BY Year_of_Founded DESC
+SELECT AVG(Attendance) FROM show
+SELECT AVG(Attendance) FROM show
+SELECT MAX(Share) AS Max_Share, MIN(Share) AS Min_Share FROM performance WHERE Type != 'Live final'
+SELECT MAX(Share) AS Maximum_Share, MIN(Share) AS Minimum_Share FROM performance WHERE Type != 'Live final'
+SELECT COUNT(DISTINCT Nationality) AS Nationality_Count FROM conductor
+SELECT COUNT(DISTINCT Nationality) FROM conductor
+SELECT Name FROM conductor ORDER BY Year_of_Work DESC
+SELECT Name FROM conductor ORDER BY Year_of_Work DESC
+SELECT Name FROM conductor ORDER BY Year_of_Work DESC LIMIT 1
+SELECT Name FROM conductor WHERE (2023 - Year_of_Work) = (SELECT MAX(2023 - Year_of_Work) FROM conductor)
+SELECT c.Name, o.Orchestra FROM conductor AS c INNER JOIN orchestra AS o ON c.Conductor_ID = o.Conductor_ID
+SELECT conductor.Name AS Conductor_Name, orchestra.Orchestra AS Orchestra_Name
+SELECT Name FROM conductor JOIN orchestra ON conductor.Conductor_ID = orchestra.Conductor_ID GROUP BY conductor.Conductor_ID HAVING COUNT(DISTINCT orchestra.Orchestra_ID) > 1
+SELECT c.Name FROM conductor c JOIN orchestra o ON c.Conductor_ID = o.Conductor_ID GROUP BY c.Conductor_ID HAVING COUNT(o.Orchestra_ID) > 1
+SELECT conductor.Name FROM conductor JOIN orchestra ON conductor.Conductor_ID = orchestra.Conductor_ID GROUP BY conductor.Conductor_ID, conductor.Name ORDER BY COUNT(DISTINCT orchestra.Orchestra_ID) DESC LIMIT 1
+SELECT C.Name FROM conductor AS C JOIN (SELECT Conductor_ID, COUNT(*) AS Orchestra_Count FROM orchestra GROUP BY Conductor_ID) AS O_COUNT ON C.Conductor_ID = O_COUNT.Conductor_ID ORDER BY O_COUNT.Orchestra_Count DESC LIMIT 1
+SELECT Name FROM conductor JOIN orchestra ON conductor.Conductor_ID = orchestra.Conductor_ID WHERE orchestra.Year_of_Founded > 2008
+SELECT DISTINCT conductor.Name FROM conductor JOIN orchestra ON conductor.Conductor_ID = orchestra.Conductor_ID WHERE orchestra.Year_of_Founded > 2008
+SELECT Record_Company, COUNT(DISTINCT Orchestra_ID) AS NumberOfOrchestras FROM orchestra GROUP BY Record_Company
+SELECT Record_Company, COUNT(Orchestra_ID) FROM orchestra GROUP BY Record_Company
+SELECT Major_Record_Format, COUNT(*) FROM orchestra GROUP BY Major_Record_Format ORDER BY COUNT(*) ASC
+SELECT Major_Record_Format, COUNT(*) FROM orchestra GROUP BY Major_Record_Format ORDER BY COUNT(*) DESC
+SELECT Record_Company FROM orchestra GROUP BY Record_Company ORDER BY COUNT(*) DESC LIMIT 1
+SELECT Record_Company, COUNT(*) AS company_count
+SELECT orchestra.Orchestra FROM orchestra
+SELECT orchestra.Orchestra_ID, orchestra.Orchestra FROM orchestra
+SELECT DISTINCT Record_Company,
+SELECT Record_Company FROM orchestra WHERE EXISTS ( SELECT 1 FROM orchestra o1 WHERE o1.Record_Company = orchestra.Record_Company AND o1.Year_of_Founded < 2003 ) AND EXISTS ( SELECT 1 FROM orchestra o2 WHERE o2.Record_Company = orchestra.Record_Company AND o2.Year_of_Founded > 2003 )
+SELECT COUNT(Orchestra_ID) FROM orchestra WHERE Major_Record_Format IN ('CD', 'DVD')
+SELECT COUNT(*) FROM orchestra WHERE Major_Record_Format IN ('CD', 'DVD')
+SELECT orchestra.Year_of_Founded FROM orchestra INNER JOIN ( SELECT Orchestra_ID FROM performance GROUP BY Orchestra_ID HAVING COUNT(*) > 1 ) AS perf_count ON orchestra.Orchestra_ID = perf_count.Orchestra_ID
+SELECT orchestra.Year_of_Founded FROM orchestra WHERE orchestra.Orchestra_ID IN ( SELECT performance.Orchestra_ID FROM performance GROUP BY performance.Orchestra_ID HAVING COUNT(performance.Performance_ID) > 1 )
+SELECT COUNT(*) FROM Highschooler
+SELECT COUNT(*) FROM Highschooler
+SELECT name, grade FROM Highschooler
+SELECT name, grade FROM Highschooler
+SELECT grade FROM Highschooler
+SELECT grade FROM Highschooler
+SELECT grade FROM Highschooler WHERE name = 'Kyle'
+SELECT grade FROM Highschooler WHERE name = 'Kyle'
+SELECT name FROM Highschooler WHERE grade = 10
+SELECT name FROM Highschooler WHERE grade = 10
+SELECT ID FROM Highschooler WHERE name = 'Kyle'
+SELECT ID FROM Highschooler WHERE name = 'Kyle'
+SELECT COUNT(*) FROM Highschooler WHERE grade IN (9, 10)
+SELECT COUNT(ID) FROM Highschooler WHERE grade IN (9, 10)
+SELECT COUNT(*) AS count FROM Highschooler GROUP BY grade
+SELECT COUNT(*) AS count FROM Highschooler GROUP BY grade
+SELECT grade, COUNT(*) AS count FROM Highschooler GROUP BY grade ORDER BY count DESC
+SELECT grade FROM Highschooler GROUP BY grade ORDER BY COUNT(*) DESC LIMIT 1
+SELECT grade, COUNT(*) FROM Highschooler GROUP BY grade
+SELECT grade, COUNT(*) AS count
+SELECT student_id, COUNT(friend_id) AS number_of_friends FROM Friend GROUP BY student_id
+select the student's ID, their name, and count the number of friend_id where student_id matches the student's ID
+SELECT Highschooler.name, COUNT(*) AS friend_count FROM Highschooler LEFT JOIN Friend ON Highschooler.ID = Friend.student_id GROUP BY Highschooler.ID
+SELECT H.name, COUNT(*) AS friend_count FROM Highschooler H LEFT JOIN Friend F ON H.ID = F.student_id GROUP BY H.ID
+with B, there's one entry with student_id=A and friend_id=B
+with ORDER BY and LIMIT
+SELECT name FROM Highschooler JOIN Friend ON Highschooler.ID = Friend.friend_id GROUP BY Highschooler.ID HAVING COUNT(*) >= 3
+SELECT name FROM Highschooler WHERE ID IN (SELECT student_id FROM Friend GROUP BY student_id HAVING COUNT(*) >= 3)
+SELECT name FROM Highschooler
+SELECT name FROM Highschooler WHERE ID IN (SELECT friend_id FROM Friend WHERE student_id = (SELECT ID FROM Highschooler WHERE name = 'Kyle'))
+SELECT COUNT(*) FROM Friend WHERE student_id = (SELECT ID FROM Highschooler WHERE name = 'Kyle')
+SELECT COUNT(friend_id) FROM Friend WHERE student_id = (SELECT ID FROM Highschooler WHERE name = 'Kyle')
+SELECT ID FROM Highschooler WHERE ID NOT IN (SELECT friend_id FROM Friend)
+SELECT ID FROM Highschooler WHERE ID NOT IN (SELECT friend_id FROM Friend)
+SELECT name FROM Highschooler WHERE ID NOT IN (SELECT student_id FROM Friend)
+SELECT name FROM Highschooler WHERE ID NOT IN (SELECT friend_id FROM Friend)
+SELECT ID FROM Highschooler WHERE ID IN (SELECT friend_id FROM Friend) AND ID IN (SELECT liked_id FROM Likes)
+SELECT ID FROM Highschooler WHERE ID IN (SELECT student_id FROM Friend) AND ID IN (SELECT liked_id FROM Likes)
+SELECT name FROM Highschooler
+SELECT name FROM Highschooler
+SELECT student_id, COUNT(*) FROM Likes GROUP BY student_id
+SELECT liked_id, COUNT(*) FROM Likes GROUP BY liked_id
+SELECT Highschooler.name, COUNT(Likes.liked_id) AS total_likes FROM Highschooler JOIN Likes ON Highschooler.ID = Likes.liked_id GROUP BY Highschooler.name
+SELECT Highschooler.name, COUNT(Likes.student_id) AS likes_count
+SELECT name FROM Highschooler JOIN Likes ON Highschooler.ID = Likes.liked_id GROUP BY liked_id ORDER BY COUNT(*) DESC LIMIT 1
+SELECT name FROM Highschooler JOIN Likes ON Highschooler.ID = Likes.student_id GROUP BY Likes.student_id ORDER BY COUNT(*) DESC LIMIT 1
+SELECT name FROM Highschooler JOIN Likes ON Highschooler.ID = Likes.student_id GROUP BY Likes.student_id HAVING COUNT(*) >= 2
+SELECT name FROM Highschooler
+SELECT name FROM Highschooler JOIN ( SELECT student_id, COUNT(friend_id) as count_friends FROM Friend GROUP BY student_id ) as friend_count ON Highschooler.ID = friend_count.student_id WHERE grade >5 AND count_friends >=2
+SELECT name FROM Highschooler
+SELECT COUNT(*) FROM Likes WHERE liked_id = (SELECT ID FROM Highschooler WHERE name = 'Kyle')
+SELECT COUNT(*) FROM Likes WHERE liked_id = (SELECT ID FROM Highschooler WHERE name = 'Kyle')
+SELECT AVG(grade) FROM Highschooler JOIN Friend ON Highschooler.ID = Friend.student_id GROUP BY Highschooler.ID HAVING COUNT(*) > 0
+SELECT AVG(grade) FROM Highschooler WHERE ID IN (SELECT student_id FROM Friend UNION SELECT friend_id FROM Friend)
+SELECT MIN(grade) FROM Highschooler WHERE ID NOT IN (SELECT student_id FROM Friend)
+SELECT MIN(grade) FROM Highschooler
+SELECT DISTINCT state FROM Owners WHERE state IN (SELECT DISTINCT state FROM Professionals)
+SELECT DISTINCT state FROM Owners INTERSECT SELECT DISTINCT state FROM Professionals
+SELECT AVG(CAST(Dogs.age AS INT)) AS average_age
+SELECT AVG(CAST(Dogs.age AS NUMBER)) AS average_age FROM Treatments INNER JOIN Dogs ON Treatments.dog_id = Dogs.dog_id
+SELECT professional_id, last_name, cell_number FROM Professionals
+SELECT p.professional_id, p.last_name, p.cell_number FROM Professionals AS p
+SELECT Dogs.name AS dog_name, SUM(Treatments.cost_of_treatment) AS total_cost
+SELECT dog.name FROM Dogs JOIN ( SELECT owner_id, SUM(cost_of_treatment) as total_cost FROM Treatments GROUP BY owner_id ) as owner_cost ON Dogs.owner_id = owner_cost.owner_id WHERE owner_cost.total_cost <= 1000
+SELECT first_name FROM Professionals
+SELECT first_name FROM Professionals
+SELECT Professionals.professional_id, role_code, email_address
+SELECT professional_id, role_code, email_address FROM Professionals WHERE NOT EXISTS (SELECT 1 FROM Treatments WHERE Treatments.professional_id = Professionals.professional_id)
+SELECT o.owner_id, o.first_name, o.last_name
+SELECT owner_id, first_name, last_name
+SELECT Professionals.professional_id, role_code, first_name
+SELECT professional_id, role_code AS role, first_name
+SELECT breed_name, COUNT(*) AS num_dogs
+SELECT breed_name FROM Breeds
+SELECT Owners.owner_id, Owners.last_name, COUNT(Treatments.treatment_id) AS num_treatments
+SELECT Owners.owner_id, Owners.last_name
+SELECT treatment_type_code, SUM(cost_of_treatment) as total_cost
+SELECT treatment_type_description FROM Treatment_Types
+SELECT Owners.owner_id, Owners.zip_code
+SELECT Owners.owner_id, Owners.zip_code
+SELECT professional_id, COUNT(DISTINCT treatment_type_code) AS treatment_count
+SELECT Professionals.professional_id, cell_number FROM Treatments
+SELECT Professionals.first_name, Professionals.last_name FROM Professionals JOIN Treatments ON Treatments.professional_id = Professionals.professional_id WHERE Treatments.cost_of_treatment < (SELECT AVG(cost_of_treatment) FROM Treatments)
+SELECT p.first_name, p.last_name
+SELECT Treatments.date_of_treatment, Professionals.first_name FROM Treatments JOIN Professionals ON Treatments.professional_id = Professionals.professional_id
+SELECT T.date_of_treatment AS Treatment_Date, P.first_name AS Professional_First_Name
+SELECT cost_of_treatment, treatment_type_description FROM Treatments INNER JOIN Treatment_Types ON Treatments.treatment_type_code = Treatment_Types.treatment_type_code
+SELECT Treatments.cost_of_treatment, Treatment_Types.treatment_type_description
+SELECT Owners.first_name, Owners.last_name, Sizes.size_description
+SELECT Owners.first_name, Owners.last_name, Sizes.size_description
+SELECT Owners.first_name, Dogs.name FROM Owners JOIN Dogs ON Owners.owner_id = Dogs.owner_id
+SELECT Owners.first_name, Dogs.name FROM Owners JOIN Dogs ON Owners.owner_id = Dogs.owner_id
+SELECT breed_code FROM Breeds
+WITH breed_counts AS (
+SELECT O.first_name, D.name FROM Owners AS O JOIN Dogs AS D ON O.owner_id = D.owner_id WHERE O.state = 'Virginia'
+SELECT o.first_name, d.name FROM Owners o JOIN Dogs d ON o.owner_id = d.owner_id WHERE o.state = 'Virginia'
+SELECT d.date_arrived, d.date_departed
+SELECT Dogs.date_arrived, Dogs.date_departed
+SELECT last_name FROM Owners WHERE owner_id = (SELECT owner_id FROM Dogs ORDER BY date_of_birth DESC LIMIT 1)
+SELECT Owners.last_name FROM Owners JOIN Dogs ON Owners.owner_id = Dogs.owner_id WHERE Dogs.date_of_birth = (SELECT MAX(date_of_birth) FROM Dogs)
+SELECT email_address FROM Professionals WHERE state IN ('Hawaii', 'Wisconsin')
+SELECT email_address FROM Professionals WHERE state IN ('Hawaii', 'Wisconsin')
+SELECT date_arrived, date_departed FROM Dogs
+SELECT date_arrived, date_departed FROM Dogs
+SELECT COUNT(DISTINCT dog_id) FROM Treatments
+SELECT COUNT(DISTINCT dog_id) FROM Treatments
+SELECT COUNT(DISTINCT professional_id) FROM Treatments WHERE professional_id IS NOT NULL
+SELECT COUNT(DISTINCT professional_id) FROM Treatments JOIN Professionals ON Treatments.professional_id = Professionals.professional_id
+SELECT role_code, street, city, state FROM Professionals WHERE city LIKE '%West%'
+SELECT role_code, street, city, state FROM Professionals WHERE city LIKE '%West%'
+SELECT first_name, last_name, email_address FROM Owners WHERE state LIKE '%North%'
+SELECT first_name, last_name, email_address FROM Owners WHERE state LIKE '%North%'
+WITH AverageAge AS (
+SELECT COUNT(dog_id) FROM Dogs WHERE age < (SELECT AVG(age) FROM Dogs)
+SELECT cost_of_treatment FROM Treatments WHERE date_of_treatment = (SELECT MAX(date_of_treatment) FROM Treatments)
+SELECT cost_of_treatment FROM Treatments ORDER BY date_of_treatment DESC LIMIT 1
+SELECT (SELECT COUNT(dog_id) FROM Dogs) - (SELECT COUNT(DISTINCT dog_id) FROM Treatments) AS dogs_without_treatment
+SELECT COUNT(DOGS.dog_id) AS number_of_dogs_without_treatment
+SELECT (SELECT COUNT(*) FROM Owners) - (SELECT COUNT(DISTINCT owner_id) FROM Dogs)
+SELECT COUNT(owner_id) FROM Owners
+SELECT COUNT(professional_id) FROM Professionals
+SELECT COUNT(professional_id) FROM Professionals
+SELECT name, age, weight FROM Dogs WHERE abandoned_yn = '1'
+SELECT name, age, weight FROM Dogs WHERE abandoned_yn = '1'
+SELECT AVG(age) FROM Dogs
+SELECT AVG(age) FROM Dogs
+SELECT age FROM Dogs ORDER BY age DESC LIMIT 1
+SELECT MAX(age) FROM Dogs
+SELECT charge_type, charge_amount FROM Charges
+SELECT charge_type, charge_amount FROM Charges
+SELECT MAX(charge_amount) FROM Charges
+SELECT MAX(charge_amount) FROM Charges
+SELECT email_address, home_phone, cell_number FROM Professionals
+SELECT email_address, home_phone, cell_number FROM Professionals
+SELECT breed_name, size_description FROM Breeds, Sizes
+SELECT DISTINCT breed_code, size_code FROM Dogs
+SELECT Professionals.first_name, Treatment_Types.treatment_type_description
+SELECT Professionals.first_name, Treatment_Types.treatment_type_description
+SELECT COUNT(*) FROM singer
+SELECT COUNT(*) FROM singer
+SELECT Name FROM singer ORDER BY Net_Worth_Millions ASC
+SELECT Name FROM singer ORDER BY Net_Worth_Millions ASC
+SELECT Birth_Year, Citizenship FROM singer
+SELECT Birth_Year, Citizenship FROM singer
+SELECT Name FROM singer WHERE Citizenship != 'France'
+SELECT Name FROM singer WHERE Citizenship != 'French'
+SELECT Name FROM singer WHERE Birth_Year IN (1948, 1949)
+SELECT Name FROM singer WHERE Birth_Year IN (1948, 1949)
+SELECT Name FROM singer ORDER BY Net_Worth_Millions DESC LIMIT 1
+SELECT Name FROM singer ORDER BY Net_Worth_Millions DESC LIMIT 1
+SELECT DISTINCT Citizenship, COUNT(*) AS count FROM singer GROUP BY Citizenship
+SELECT Citizenship, COUNT(Singer_ID) FROM singer GROUP BY Citizenship
+SELECT Citizenship, COUNT(Singer_ID) as count FROM singer GROUP BY Citizenship ORDER BY count DESC LIMIT 1
+SELECT Citizenship, COUNT(Singer_ID) AS Citizenship_Count
+SELECT Citizenship, MAX(Net_Worth_Millions) FROM singer GROUP BY Citizenship
+SELECT Citizenship, MAX(Net_Worth_Millions) FROM singer GROUP BY Citizenship
+SELECT song.Title AS Song_Title, singer.Name AS Singer_Name FROM song JOIN singer ON song.Singer_ID = singer.Singer_ID
+SELECT song.Title, singer.Name FROM song INNER JOIN singer ON song.Singer_ID = singer.Singer_ID
+SELECT DISTINCT Name FROM singer JOIN song ON singer.Singer_ID = song.Singer_ID WHERE song.Sales > 300000
+SELECT Name FROM singer JOIN song ON singer.Singer_ID = song.Singer_ID GROUP BY singer.Singer_ID HAVING SUM(Sales) > 300000
+SELECT Name FROM singer JOIN ( SELECT Singer_ID, COUNT(Song_ID) as Song_Count FROM song GROUP BY Singer_ID ) as song_counts ON singer.Singer_ID = song_counts.Singer_ID WHERE Song_Count > 1
+SELECT Name FROM singer
+SELECT singer.Name, SUM(song.Sales) AS Total_Sales FROM singer INNER JOIN song ON singer.Singer_ID = song.Singer_ID GROUP BY singer.Singer_ID
+SELECT singer.Name, SUM(song.Sales) AS Total_Sales
+SELECT Name FROM singer LEFT JOIN song ON singer.Singer_ID = song.Singer_ID WHERE song.Singer_ID IS NULL
+SELECT Name FROM singer WHERE NOT EXISTS (SELECT 1 FROM song WHERE song.Singer_ID = singer.Singer_ID)
+SELECT Citizenship FROM singer WHERE Birth_Year < 1945 OR Birth_Year > 1955 GROUP BY Citizenship HAVING COUNT(Singer_ID) > 1
+SELECT DISTINCT Citizenship FROM singer WHERE Birth_Year < 1945 OR Birth_Year > 1955
+SELECT COUNT(feature_id) FROM Other_Available_Features
+SELECT Ref_Feature_Types.feature_type_name FROM Ref_Feature_Types INNER JOIN Other_Available_Features ON Ref_Feature_Types.feature_type_code = Other_Available_Features.feature_type_code WHERE Other_Available_Features.feature_name = 'AirCon'
+SELECT property_type_description FROM Ref_Property_Types WHERE property_type_code = ?
+SELECT property_name FROM Properties

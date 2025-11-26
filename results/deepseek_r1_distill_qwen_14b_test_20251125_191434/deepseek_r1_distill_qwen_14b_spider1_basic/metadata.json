@@ -1,0 +1,8 @@
+{
+  "model_name": "deepseek/deepseek-r1-distill-qwen-14b",
+  "strategy_name": "spider1_basic",
+  "experiment_id": "20251125_191434",
+  "total_examples": 1034,
+  "successful_predictions": 1034,
+  "timestamp": 4.286160707473755
+}
