@@ -1,0 +1,8 @@
+{
+  "model_name": "openai/gpt-oss-20b",
+  "strategy_name": "spider1_basic",
+  "experiment_id": "20251127_183418",
+  "total_examples": 1034,
+  "successful_predictions": 1033,
+  "timestamp": 1.3748159408569336
+}

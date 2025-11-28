@@ -21,7 +21,7 @@ AVAILABLE_MODELS = [
 DEFAULT_MODEL_PARAMS = {
     "temperature": 0.1,
     "max_tokens": 8192,
-    "retry_count": 3
+    "retry_count": 10  # Increased for batch runs to avoid any failures
 }
 
 # Spider2 Strategy configuration

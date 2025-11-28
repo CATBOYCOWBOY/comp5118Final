@@ -37,7 +37,8 @@ class NovitaClient:
         use_key = api_key or novita_key
         self.client = OpenAI(
             base_url = NOVITA_BACKEND_URL,
-            api_key = use_key
+            api_key = use_key,
+            timeout=300.0  # 5 minutes timeout for Novita API calls
         )
         self.logger = logging.getLogger("NovitaClient")
     
@@ -63,7 +64,8 @@ class NovitaClient:
 
             self.client = OpenAI(
                 base_url = NOVITA_BACKEND_URL,
-                api_key = novita_key
+                api_key = novita_key,
+                timeout=300.0  # 5 minutes timeout for Novita API calls
             )
         except Exception as e:
             raise RuntimeError(f"Could not load API key: {e}")
@@ -121,8 +123,19 @@ class NovitaClient:
                     success=True
                 )
             except Exception as e:
-                backoff = min(2 ** attempt + (0.5 * attempt), 30)  # exponential with jitter-ish
-                self.logger.warning("Completion error for model %s (attempt %d/%d): %s. Backing off %.1fs", model, attempt + 1, retry_count, e, backoff)
+                error_msg = str(e)
+                is_timeout_error = "524" in error_msg or "timeout" in error_msg.lower()
+
+                # Use much longer backoff for 524 timeout errors since Novita servers need time to recover
+                if is_timeout_error:
+                    backoff = min(15 + (15 * attempt), 120)  # 15s, 30s, 45s... up to 2 minutes max
+                    self.logger.warning("Server timeout (524) for model %s (attempt %d/%d): %s. Extended backoff %.1fs",
+                                      model, attempt + 1, retry_count, error_msg, backoff)
+                else:
+                    backoff = min(2 ** attempt + (0.5 * attempt), 120)  # exponential with jitter, capped at 2 minutes
+                    self.logger.warning("Completion error for model %s (attempt %d/%d): %s. Backing off %.1fs",
+                                      model, attempt + 1, retry_count, error_msg, backoff)
+
                 if attempt == retry_count - 1:
                     return LLMResponse(
                         content="",
