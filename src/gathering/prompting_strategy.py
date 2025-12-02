@@ -31,9 +31,6 @@ class Spider1Strategy:
 
         Question: {example.question}.
 
-
-        5. Provide the final SQL query as your answer.
-
         Requirements:
         - Use proper SQL syntax for SQLite
         - Return ONLY the final SQL query
