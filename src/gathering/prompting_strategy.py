@@ -31,6 +31,13 @@ class Spider1Strategy:
 
         Question: {example.question}.
 
+        Follow these steps to generate the SQL query.
+
+        1. Analyze the question and identify the relevant tables and columns in the database schema. Exclude irrelevant schema from consideration.
+        2. Determine the necessary SQL clauses (e.g., SELECT, FROM, WHERE,
+              JOIN, GROUP BY, ORDER BY) needed to construct the query.
+        3. Construct the SQL query step-by-step, ensuring it adheres to proper syntax and accurately reflects the intent of the question.
+        4. Review the SQL query for correctness and efficiency
 
         5. Provide the final SQL query as your answer.
 
