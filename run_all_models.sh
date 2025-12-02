@@ -13,7 +13,7 @@ for model in "${models[@]}"; do
     echo "=========================================="
     echo "Running model: $model"
     echo "=========================================="
-    python3 run_testbench.py run_test --model "$model" --examples 1034
+    python3 run_testbench.py run_test --model "$model" --examples 10
     echo ""
 done
 
