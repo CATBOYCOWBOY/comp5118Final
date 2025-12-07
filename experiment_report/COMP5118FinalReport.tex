@@ -1,7 +1,12 @@
+% !TEX program = pdflatex
+  % !BIB program = bibtex
+
 \documentclass[sigconf]{acmart}
 \usepackage{balance}
 
-\title{An Evaluation of NL2SQL tasks With A 5-Step Framework Leveraging Lightweight Language Models}
+\title{An Evaluation of The Performance of \\[0.5em]
+Lightweight Language Models on NL2SQL tasks}
+
 \author{Tom Fan}
 \affiliation{
   \institution{Carleton University}
@@ -11,11 +16,37 @@
 \email{tomfan3@cmail.carleton.ca}
 
 \begin{document}
+
 \maketitle
+
 
 \section{Abstract}
 
+Since their introduction as a consumer product in 2022, transformer-based large language models have been used for 
+automating many kinds of digital tasks. This includes natural language to code and SQL tasks, which have exploded in 
+research and development in the last few
+years. While a large proportion of LLM use is likely done using proprietary, closed source, and large footprint 
+foundation models hosted by SAAS providers like Anthropic or OpenAI, an increasing amount of open-source models are also 
+entering the market. These models have demonstrated promise on several different kinds of tasks, such as code generation
+using Python \cite{hasan2025smallcode}. In this paper, we aim to provide an overview of how several of the smaller open
+source models perform when faced with elementary NL2SQL tasks on the Spider-Dev question dataset.
+
 \section{Introduction}
+
+In recent years, there has been a significant amount of high performing open source LLMs available from both research 
+institutions and tech companies \cite{llmstats2025}. While many of the top-ranking models require expensive and complex
+hardware setups to run as their parameter counts run in the hundreds of billions or even trillions, many are either 
+small footprint by design or distilled versions of larger source models. 
+
+In these cases, consumer level hardware should be able to run the models using tools like localLLama, enabling their use
+offline and without dependency on external SAAS providers (for purposes of this paper, we define consumer level hardware
+to be current generation Nvidia RTX chips or other equivalents, able to run models in the 20-30b parameter range or smaller
+at 8 or 16b quantization). 
+
+At the same time, there has been significant development in the field of NL2SQL tools. While previous generations of 
+NL2SQL tools depended on hardcoded rules or deep neural networks \cite{nl2sqlsurvey}, the emergence of LLMs has enabled
+a whole new paradigm of NL2SQL tools based on them. In fact, in their MVP state, a LLM itself can serve as a NL2SQL tool
+on its own. 
 
 \section{Testing Methodology}
 
