@@ -2,3 +2,4 @@ secrets.txt
 .venv/
 proto/
 NOVITA_API_KEY
+test_suite_sql_eval/
