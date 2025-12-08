@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{10}
+\begin{thebibliography}{22}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -37,12 +37,60 @@
 \providecommand\natexlab[1]{#1}
 \providecommand\showeprint[2][]{arXiv:#2}
 
-\bibitem[AI({[n.\,d.]})]%
+\bibitem[AI(2025a)]%
+        {deepseek_r1_citation}
+\bibfield{author}{\bibinfo{person}{DeepSeek AI}.}
+  \bibinfo{year}{2025}\natexlab{a}.
+\newblock \bibinfo{title}{deepseek/deepseek-r1-distill-qwen-14b}.
+\newblock
+  \bibinfo{howpublished}{\url{https://huggingface.co/deepseek/deepseek-r1-distill-qwen-14b}}.
+\newblock
+\newblock
+\shownote{As of Dec 2025}.
+
+
+\bibitem[AI(2025b)]%
         {novitaAI}
 \bibfield{author}{\bibinfo{person}{Novita AI}.}
-  \bibinfo{year}{[n.\,d.]}\natexlab{}.
+  \bibinfo{year}{2025}\natexlab{b}.
 \newblock \bibinfo{title}{Novita AI}.
 \newblock \bibinfo{howpublished}{\url{https://novita.ai/}}.
+\newblock
+\newblock
+\shownote{As of Dec 2025}.
+
+
+\bibitem[Cloud(2025a)]%
+        {qwen25_7b_citation}
+\bibfield{author}{\bibinfo{person}{Alibaba Cloud}.}
+  \bibinfo{year}{2025}\natexlab{a}.
+\newblock \bibinfo{title}{qwen/qwen2.5-7b-instruct}.
+\newblock
+  \bibinfo{howpublished}{\url{https://huggingface.co/qwen/qwen2.5-7b-instruct}}.
+\newblock
+\newblock
+\shownote{As of Dec 2025}.
+
+
+\bibitem[Cloud(2025b)]%
+        {qwen3_4b_citation}
+\bibfield{author}{\bibinfo{person}{Alibaba Cloud}.}
+  \bibinfo{year}{2025}\natexlab{b}.
+\newblock \bibinfo{title}{qwen/qwen3-4b-fp8}.
+\newblock
+  \bibinfo{howpublished}{\url{https://huggingface.co/qwen/qwen3-4b-fp8}}.
+\newblock
+\newblock
+\shownote{As of Dec 2025}.
+
+
+\bibitem[Cloud(2025c)]%
+        {qwen3_8b_citation}
+\bibfield{author}{\bibinfo{person}{Alibaba Cloud}.}
+  \bibinfo{year}{2025}\natexlab{c}.
+\newblock \bibinfo{title}{qwen/qwen3-8b-fp8}.
+\newblock
+  \bibinfo{howpublished}{\url{https://huggingface.co/qwen/qwen3-8b-fp8}}.
 \newblock
 \newblock
 \shownote{As of Dec 2025}.
@@ -63,6 +111,28 @@
 \showDOI{\tempurl}
 
 
+\bibitem[Google(2025a)]%
+        {gemma312BCitation}
+\bibfield{author}{\bibinfo{person}{Google}.} \bibinfo{year}{2025}\natexlab{a}.
+\newblock \bibinfo{title}{google/gemma-3-12b-it}.
+\newblock
+  \bibinfo{howpublished}{\url{https://huggingface.co/gemma-ai/gemma-3-12B}}.
+\newblock
+\newblock
+\shownote{As of Dec 2025}.
+
+
+\bibitem[Google(2025b)]%
+        {gemma3_27b_citation}
+\bibfield{author}{\bibinfo{person}{Google}.} \bibinfo{year}{2025}\natexlab{b}.
+\newblock \bibinfo{title}{google/gemma-3-27b-it}.
+\newblock
+  \bibinfo{howpublished}{\url{https://huggingface.co/google/gemma-3-27b-it}}.
+\newblock
+\newblock
+\shownote{As of Dec 2025}.
+
+
 \bibitem[Hasan et~al\mbox{.}(2025)]%
         {hasan2025smallcode}
 \bibfield{author}{\bibinfo{person}{T. Hasan}, \bibinfo{person}{Y. Li}, {and}
@@ -74,6 +144,28 @@
 \newblock
 \urldef\tempurl%
 \url{https://arxiv.org/abs/2507.03160}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Lei et~al\mbox{.}(2025)]%
+        {lei2025spider20evaluatinglanguage}
+\bibfield{author}{\bibinfo{person}{Fangyu Lei}, \bibinfo{person}{Jixuan Chen},
+  \bibinfo{person}{Yuxiao Ye}, \bibinfo{person}{Ruisheng Cao},
+  \bibinfo{person}{Dongchan Shin}, \bibinfo{person}{Hongjin Su},
+  \bibinfo{person}{Zhaoqing Suo}, \bibinfo{person}{Hongcheng Gao},
+  \bibinfo{person}{Wenjing Hu}, \bibinfo{person}{Pengcheng Yin},
+  \bibinfo{person}{Victor Zhong}, \bibinfo{person}{Caiming Xiong},
+  \bibinfo{person}{Ruoxi Sun}, \bibinfo{person}{Qian Liu},
+  \bibinfo{person}{Sida Wang}, {and} \bibinfo{person}{Tao Yu}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{Spider 2.0: Evaluating Language Models on Real-World
+  Enterprise Text-to-SQL Workflows}.
+\newblock
+\newblock
+\showeprint[arxiv]{2411.07763}~[cs.CL]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2411.07763}
 \showURL{%
 \tempurl}
 
@@ -90,6 +182,29 @@
 \newblock
 \urldef\tempurl%
 \url{https://www.vldb.org/pvldb/vol17/p3318-luo.pdf}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Li et~al\mbox{.}(2023)]%
+        {li2023llmservedatabaseinterface}
+\bibfield{author}{\bibinfo{person}{Jinyang Li}, \bibinfo{person}{Binyuan Hui},
+  \bibinfo{person}{Ge Qu}, \bibinfo{person}{Jiaxi Yang},
+  \bibinfo{person}{Binhua Li}, \bibinfo{person}{Bowen Li},
+  \bibinfo{person}{Bailin Wang}, \bibinfo{person}{Bowen Qin},
+  \bibinfo{person}{Rongyu Cao}, \bibinfo{person}{Ruiying Geng},
+  \bibinfo{person}{Nan Huo}, \bibinfo{person}{Xuanhe Zhou},
+  \bibinfo{person}{Chenhao Ma}, \bibinfo{person}{Guoliang Li},
+  \bibinfo{person}{Kevin C.~C. Chang}, \bibinfo{person}{Fei Huang},
+  \bibinfo{person}{Reynold Cheng}, {and} \bibinfo{person}{Yongbin Li}.}
+  \bibinfo{year}{2023}\natexlab{}.
+\newblock \bibinfo{title}{Can LLM Already Serve as A Database Interface? A BIg
+  Bench for Large-Scale Database Grounded Text-to-SQLs}.
+\newblock
+\newblock
+\showeprint[arxiv]{2305.03111}~[cs.CL]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2305.03111}
 \showURL{%
 \tempurl}
 
@@ -123,6 +238,39 @@
 \shownote{As of Dec 2025}.
 
 
+\bibitem[Meta(2025a)]%
+        {llama31_8b_citation}
+\bibfield{author}{\bibinfo{person}{Meta}.} \bibinfo{year}{2025}\natexlab{a}.
+\newblock \bibinfo{title}{meta-llama/llama-3.1-8b-instruct}.
+\newblock
+  \bibinfo{howpublished}{\url{https://huggingface.co/meta-llama/llama-3.1-8b-instruct}}.
+\newblock
+\newblock
+\shownote{As of Dec 2025}.
+
+
+\bibitem[Meta(2025b)]%
+        {llama32_3b_citation}
+\bibfield{author}{\bibinfo{person}{Meta}.} \bibinfo{year}{2025}\natexlab{b}.
+\newblock \bibinfo{title}{meta-llama/llama-3.2-3b-instruct}.
+\newblock
+  \bibinfo{howpublished}{\url{https://huggingface.co/meta-llama/llama-3.2-3b-instruct}}.
+\newblock
+\newblock
+\shownote{As of Dec 2025}.
+
+
+\bibitem[OpenAI(2025)]%
+        {gpt_oss_20b_citation}
+\bibfield{author}{\bibinfo{person}{OpenAI}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \bibinfo{title}{openai/gpt-oss-20b}.
+\newblock
+  \bibinfo{howpublished}{\url{https://huggingface.co/openai/gpt-oss-20b}}.
+\newblock
+\newblock
+\shownote{As of Dec 2025}.
+
+
 \bibitem[Pei et~al\mbox{.}(2025)]%
         {pei2025feather_sql}
 \bibfield{author}{\bibinfo{person}{Wenqi Pei}, \bibinfo{person}{Hailing Xu},
@@ -141,10 +289,10 @@
 \tempurl}
 
 
-\bibitem[Repository({[n.\,d.]})]%
+\bibitem[Repository(2025)]%
         {sourceCode}
 \bibfield{author}{\bibinfo{person}{GitHub Repository}.}
-  \bibinfo{year}{[n.\,d.]}\natexlab{}.
+  \bibinfo{year}{2025}\natexlab{}.
 \newblock \bibinfo{title}{Source Code for Experiment Report}.
 \newblock
   \bibinfo{howpublished}{\url{https://github.com/CATBOYCOWBOY/comp5118Final.git}}.
@@ -166,6 +314,26 @@
   Methods in Natural Language Processing}}. \bibinfo{publisher}{Association for
   Computational Linguistics}, \bibinfo{address}{Brussels, Belgium}.
 \newblock
+
+
+\bibitem[Yu et~al\mbox{.}(2019)]%
+        {yu2019spiderlargescalehumanlabeleddataset}
+\bibfield{author}{\bibinfo{person}{Tao Yu}, \bibinfo{person}{Rui Zhang},
+  \bibinfo{person}{Kai Yang}, \bibinfo{person}{Michihiro Yasunaga},
+  \bibinfo{person}{Dongxu Wang}, \bibinfo{person}{Zifan Li},
+  \bibinfo{person}{James Ma}, \bibinfo{person}{Irene Li},
+  \bibinfo{person}{Qingning Yao}, \bibinfo{person}{Shanelle Roman},
+  \bibinfo{person}{Zilin Zhang}, {and} \bibinfo{person}{Dragomir Radev}.}
+  \bibinfo{year}{2019}\natexlab{}.
+\newblock \bibinfo{title}{Spider: A Large-Scale Human-Labeled Dataset for
+  Complex and Cross-Domain Semantic Parsing and Text-to-SQL Task}.
+\newblock
+\newblock
+\showeprint[arxiv]{1809.08887}~[cs.CL]
+\urldef\tempurl%
+\url{https://arxiv.org/abs/1809.08887}
+\showURL{%
+\tempurl}
 
 
 \bibitem[Zhong et~al\mbox{.}(2020)]%

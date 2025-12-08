@@ -3,6 +3,7 @@
 
 \documentclass[sigconf]{acmart}
 \usepackage{balance}
+\usepackage[ruled,lined]{algorithm2e}
 
 \title{An Evaluation of The Performance of \\
 Lightweight Language Models on Zero-Shot NL2SQL tasks}
@@ -63,7 +64,7 @@ time, evaluations of the performance of lightweight, open source models are few 
 conduct an evaluation asking one guiding question - how well do lightweight LLMs such as Llama 8b or Qwen3 perform when 
 presented with NL2SQL tasks in a zeroshot format? 
 
-To answer this guiding question, we took a sample of 10 such models in the 0-20b parameter range and evaluated their 
+To answer this guiding question, we took a sample of 8 such models in the 0-20b parameter range and evaluated their 
 performance on the SPIDER-dev NL2SQL question set. Using a zero-shot method with a short context length, we built a 
 testbench\cite{sourceCode} to evaluate these opensource models using Novita's online AI service and hardware rental service \cite{novitaAI}.
 This allowed us to run each model on the cloud with consistent hardware, while still being able to evaluate token efficiency
@@ -90,7 +91,7 @@ strategy and arose from a need for testing consistency and efficiency.
 
 \subsection*{Model selection}
 
-Our experimental data incorporates testing from 10 different open source LLMs, each with a parameter count $\leq 30$b. 
+Our experimental data incorporates testing from 8 different open source LLMs, each with a parameter count $\leq 30$b. 
 The basic criteria for evaluation included the following requirements:
 
 \begin{itemize}
@@ -106,13 +107,113 @@ The basic criteria for evaluation included the following requirements:
   memory for KV cache or buffer space.
 \end{itemize}
 
-Using this selection criteria, we selected and tested a list of these 12 models:
+Using this selection criteria, we selected and tested a list of these 8 models available publically:
 
 \begin{itemize}
-  \item 
+  \item llama 3.2 3b instruct \cite{llama32_3b_citation}
+  \item Qwen 3 4b \cite{qwen3_4b_citation}
+  \item Qwen 2.5 7b instruct \cite{qwen25_7b_citation}
+  \item llama 3.1 8b \cite{llama31_8b_citation}
+  \item Qwen 3 8b \cite{qwen3_8b_citation}
+  \item Deepseek R1 distill 14b \cite{deepseek_r1_citation}
+  \item GPT OSS 20b \cite{gpt_oss_20b_citation}
+  \item Gemma 3 27b \cite{gemma3_27b_citation}
 \end{itemize}
 
+At either 8 or 16b quantization, these models should be able to fit in the 32GB of VRAM provided by an RTX 5090, the 
+current flagship model of Nvidia's consumer GPU lineup. These models come from a variety of different developers, have 
+a wide range of parameter counts, and an assortment of architectures (MOE, distilled, etc).
+
+Although we did tests for Qwen's 30b coder and 32b models, these were excluded from testing as a VM instance running 
+what we defined as "consumer level hardware" was not able to produce responses efficiently using these two models as-is.
+
+Additionally, we ran the same tests using Google's Gemma3-12b-it model. We chose to exclude this from testing as it
+delivered parsable SQL only 68\% of the time, and its results effectively broke the NL2SQL response tester. This leaves
+it with a score of 0 in every category in our tests, and did not deliver any meaningful insights.
+
+\subsection*{Test set selection}
+
+For this paper, we selected the SPIDER-dev \cite{Yu&al.18c} NL2SQL dataset as the test set for our models. This was 
+selected from a list of candidates including SPIDER-dev, SPIDER, SPIDER2, and BIRD. Even though these are all well 
+designed, commonly used NL2SQL question sets, we opted to use solely SPIDER-dev for several key reasons.
+
+The full SPIDER dataset contains 10,181 questions \cite{yu2019spiderlargescalehumanlabeleddataset}. Even though we used
+a cloud provider to accelerate our inference with better hardware vs running locally, each run of the 1,034 questions in
+the SPIDER-dev dataset took over 12 hours on average. For a dataset 10x larger, this means that all 9 models would have 
+taken over a month to return a full set of results, from running inference to extracting and running SQL, to recording
+the results to persistent storage. 
+
+The SPIDER2 dataset \cite{lei2025spider20evaluatinglanguage} also contains 10,000+ questions, as well as a significantly 
+higher level of question difficulty. In preliminary testing, the smallest of the models quickly ran out of context
+window and were therefore unable to deliver a complete SQL query, both breaking the test platform and effectively
+eliminating this dataset from consideration. Similar issues exist in the BIRD dataset as well 
+\cite{li2023llmservedatabaseinterface}.
+
+Thus by elimination, the SPIDER-dev question dataset was the last remaining contender under consideration. It contains
+a variety of databases, question types, and difficulty levels, meaning that even though it is significantly smaller in
+scope to the other datasets considered, testing a model using it would still lead to meaningful insights into how
+they performed in different scenarios. Additionally, since an already existing query evaluation tool was written for the 
+SPIDER questions\cite{ruiqi20}, we could leverage it to only need to store our LLM responses and utilize the output from 
+the tool itself.
+
+\subsection*{Prompting Strategy}
+
+Every benchmark of LLMs on any task requires a prompting strategy. This must be unified across all models evaluated, 
+since we want all variables besides the model type to be as consistent as possible. Since our goal was to evaluate 
+zero-shot performance on these models, we aimed to create a single text prompt that had to include both the SPIDER-dev
+question as well as any schema needed for context.
+
+Initially, we took a multi-stage prompting approach where models were given a chain of thought and prompted to:
+
+\begin{enumerate}
+  \item read the schema and context given
+  \item sort out what components of the schema will be relevant to the question
+  \item build a SQL query based off the question
+  \item reevaluate the produced query for potential errors
+  \item return a single SQL query string based on SQLite's SQL dialect
+\end{enumerate}
+
+However, this process would sometimes exceed the token window of the smaller models like Llama 3b or Qwen 4b, resulting
+in malformed returned strings, partial results, or other errors that made the results effectively unusable. To allow
+for one consistent prompting strategy across all models regardless of size, we opted to use a very simple prompt, shown
+below.
+
+\begin{figure*}[ht]
+  \begin{verbatim}
+  You are an expert SQL analyst. Generate a SQL query to answer the question based on the provided database schema.
+
+  <CONTEXT/SCHEMA>
+
+  Question: <QUESTION - FROM SPIDER-DEV DATASET>.
+
+  Requirements:
+  - Use proper SQL syntax for SQLite
+  - Return ONLY the final SQL query
+  - Do NOT include any explanations, reasoning, or additional text
+  - Do NOT wrap the query in backticks, code blocks, or markdown formatting
+  - Do NOT include prefixes like "sql:", "query:", or similar
+
+  SQL Query:
+  \end{verbatim}
+\caption{Zero-shot prompting template used for model tests}
+\Description{Some text matching the prompt template we used for testing our NL2SQL questions}
+\label{fig:prompt}
+\end{figure*}
+
+Using this prompt, we were able to extract usable SQL the vast majority of the time from our models. Even though the 
+prompt instructed the model to return only the SQL query, some models were not able to follow this instruction. As such
+we added a REGEX based extraction feature to our testbench, which was able to extract SQL when the model returned a 
+query string in most cases, such as when the string is preceded by a newline character, or when it is formatted as 
+SQL:<query>. 
+
+With these three design choices in mind, we were able to use Novita AI's cloud AI service to evaluate our selected models
+on the SPIDER-dev dataset, we were able to run our desired tests and gather some meaningful insights into how the models
+behave when faced with a variety of NL2SQL tasks.
+
 \section{Results}
+
+In testing, each of the selected models was faced with all 1,034 of the SPIDER-dev dataset questions. We measured three 
+primary metrics 
 
 \section{Analysis}
 
