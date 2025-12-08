@@ -4,6 +4,16 @@
 \documentclass[sigconf]{acmart}
 \usepackage{balance}
 \usepackage[ruled,lined]{algorithm2e}
+\usepackage{float}
+
+\setcounter{topnumber}{5}
+\setcounter{bottomnumber}{5}
+\setcounter{totalnumber}{10}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.9}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.8}
+
 
 \title{An Evaluation of The Performance of \\
 Lightweight Language Models on Zero-Shot NL2SQL tasks}
@@ -178,7 +188,7 @@ in malformed returned strings, partial results, or other errors that made the re
 for one consistent prompting strategy across all models regardless of size, we opted to use a very simple prompt, shown
 below.
 
-\begin{figure*}[ht]
+\begin{figure*}[!htb]
   \begin{verbatim}
   You are an expert SQL analyst. Generate a SQL query to answer the question based on the provided database schema.
 
@@ -213,7 +223,9 @@ behave when faced with a variety of NL2SQL tasks.
 \section{Results}
 
 In testing, each of the selected models was faced with all 1,034 of the SPIDER-dev dataset questions. We measured three 
-primary metrics 
+primary metrics - completion rate (whether or not the model returned parsable SQL), test accuracy (predicted SQL 
+successfully completing the query correctly), and exact match accuracy (predicted SQL perfectly matching the benchmark
+SQL string).
 
 \section{Analysis}
 
