@@ -7,9 +7,7 @@ import glob
 from pathlib import Path
 
 def load_results_data(results_dir):
-    """Load all results.json files from the results directory."""
     results_data = {}
-
     pattern = os.path.join(results_dir, "*/results.json")
     results_files = glob.glob(pattern)
 
@@ -24,7 +22,6 @@ def load_results_data(results_dir):
                 model_name = experiment_name.split('_spider1_basic')[0]
 
             display_name = clean_model_name(model_name)
-
             summary = experiment_data['summary']
             results_data[display_name] = {
                 'total_examples': summary['total_examples'],
@@ -37,9 +34,7 @@ def load_results_data(results_dir):
 
 def clean_model_name(model_name):
     name = model_name.replace('meta-llama/', '').replace('qwen/', '').replace('google/', '').replace('deepseek/', '').replace('openai/', '')
-
     name = name.replace('_', ' ').replace('-', ' ')
-
     name_mappings = {
         'llama 3.1 8b instruct': 'LLaMA 3.1 8B instruct',
         'llama 3.2 3b instruct': 'LLaMA 3.2 3B instruct',
@@ -53,7 +48,6 @@ def clean_model_name(model_name):
         'deepseek r1 distill qwen 14b': 'DeepSeek R1 14B',
         'gpt oss 20b': 'GPT OSS 20B'
     }
-
     return name_mappings.get(name.lower(), name.title())
 
 def create_bar_chart(data, metric_key, title, ylabel, filename, color='steelblue'):
@@ -100,22 +94,20 @@ def create_bar_chart(data, metric_key, title, ylabel, filename, color='steelblue
     plt.show()
     print(f"Saved: {filename}")
 
-def main():
-    project_root = Path(__file__).parent.parent.parent
-    results_dir = project_root / "results" / "Batch 1"
-    output_dir = project_root / "plots"
+project_root = Path(__file__).parent.parent.parent
+results_dir = project_root / "results" / "Batch 1"
+output_dir = project_root / "plots"
 
-    output_dir.mkdir(exist_ok=True)
+output_dir.mkdir(exist_ok=True)
 
-    print(f"Loading results from: {results_dir}")
-    print(f"Output directory: {output_dir}")
+print(f"Loading results from: {results_dir}")
+print(f"Output directory: {output_dir}")
 
-    results_data = load_results_data(str(results_dir))
+results_data = load_results_data(str(results_dir))
 
-    if not results_data:
-        print("No results data found! Check the results directory path.")
-        return
-
+if not results_data:
+    print("No results data found! Check the results directory path.")
+else:
     print(f"Found data for {len(results_data)} models:")
     for model in sorted(results_data.keys()):
         data = results_data[model]
@@ -152,6 +144,3 @@ def main():
 
     print("\nAll graphs generated successfully!")
     print(f"Check the {output_dir} directory for the generated plots.")
-
-if __name__ == "__main__":
-    main()

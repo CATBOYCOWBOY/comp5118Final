@@ -5,14 +5,10 @@
 \usepackage{balance}
 \usepackage[ruled,lined]{algorithm2e}
 \usepackage{float}
-
-\setcounter{topnumber}{5}
-\setcounter{bottomnumber}{5}
-\setcounter{totalnumber}{10}
-\renewcommand{\topfraction}{0.9}
-\renewcommand{\bottomfraction}{0.9}
-\renewcommand{\textfraction}{0.05}
-\renewcommand{\floatpagefraction}{0.8}
+\usepackage{stfloats} % better placement control for wide floats
+\usepackage{cuted} % allow temporarily full-width blocks in two-column mode
+\usepackage{capt-of} % captions outside floats
+\usepackage{placeins} % provides \FloatBarrier
 
 
 \title{An Evaluation of The Performance of \\
@@ -93,7 +89,12 @@ of lightweight open source models on NL2SQL tasks. In order to do so, we used SP
 \cite{Yu&al.18c}, which is a commonly used benchmark for evaluation of NL2SQL tools. Then, we evaluated the extracted SQL 
 from the LLMs' responses using the accompanying taoyds/test-suite-sql-eval tool \cite{ruiqi20}, as per the recommendations 
 of SPIDER's authors \cite{Yu&al.18c}. To support these requirements, we built a testbench\cite{sourceCode} that would 
-serve as a bridge and data recording tool for SPIDER, the evaluator, as well as Novita, our LLM provider.
+serve as a bridge and data recording tool for SPIDER, the evaluator, as well as Novita, our LLM provider. 
+
+We chose to use
+Novita as an inference provider as it has a variety of features that were useful for this paper. Novita provides a wide
+array of opensource models in their original configuration compared to Groq, and provides the ability to rent consumer
+grade Nvidia GPUs unlike HuggingFace, which does not provide this type of GPU to use for inference.
 
 While the general architecture of our testing system is fairly straightforward, tradeoffs had to be made in experiental
 design in several areas. These primarily happened in terms of model selection, test set selection, and prompting
@@ -186,29 +187,41 @@ Initially, we took a multi-stage prompting approach where models were given a ch
 However, this process would sometimes exceed the token window of the smaller models like Llama 3b or Qwen 4b, resulting
 in malformed returned strings, partial results, or other errors that made the results effectively unusable. To allow
 for one consistent prompting strategy across all models regardless of size, we opted to use a very simple prompt, shown
-below.
+below. All prompts were run with a temperature of 0.1, and a max token window of 8,192 in order to stay within budget
+and below Novita's API rate limit. 
 
-\begin{figure*}[!htb]
-  \begin{verbatim}
-  You are an expert SQL analyst. Generate a SQL query to answer the question based on the provided database schema.
+\begin{figure}[H]
+  \centering
+  \begin{minipage}{\linewidth}
+  \scriptsize
+\begin{verbatim}
+You are an expert SQL analyst.
+Generate a SQL query to answer the
+question based on the provided
+database schema.
 
-  <CONTEXT/SCHEMA>
+<CONTEXT/SCHEMA>
 
-  Question: <QUESTION - FROM SPIDER-DEV DATASET>.
+Question: <QUESTION - FROM
+SPIDER-DEV DATASET>.
 
-  Requirements:
-  - Use proper SQL syntax for SQLite
-  - Return ONLY the final SQL query
-  - Do NOT include any explanations, reasoning, or additional text
-  - Do NOT wrap the query in backticks, code blocks, or markdown formatting
-  - Do NOT include prefixes like "sql:", "query:", or similar
+Requirements:
+- Use proper SQL syntax for SQLite
+- Return ONLY the final SQL query
+- Do NOT include any explanations,
+  reasoning, or additional text
+- Do NOT wrap the query in backticks,
+  code blocks, or markdown formatting
+- Do NOT include prefixes like "sql:",
+  "query:", or similar
 
-  SQL Query:
-  \end{verbatim}
+SQL Query:
+\end{verbatim}
+\end{minipage}
 \caption{Zero-shot prompting template used for model tests}
 \Description{Some text matching the prompt template we used for testing our NL2SQL questions}
 \label{fig:prompt}
-\end{figure*}
+\end{figure}
 
 Using this prompt, we were able to extract usable SQL the vast majority of the time from our models. Even though the 
 prompt instructed the model to return only the SQL query, some models were not able to follow this instruction. As such
@@ -226,6 +239,138 @@ In testing, each of the selected models was faced with all 1,034 of the SPIDER-d
 primary metrics - completion rate (whether or not the model returned parsable SQL), test accuracy (predicted SQL 
 successfully completing the query correctly), and exact match accuracy (predicted SQL perfectly matching the benchmark
 SQL string).
+
+\subsection*{Completion Rates}
+
+All models tested were able to complete the vast majority of prompts, with most models returning parsable SQL more than 
+98\% of the time. 
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=0.8\linewidth]{../plots/successful_predictions_rate.png}
+    \caption{Bar chart of successful SQL generation rates per model}
+    \Description{Bar chart of successful SQL generation rates per model, most above 98\%}
+    \label{fig:success-rate}
+  \end{minipage}
+\end{figure}
+
+The exception to this was Google's Gemma-3 27b model, which returned parsable SQL only 88\% of the time. It is notable
+that both Gemma-3 models failed to return parsable SQL at anything close to the rate at which the other tested models
+did.
+
+\subsection*{Execution Accuracy}
+
+During testing, we saw significantly more variation in terms of execution accuracy across all assessed models than in 
+the proportion of questions that resulted in parsable SQL. 
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=0.8\linewidth]{../plots/test_suite_accuracy.png}
+    \caption{Bar chart of execution accuracy for different models assessed in this paper}
+    \Description{Bar chart of execution accuracy for different models assessed in this paper}
+    \label{fig:execution-accuracy}
+  \end{minipage}
+\end{figure}
+
+The execution accuracy rate ranges from 63\% on the high end with Meta's Llama 8b instruct to 46\% on the low end with
+Alibaba's Qwen3 8b. Across all models, this left us a mean accuracy of 54.2\%.
+
+Across the different question difficulties, we also saw a variation in execution accuracy. 
+
+\begin{center}
+  \begin{tabular}{lcccc}
+    \hline
+    Model & Easy & Medium & Hard & Extra \\
+    \hline
+    Llama 3.1 8b instruct & 0.835 & 0.684 & 0.471 & 0.361 \\
+    Gemma 3 27b it & 0.790 & 0.601 & 0.552 & 0.343 \\
+    Qwen 2.5 7b instruct & 0.831 & 0.587 & 0.511 & 0.331 \\
+    Deepseek R1 14b & 0.879 & 0.590 & 0.282 & 0.096 \\
+    GPT OSS 20b & 0.863 & 0.460 & 0.466 & 0.175 \\
+    Qwen 3 4b & 0.855 & 0.540 & 0.287 & 0.139 \\
+    Llama 3.2 3b instruct & 0.653 & 0.545 & 0.385 & 0.259 \\
+    Qwen 3 8b & 0.810 & 0.509 & 0.276 & 0.054 \\
+    \hline
+  \end{tabular}
+  \label{tab:difficulty-execution-accuracy}
+\end{center}
+
+Most models were overwhelmingly successful on the easiest question difficulties, but struggled greatly on the extra 
+hard questions. The exception to this rule was Llama-3.2-3b-instruct, which while completing only 65\% of easy questions
+successfully, completed almost 26\% of the hardest category questions. This is especially impressive considering that
+is the smallest footprint model we assessed in this paper.
+
+\subsection*{Exact Match Accuracy}
+
+While the majority of assessed models managed execution accuracy on a majority of the SPIDER-dev tests, the models 
+struggled significantly more on exact match accuracy metrics.
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=0.8\linewidth]{../plots/exact_match_accuracy.png}
+    \caption{Bar chart of exact match accuracy for different models assessed in this paper}
+    \Description{Bar chart of exact match for different models assessed in this paper}
+    \label{fig:Exact-match-accuracy}
+  \end{minipage}
+\end{figure}
+
+\begin{center}
+  \begin{tabular}{lcccc}
+    \hline
+    Model & Easy & Medium & Hard & Extra \\
+    \hline
+    Qwen 3 8b & 0.746 & 0.359 & 0.172 & 0.030 \\
+    Deepseek R1 14b & 0.714 & 0.352 & 0.115 & 0.042 \\
+    Qwen 2.5 7b instruct & 0.661 & 0.283 & 0.230 & 0.108 \\
+    Llama 3.1 8b instruct & 0.621 & 0.359 & 0.241 & 0.066 \\
+    GPT OSS 20b & 0.613 & 0.235 & 0.138 & 0.006 \\
+    Gemma 3 27b it & 0.609 & 0.327 & 0.264 & 0.042 \\
+    Llama 3.2 3b instruct & 0.504 & 0.289 & 0.184 & 0.090 \\
+    Qwen 3 4b & 0.794 & 0.424 & 0.195 & 0.090 \\
+    \hline
+  \end{tabular}
+  \label{tab:difficulty-exact-match-accuracy}
+\end{center}
+
+Interestingly, it was Qwen3's 4b and 8b models that took the lead in this metric, even though they had struggled with
+execution accuracy in the metric before, while Qwen's 2.5b model was the only one to break 10\% exact match accuracy
+in the hardest question difficulty category.
+
+\subsection*{Token efficiency}
+
+While the Novita API does provide a token usage metric per API call, some models measure only output tokens while others
+measure total token use. This means that even though our token usage graph and stored results in repo \ref{fig:token-use} 
+\cite{sourceCode} show a hugely disproportinate mean token use per question for different models, this metric does not 
+reflect the actual token consumption per call, and cannot be used to assess models' efficiency on different local systems.
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=0.8\linewidth]{../plots/mean_token_usage.png}
+    \caption{Bar chart of mean token use per call for different models assessed in this paper}
+    \Description{Bar chart of meantoken use per call for different models assessed in this paper}
+    \label{fig:token-use}
+  \end{minipage}
+\end{figure}
+
+Additionally, while it would be possible to measure per call response times, this would not be a meaningful metric
+to anyone looking to assess these models in time efficiency terms. This is because between unknown exact hardware on the 
+inference API, network speeds, rate limiting, and other factors, there would have been too many confounding factors to 
+include response times as a meaningful metric in our results.
+
+
+Given then the metrics recorded, these results indicate that while no model was perfect in its ability to produce 
+accurate NL2SQL responses for all of the
+SPIDER-dev questions and performed significantly worse than known baselines \cite{nl2sqlsurvey}, each model nonetheless
+carries its own strengths and weaknesses. We saw a wide array of performance effectiveness with both execution and 
+exact match accuracy, as well as different distributions of accuracy across different question difficulty levels.
 
 \section{Analysis}
 
