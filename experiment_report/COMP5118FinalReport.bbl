@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{3}
+\begin{thebibliography}{10}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -37,6 +37,32 @@
 \providecommand\natexlab[1]{#1}
 \providecommand\showeprint[2][]{arXiv:#2}
 
+\bibitem[AI({[n.\,d.]})]%
+        {novitaAI}
+\bibfield{author}{\bibinfo{person}{Novita AI}.}
+  \bibinfo{year}{[n.\,d.]}\natexlab{}.
+\newblock \bibinfo{title}{Novita AI}.
+\newblock \bibinfo{howpublished}{\url{https://novita.ai/}}.
+\newblock
+\newblock
+\shownote{As of Dec 2025}.
+
+
+\bibitem[Corradini et~al\mbox{.}(2025)]%
+        {corradini2025slmsurvey}
+\bibfield{author}{\bibinfo{person}{A. Corradini}, \bibinfo{person}{F. Martino},
+  {and} \bibinfo{person}{P. Rossi}.} \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{A Comprehensive Survey of Small Language Models in
+  the Era of Large Language Models}.
+\newblock \bibinfo{journal}{\emph{Big Data and Cognitive Computing}}
+  \bibinfo{volume}{9}, \bibinfo{number}{7} (\bibinfo{year}{2025}),
+  \bibinfo{pages}{189}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.3390/bdcc9070189}
+\showDOI{\tempurl}
+
+
 \bibitem[Hasan et~al\mbox{.}(2025)]%
         {hasan2025smallcode}
 \bibfield{author}{\bibinfo{person}{T. Hasan}, \bibinfo{person}{Y. Li}, {and}
@@ -68,6 +94,24 @@
 \tempurl}
 
 
+\bibitem[Liu et~al\mbox{.}(2024)]%
+        {liu2024survey_nl2sql}
+\bibfield{author}{\bibinfo{person}{Xinyu Liu}, \bibinfo{person}{Shuyu Shen},
+  \bibinfo{person}{Boyan Li}, \bibinfo{person}{Peixian Ma},
+  \bibinfo{person}{Runzhi Jiang}, \bibinfo{person}{Yuxin Zhang},
+  \bibinfo{person}{Ju Fan}, \bibinfo{person}{Guoliang Li}, \bibinfo{person}{Nan
+  Tang}, {and} \bibinfo{person}{Yuyu Luo}.} \bibinfo{year}{2024}\natexlab{}.
+\newblock \showarticletitle{A Survey of Text-to-SQL in the Era of LLMs: Where
+  are we, and where are we going?}
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:2408.05109}}
+  \bibinfo{volume}{18}, \bibinfo{number}{9} (\bibinfo{year}{2024}),
+  \bibinfo{pages}{1 -- 20}.
+\newblock
+\urldef\tempurl%
+\url{https://doi.org/10.48550/arXiv.2408.05109}
+\showDOI{\tempurl}
+
+
 \bibitem[llm stats.com(2025)]%
         {llmstats2025}
 \bibfield{author}{\bibinfo{person}{llm stats.com}.}
@@ -76,7 +120,63 @@
 \newblock \bibinfo{howpublished}{\url{https://llm-stats.com/}}.
 \newblock
 \newblock
-\shownote{As of October 2025}.
+\shownote{As of Dec 2025}.
+
+
+\bibitem[Pei et~al\mbox{.}(2025)]%
+        {pei2025feather_sql}
+\bibfield{author}{\bibinfo{person}{Wenqi Pei}, \bibinfo{person}{Hailing Xu},
+  \bibinfo{person}{Hengyuan Zhao}, \bibinfo{person}{Shizheng Hou},
+  \bibinfo{person}{Han Chen}, \bibinfo{person}{Zining Zhang},
+  \bibinfo{person}{Pingyi Luo}, {and} \bibinfo{person}{Bingsheng He}.}
+  \bibinfo{year}{2025}\natexlab{}.
+\newblock \showarticletitle{Feather-SQL: A Lightweight NL2SQL Framework with
+  Dual-Model Collaboration Paradigm for Small Language Models}.
+\newblock \bibinfo{journal}{\emph{arXiv}} \bibinfo{volume}{preprint},
+  \bibinfo{number}{17811} (\bibinfo{year}{2025}), \bibinfo{pages}{1 -- 20}.
+\newblock
+\urldef\tempurl%
+\url{https://arxiv.org/abs/2503.17811}
+\showURL{%
+\tempurl}
+
+
+\bibitem[Repository({[n.\,d.]})]%
+        {sourceCode}
+\bibfield{author}{\bibinfo{person}{GitHub Repository}.}
+  \bibinfo{year}{[n.\,d.]}\natexlab{}.
+\newblock \bibinfo{title}{Source Code for Experiment Report}.
+\newblock
+  \bibinfo{howpublished}{\url{https://github.com/CATBOYCOWBOY/comp5118Final.git}}.
+\newblock
+
+
+\bibitem[Yu et~al\mbox{.}(2018)]%
+        {Yu&al.18c}
+\bibfield{author}{\bibinfo{person}{Tao Yu}, \bibinfo{person}{Rui Zhang},
+  \bibinfo{person}{Kai Yang}, \bibinfo{person}{Michihiro Yasunaga},
+  \bibinfo{person}{Dongxu Wang}, \bibinfo{person}{Zifan Li},
+  \bibinfo{person}{James Ma}, \bibinfo{person}{Irene Li},
+  \bibinfo{person}{Qingning Yao}, \bibinfo{person}{Shanelle Roman},
+  \bibinfo{person}{Zilin Zhang}, {and} \bibinfo{person}{Dragomir Radev}.}
+  \bibinfo{year}{2018}\natexlab{}.
+\newblock \showarticletitle{Spider: A Large-Scale Human-Labeled Dataset for
+  Complex and Cross-Domain Semantic Parsing and Text-to-SQL Task}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 2018 Conference on Empirical
+  Methods in Natural Language Processing}}. \bibinfo{publisher}{Association for
+  Computational Linguistics}, \bibinfo{address}{Brussels, Belgium}.
+\newblock
+
+
+\bibitem[Zhong et~al\mbox{.}(2020)]%
+        {ruiqi20}
+\bibfield{author}{\bibinfo{person}{Ruiqi Zhong}, \bibinfo{person}{Tao Yu},
+  {and} \bibinfo{person}{Dan Klein}.} \bibinfo{year}{2020}\natexlab{}.
+\newblock \showarticletitle{Semantic Evaluation for Text-to-SQL with Distilled
+  Test Suite}. In \bibinfo{booktitle}{\emph{The 2020 Conference on Empirical
+  Methods in Natural Language Processing}}. \bibinfo{publisher}{Association for
+  Computational Linguistics}.
+\newblock
 
 
 \end{thebibliography}

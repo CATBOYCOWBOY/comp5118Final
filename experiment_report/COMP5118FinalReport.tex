@@ -1,11 +1,11 @@
 % !TEX program = pdflatex
-  % !BIB program = bibtex
+% !BIB program = bibtex
 
 \documentclass[sigconf]{acmart}
 \usepackage{balance}
 
-\title{An Evaluation of The Performance of \\[0.5em]
-Lightweight Language Models on NL2SQL tasks}
+\title{An Evaluation of The Performance of \\
+Lightweight Language Models on Zero-Shot NL2SQL tasks}
 
 \author{Tom Fan}
 \affiliation{
@@ -28,8 +28,12 @@ research and development in the last few
 years. While a large proportion of LLM use is likely done using proprietary, closed source, and large footprint 
 foundation models hosted by SAAS providers like Anthropic or OpenAI, an increasing amount of open-source models are also 
 entering the market. These models have demonstrated promise on several different kinds of tasks, such as code generation
-using Python \cite{hasan2025smallcode}. In this paper, we aim to provide an overview of how several of the smaller open
-source models perform when faced with elementary NL2SQL tasks on the Spider-Dev question dataset.
+using Python \cite{hasan2025smallcode}. However, there is limited research on how they perform in other common 
+coding-adjacent tasks, including NL2SQL. While there is an emerging wealth of assessment on how larger models like OpenAI's
+closed source GPT series perform on NL2SQL tasks in various configurations\cite{liu2024survey_nl2sql}\cite{nl2sqlsurvey},
+the performance of these small models' smaller cousins in non-pretrained configurations is still an underexplored area.
+In this paper, we aim to provide an overview of how several such opensource models perform when faced with  
+NL2SQL tasks on the Spider-Dev question dataset.
 
 \section{Introduction}
 
@@ -40,15 +44,73 @@ small footprint by design or distilled versions of larger source models.
 
 In these cases, consumer level hardware should be able to run the models using tools like localLLama, enabling their use
 offline and without dependency on external SAAS providers (for purposes of this paper, we define consumer level hardware
-to be current generation Nvidia RTX chips or other equivalents, able to run models in the 20-30b parameter range or smaller
-at 8 or 16b quantization). 
+to be current generation Nvidia RTX chips or other equivalents, able to comfortably run models in the 20B parameter range 
+or smaller at 8 or 16b quantization). 
+
+These LLMs have shown promise in their ability to solve an array of tasks, including completing test sets for code 
+generation such as HumanEval \cite{hasan2025smallcode}\cite{corradini2025slmsurvey}. In these experiments, the authors
+were able to push these models to perform disproportinately well to how large their footprints are, indicating that 
+these smaller LLMs are able to consistently solve simple, well defined tasks and generate effective code.
 
 At the same time, there has been significant development in the field of NL2SQL tools. While previous generations of 
 NL2SQL tools depended on hardcoded rules or deep neural networks \cite{nl2sqlsurvey}, the emergence of LLMs has enabled
 a whole new paradigm of NL2SQL tools based on them. In fact, in their MVP state, a LLM itself can serve as a NL2SQL tool
 on its own. 
 
-\section{Testing Methodology}
+While there are many evaluations of the potential of LLMs for NL2SQL tasks, many of these depend on the aforementioned
+large, closed-source, proprietary models \cite{pei2025feather_sql}\cite{nl2sqlsurvey}\cite{liu2024survey_nl2sql}. At the same 
+time, evaluations of the performance of lightweight, open source models are few in number. Therefore, in this paper we
+conduct an evaluation asking one guiding question - how well do lightweight LLMs such as Llama 8b or Qwen3 perform when 
+presented with NL2SQL tasks in a zeroshot format? 
+
+To answer this guiding question, we took a sample of 10 such models in the 0-20b parameter range and evaluated their 
+performance on the SPIDER-dev NL2SQL question set. Using a zero-shot method with a short context length, we built a 
+testbench\cite{sourceCode} to evaluate these opensource models using Novita's online AI service and hardware rental service \cite{novitaAI}.
+This allowed us to run each model on the cloud with consistent hardware, while still being able to evaluate token efficiency
+and getting results equivalent to what we would see running these models on a local system.
+
+Then, we gave each model we evaluated all 1034 of the SPIDER-dev NL2SQL questions, and recorded their responses. Models
+were not given pre-training or any other context.We found that while all of these models can zero-shot these NL2SQL problems
+roughly $\frac{1}{2}$ to $\frac{2}{3}$ of the time 
+in terms of execution accuracy, current small opensource LLMs are still not powerful enough to allow this type of use case 
+consistently.
+
+\section{Testing Methodology and Experimental Design}
+
+We started our experiment with the objective of evaluating the performance
+of lightweight open source models on NL2SQL tasks. In order to do so, we used SPIDER-dev as our test set (taoyds/spider)
+\cite{Yu&al.18c}, which is a commonly used benchmark for evaluation of NL2SQL tools. Then, we evaluated the extracted SQL 
+from the LLMs' responses using the accompanying taoyds/test-suite-sql-eval tool \cite{ruiqi20}, as per the recommendations 
+of SPIDER's authors \cite{Yu&al.18c}. To support these requirements, we built a testbench\cite{sourceCode} that would 
+serve as a bridge and data recording tool for SPIDER, the evaluator, as well as Novita, our LLM provider.
+
+While the general architecture of our testing system is fairly straightforward, tradeoffs had to be made in experiental
+design in several areas. These primarily happened in terms of model selection, test set selection, and prompting
+strategy and arose from a need for testing consistency and efficiency. 
+
+\subsection*{Model selection}
+
+Our experimental data incorporates testing from 10 different open source LLMs, each with a parameter count $\leq 30$b. 
+The basic criteria for evaluation included the following requirements:
+
+\begin{itemize}
+  \item Models must be open source, or otherwise downloadable and usable for a user locally at no charge and with no 
+  external services. This constrains the selected models to effectively what can be found on HuggingFace.
+  \item Models cannot be fine-tuned specifically for NL2SQL tasks, as this would result in imbalanced results and go 
+  against the core evaluation of small, general purpose models being used for NL2SQL tasks. Other fine tuning, however,
+  would not be a deal breaking factor for selection.
+  \item Models must be able to run locally on consumer level hardware. While that which constitutes the category of 
+  consumer level hardware is subjective to the end user, for the purposes of this paper we have defined it as current
+  generation consumer CPUs (Intel i series, AMD Ryzen, etc) alongside current generation Nvidia RTX graphics processors
+  or equivalent. This constrains the size of the model to 20-30GB total, as most local LLMs will require $\geq 2$GB of 
+  memory for KV cache or buffer space.
+\end{itemize}
+
+Using this selection criteria, we selected and tested a list of these 12 models:
+
+\begin{itemize}
+  \item 
+\end{itemize}
 
 \section{Results}
 
