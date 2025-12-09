@@ -65,8 +65,19 @@ these smaller LLMs are able to consistently solve simple, well defined tasks and
 
 At the same time, there has been significant development in the field of NL2SQL tools. While previous generations of 
 NL2SQL tools depended on hardcoded rules or deep neural networks \cite{nl2sqlsurvey}, the emergence of LLMs has enabled
-a whole new paradigm of NL2SQL tools based on them. In fact, in their MVP state, a LLM itself can serve as a NL2SQL tool
+a whole new paradigm of NL2SQL tools based on them. In fact, in their MVP state, a LLM can serve as a NL2SQL tool
 on its own. 
+
+The applications of NL2SQL are many, ranging from business intelligence dashboards that allow non-technical users to 
+query corporate databases, to research tools that enable scientists to explore datasets without SQL expertise, to 
+customer support systems that can retrieve information from product databases through natural language queries. 
+
+Locally runnable NL2SQL tools offer even greater potential, enabling privacy-sensitive applications like healthcare data, 
+financial regulation compliant reporting, and internal business analytics where data cannot leave a set premises
+due to regulatory or competitive concerns. They also can avoid reliance on external providers,
+preventing vendor lock in, service uptime issues, poor internet connections, and mitigating the impact of pricing changes.
+In this interest, the aim of this paper is to explore the potential of using small, opensource LLMs that can be run 
+locally as NL2SQL generation tools. 
 
 While there are many evaluations of the potential of LLMs for NL2SQL tasks, many of these depend on the aforementioned
 large, closed-source, proprietary models \cite{pei2025feather_sql}\cite{nl2sqlsurvey}\cite{liu2024survey_nl2sql}. At the same 
@@ -106,6 +117,8 @@ strategy and arose from a need for testing consistency and efficiency.
 
 \subsection*{Model selection}
 
+Since this paper focuses on the use of small, opensource models with NL2SQL tasks, model selection was one of the most
+important design choices we made while determining the parameters of our experiments.
 Our experimental data incorporates testing from 8 different open source LLMs, each with a parameter count $\leq 30$b. 
 The basic criteria for evaluation included the following requirements:
 
@@ -538,15 +551,52 @@ them is only growing, and future work needs to be done in this area.
 The asessment of small, opensource LLMs in NL2SQL tasks is an underexplored domain within LLM applications. While their
 use in code generation tasks like HumanEval is well documented, there is comparatively less data we saw in preliminary
 resarch into this area. For this reason, we chose to build a testbench using the SPIDER-dev dataset\cite{Yu&al.18c} and
-its accompanying test-suite-sql-eval
+its accompanying test-suite-sql-eval tool \cite{ruiqi20}. Using its asessment standards, we ran 1,034 tests on each of 
+the asessed models with the goal of better understanding how smaller LLMs perform when faced with NL2SQL tasks.
 
 This paper evaluated the zero-shot NL2SQL performance of eight lightweight open-source language models ranging from 3-27 
 billion parameters on the SPIDER-dev dataset. Our assessment examined execution accuracy, exact match accuracy, and 
-component-specific performance to understand the current capabilities and limitations of consumer-deployable models for 
+query component level performance to understand the current capabilities and limitations of consumer-deployable models for 
 database query generation tasks.
 
+Overall, we found that while some models reached an execution accuracy rating of 60+\%, no model was able to complete
+the SPIDER-dev test set with a >70\% success rate. This performance ceiling suggests that our existing zero-shot approach
+with lightweight models is insufficient for production NL2SQL applications, despite showing promise in specific areas.
+
+Perhaps the most notable finding of our evaluation was that parameter count does not reliably predict NL2SQL performance. 
+The correlation between model size and execution accuracy was fairly negligible (r = 0.019), with both the best and worst 
+performing models having 8 billion parameters. This pokes a hole in the intuitive conclusion regarding how scaling works
+in terms of LLM scaling, and indicates that architecture or fine-tuning are more critical factors than raw model size.
+
+Component-specific analysis of LLM performance revealed clear patterns in model capabilities. WHERE clause generation 
+consistently emerged as a pain point in query generation across all models, while AND/OR operations showed remarkably 
+consistent high performance. This asymmetry between the two component accuracies suggests that the evaluated models 
+do comprehend the correct usage of basic SQL syntax and logical operators but struggle with conditional reasoning and 
+schema comprehension - these being areas that represent specific areas of future exploration or improvement.
+
+For end-users considering deployment of lightweight LLMs for NL2SQL tasks, our findings do not support the use of small
+and non-pretrained models for direct use in generating queries. While high query completion rates (~98\%) demonstrate 
+that even small models can reliably produce SQL text, more muted execution accuracy indicates these models are not suited
+for use as autonomous query generators. For the simplest query categories, models did show close to 90\% accuracy rates.
+A hypothetical user who has a high error tolerance use case and only needs the simplest possible queries produced would 
+potentially benefit from these models.
+
+Even though execution and exact match rates in our paper were too low for the majority of use cases, we highlighted a 
+few relatively simple ways that these LLMs could potentially be made more effective, while hopefully preserving their 
+utility as a general purpose AI tool. Fine-tuning or k-shot prompting methods could improve performance in this use case
+albeit with the tradeoff of greater setup times or tradeoffs in performance in other areas. 
+
+The open source LLM field will only continue to expand from here on out. While the performance that we saw was not 
+sufficient for direct deployment, the number of freely available models and ways they can be configured is only growing.
+Our hope is that in the near future, a known working configuration for small LLMs doing NL2SQL tasks can be deployed 
+locally and used for a wide array of applications without dependence on external SAAS providers and closed source models.
+
+This evaluation provides some concrete baseline metrics for lightweight LLM performance on NL2SQL tasks and identifies 
+promising directions for future development. Continued progress toward reliable, locally-deployable NL2SQL tools will 
+require fine-grained approaches that address the specific weaknesses we uncovered while building upon 
+demonstrated strengths of current models.
+
 \balance
-\newpage
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{references}
 

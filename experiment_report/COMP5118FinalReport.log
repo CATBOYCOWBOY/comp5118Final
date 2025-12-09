@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.1.7)  9 DEC 2025 00:44
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.1.7)  9 DEC 2025 01:14
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -900,65 +900,73 @@ LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
 (Font)              scaled to size 10.95pt on input line 34.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 85.
+(Font)              scaled to size 9.0pt on input line 96.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [1.1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_25tcsq.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_76gpa5.enc}
 
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}]
+{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_nh77jq.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_7grukw.enc}{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_naooyc.enc}]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.0pt on input line 196.
- [2.2]
-LaTeX Font Info:    Trying to load font information for T1+zi4 on input line 201.
+(Font)              scaled to size 6.0pt on input line 193.
+ [2.2{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}]
+LaTeX Font Info:    Trying to load font information for T1+zi4 on input line 214.
  (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/t1zi4.fd
 File: t1zi4.fd 2018/01/14 T1/zi4 (Inconsolata)
 )
 LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
-(Font)              scaled to size 6.0pt on input line 201.
+(Font)              scaled to size 6.0pt on input line 214.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `zi4' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-<../plots/successful_predictions_rate.png, id=110, 858.5676pt x 571.8966pt>
+<../plots/successful_predictions_rate.png, id=104, 858.5676pt x 571.8966pt>
 File: ../plots/successful_predictions_rate.png Graphic file (type png)
 <use ../plots/successful_predictions_rate.png>
-Package pdftex.def Info: ../plots/successful_predictions_rate.png  used on input line 256.
+Package pdftex.def Info: ../plots/successful_predictions_rate.png  used on input line 269.
 (pdftex.def)             Requested size: 192.91872pt x 128.49664pt.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-<../plots/test_suite_accuracy.png, id=112, 858.5676pt x 572.1375pt>
+<../plots/test_suite_accuracy.png, id=106, 858.5676pt x 572.1375pt>
 File: ../plots/test_suite_accuracy.png Graphic file (type png)
 <use ../plots/test_suite_accuracy.png>
-Package pdftex.def Info: ../plots/test_suite_accuracy.png  used on input line 276.
+Package pdftex.def Info: ../plots/test_suite_accuracy.png  used on input line 289.
 (pdftex.def)             Requested size: 192.91872pt x 128.55077pt.
  [3.3{/usr/share/texlive/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-4.enc} <../plots/successful_predictions_rate.png> <../plots/test_suite_accuracy.png>]
 <../plots/exact_match_accuracy.png, id=125, 858.5676pt x 572.1375pt>
 File: ../plots/exact_match_accuracy.png Graphic file (type png)
 <use ../plots/exact_match_accuracy.png>
-Package pdftex.def Info: ../plots/exact_match_accuracy.png  used on input line 320.
+Package pdftex.def Info: ../plots/exact_match_accuracy.png  used on input line 333.
 (pdftex.def)             Requested size: 192.91872pt x 128.55077pt.
-
-Underfull \vbox (badness 3557) has occurred while \output is active []
-
 <../plots/mean_token_usage.png, id=128, 858.5676pt x 572.1375pt>
 File: ../plots/mean_token_usage.png Graphic file (type png)
 <use ../plots/mean_token_usage.png>
-Package pdftex.def Info: ../plots/mean_token_usage.png  used on input line 411.
+Package pdftex.def Info: ../plots/mean_token_usage.png  used on input line 424.
 (pdftex.def)             Requested size: 192.91872pt x 128.55077pt.
- [4.4 <../plots/exact_match_accuracy.png> <../plots/mean_token_usage.png>]
-<../plots/execution_accuracy_vs_model_size.png, id=143, 858.5676pt x 569.4876pt>
+ [4.4 <../plots/exact_match_accuracy.png>]
+<../plots/execution_accuracy_vs_model_size.png, id=142, 858.5676pt x 569.4876pt>
 File: ../plots/execution_accuracy_vs_model_size.png Graphic file (type png)
 <use ../plots/execution_accuracy_vs_model_size.png>
-Package pdftex.def Info: ../plots/execution_accuracy_vs_model_size.png  used on input line 446.
+Package pdftex.def Info: ../plots/execution_accuracy_vs_model_size.png  used on input line 459.
 (pdftex.def)             Requested size: 192.91872pt x 127.95538pt.
- [5.5 <../plots/execution_accuracy_vs_model_size.png>] [6.6] (./COMP5118FinalReport.bbl
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [5.5 <../plots/mean_token_usage.png> <../plots/execution_accuracy_vs_model_size.png>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [6.6] (./COMP5118FinalReport.bbl
 LaTeX Info: Redefining \tempurl on input line 146.
 LaTeX Info: Redefining \tempurl on input line 168.
 LaTeX Info: Redefining \tempurl on input line 184.
 LaTeX Info: Redefining \tempurl on input line 207.
 LaTeX Info: Redefining \tempurl on input line 226.
+
+Underfull \vbox (badness 6396) has occurred while \output is active []
+
 LaTeX Info: Redefining \tempurl on input line 287.
 LaTeX Info: Redefining \tempurl on input line 334.
 )
@@ -974,41 +982,31 @@ Class acmart Warning: ACM reference format is mandatory
 
 Class acmart Warning: CCS concepts are mandatory for papers over two pages.
 
-[7.7] (/usr/share/texlive/texmf-dist/tex/generic/stringenc/se-pdfdoc.def
+(/usr/share/texlive/texmf-dist/tex/generic/stringenc/se-pdfdoc.def
 File: se-pdfdoc.def 2019/11/29 v1.12 stringenc: PDFDocEncoding
 ) (/usr/share/texlive/texmf-dist/tex/generic/stringenc/se-utf8.def
 File: se-utf8.def 2019/11/29 v1.12 stringenc: UTF-8
-)
-LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.3pt on input line 553.
- [8.7] (./COMP5118FinalReport.aux)
+) [7.7] (./COMP5118FinalReport.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
-
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
-
-LaTeX Warning: Temporary extra page added at the end. Rerun to get it removed.
-
 Package rerunfilecheck Info: File `COMP5118FinalReport.out' has not changed.
 (rerunfilecheck)             Checksum: ACA42F5F5871B816D4DA9A2368EF892D;883.
  ) 
 Here is how much of TeX's memory you used:
- 22213 strings out of 474222
- 359920 string characters out of 5748734
- 1956975 words of memory out of 5000000
- 43528 multiletter control sequences out of 15000+600000
- 669847 words of font info for 299 fonts, out of 8000000 for 9000
+ 22201 strings out of 474222
+ 359601 string characters out of 5748734
+ 1963975 words of memory out of 5000000
+ 43526 multiletter control sequences out of 15000+600000
+ 664038 words of font info for 293 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
- 90i,12n,131p,1069b,543s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,11n,131p,1069b,607s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinBiolinumTB.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/txsys.pfb>
-Output written on COMP5118FinalReport.pdf (8 pages, 1548072 bytes).
+Output written on COMP5118FinalReport.pdf (7 pages, 1551363 bytes).
 PDF statistics:
- 258 PDF objects out of 1000 (max. 8388607)
- 218 compressed objects within 3 object streams
+ 256 PDF objects out of 1000 (max. 8388607)
+ 217 compressed objects within 3 object streams
  62 named destinations out of 1000 (max. 500000)
- 62050 words of extra memory for PDF output out of 74296 (max. 10000000)
+ 57954 words of extra memory for PDF output out of 61914 (max. 10000000)
 
