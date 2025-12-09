@@ -1972,8 +1972,8 @@ hard gold: SELECT Citizenship FROM singer GROUP BY Citizenship ORDER BY COUNT(*)
 hard pred: SELECT Citizenship, COUNT(Singer_ID) AS Citizenship_Count
 hard gold: select citizenship from singer group by citizenship order by count(*) desc limit 1
 
-medium pred: SELECT song.Title AS Song_Title, singer.Name AS Singer_Name FROM song JOIN singer ON song.Singer_ID = singer.Singer_ID
-medium gold: SELECT T2.Title ,  T1.Name FROM singer AS T1 JOIN song AS T2 ON T1.Singer_ID  =  T2.Singer_ID
+medium pred:  song.Title AS Song_Title, singer.Name AS Singer_Name FROM song JOIN singer ON song.Singer_ID = singer.Singer_ID
+medium gold: SSELECTELECT T2.Title ,  T1.Name FROM singer AS T1 JOIN song AS T2 ON T1.Singer_ID  =  T2.Singer_ID
 
 medium pred: SELECT song.Title, singer.Name FROM song INNER JOIN singer ON song.Singer_ID = singer.Singer_ID
 medium gold: SELECT T2.Title ,  T1.Name FROM singer AS T1 JOIN song AS T2 ON T1.Singer_ID  =  T2.Singer_ID

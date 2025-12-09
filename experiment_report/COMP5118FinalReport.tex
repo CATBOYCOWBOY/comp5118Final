@@ -10,7 +10,6 @@
 \usepackage{capt-of} % captions outside floats
 \usepackage{placeins} % provides \FloatBarrier
 
-
 \title{An Evaluation of The Performance of \\
 Lightweight Language Models on Zero-Shot NL2SQL tasks}
 
@@ -22,9 +21,14 @@ Lightweight Language Models on Zero-Shot NL2SQL tasks}
 }
 \email{tomfan3@cmail.carleton.ca}
 
+% Remove default conference information
+\settopmatter{printfolios=false,printccs=false,printacmref=false}
+
 \begin{document}
 
 \maketitle
+
+\pagestyle{plain}
 
 
 \section{Abstract}
@@ -108,7 +112,7 @@ The basic criteria for evaluation included the following requirements:
 \begin{itemize}
   \item Models must be open source, or otherwise downloadable and usable for a user locally at no charge and with no 
   external services. This constrains the selected models to effectively what can be found on HuggingFace.
-  \item Models cannot be fine-tuned specifically for NL2SQL tasks, as this would result in imbalanced results and go 
+  \item Models cannot be fine-tuned specifically for NL2SQL tasks, as this would go 
   against the core evaluation of small, general purpose models being used for NL2SQL tasks. Other fine tuning, however,
   would not be a deal breaking factor for selection.
   \item Models must be able to run locally on consumer level hardware. While that which constitutes the category of 
@@ -342,6 +346,57 @@ Interestingly, it was Qwen3's 4b and 8b models that took the lead in this metric
 execution accuracy in the metric before, while Qwen's 2.5b model was the only one to break 10\% exact match accuracy
 in the hardest question difficulty category.
 
+\subsection*{Partial Matching Accuracy}
+
+As a finer grained measure of model success, we also recorded partial matching accuracy on different query components.
+While the test-suite-sql-eval Python tool splits several of these components into subcategories (e.g. WHERE, WHERE with
+no operator, where with no HAVING, etc), we aggregated these metrics together for a unified analysis of clause by clause
+performance.
+
+\begin{table}[H]
+\centering
+\caption{Partial Matching Accuracy: Basic SQL Components}
+\label{tab:partial_matching_basic}
+\begin{tabular}{lccc}
+\hline
+\textbf{Model} & \textbf{Select} & \textbf{Where} & \textbf{Group} \\
+\hline
+LLaMA 3.1 8B & 0.896 & 0.654 & 0.806 \\
+LLaMA 3.2 3B & 0.867 & 0.619 & 0.746 \\
+Qwen2.5 7B & 0.918 & 0.676 & 0.849 \\
+Qwen 3 4B & 0.937 & 0.789 & 0.820 \\
+Qwen 3 8B & 0.926 & 0.826 & 0.932 \\
+Gemma 3 27B & 0.854 & 0.734 & 0.875 \\
+DeepSeek R1 14B & 0.863 & 0.701 & 0.815 \\
+GPT-OSS 20B & 0.960 & 0.831 & 1.000 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[H]
+\centering
+\caption{Partial Matching Accuracy: Advanced SQL Components}
+\label{tab:partial_matching_advanced}
+\begin{tabular}{lccc}
+\hline
+\textbf{Model} & \textbf{Order} & \textbf{And/Or} & \textbf{Keywords} \\
+\hline
+LLaMA 3.1 8B & 0.722 & 0.957 & 0.820 \\
+LLaMA 3.2 3B & 0.585 & 0.943 & 0.797 \\
+Qwen2.5 7B & 0.562 & 0.950 & 0.836 \\
+Qwen 3 4B & 0.958 & 0.958 & 0.887 \\
+Qwen 3 8B & 0.931 & 0.944 & 0.894 \\
+Gemma 3 27B & 0.734 & 0.947 & 0.870 \\
+DeepSeek R1 14B & 0.886 & 0.943 & 0.832 \\
+GPT-OSS 20B & 0.938 & 0.928 & 0.943 \\
+\hline
+\end{tabular}
+\end{table}
+
+\noindent The partial matching results reveal significant variation in performance across components. For example, GPT-OSS 20b
+achieved perfect accuracy on GROUP operations,  AND/OR operations showed consistently high performance across all models as well,
+but the WHERE and ORDER BY clauses were the major pain point for several of these models. 
+
 \subsection*{Token efficiency}
 
 While the Novita API does provide a token usage metric per API call, some models measure only output tokens while others
@@ -354,8 +409,8 @@ reflect the actual token consumption per call, and cannot be used to assess mode
   \begin{minipage}{\linewidth}
     \centering
     \includegraphics[width=0.8\linewidth]{../plots/mean_token_usage.png}
-    \caption{Bar chart of mean token use per call for different models assessed in this paper}
-    \Description{Bar chart of meantoken use per call for different models assessed in this paper}
+    \caption{Bar chart of mean token use per call for different models assessed in this paper. Not very helpful.}
+    \Description{Bar chart of meantoken use per call for different models assessed in this paper. Not very helpful.}
     \label{fig:token-use}
   \end{minipage}
 \end{figure}
@@ -374,10 +429,124 @@ exact match accuracy, as well as different distributions of accuracy across diff
 
 \section{Analysis}
 
+From the results of our experiment, we can make a few important observations about how smaller models work for the
+given NL2SQL tasks. Since there is a significant amount of diversity within the set of LLMs that we have chosen to 
+assess, some analysis can be made as to the impact of their design and architecture, and conjecture made as to how 
+these can allow or constrain furthur research in this domain going forward.
+
+\subsection*{The Impact of Model Size And Architecture}
+
+While intuitively, LLMs may seem like a domain where performance can be attributed overwhelmingly to parameter count, an
+actual analysis of the models indicates that parameter count does not affect performance as much as other factors must.
+
+\begin{figure}[H]
+  \centering
+  \begin{minipage}{\linewidth}
+    \centering
+    \includegraphics[width=0.8\linewidth]{../plots/execution_accuracy_vs_model_size.png}
+    \caption{Scatterplot of parameter counts for models vs their asessed performance}
+    \Description{Scatterplot of parameter counts for models vs their asessed performance}
+    \label{fig:param-count-vs-performance}
+  \end{minipage}
+\end{figure}
+
+\noindent
+Author's Note - GPT-OSS-20b is actually a 21b parameter model, hence its place on the scatterplot.
+
+In this paper, we review several different models of varying parameter counts. This raises the question of what impact
+the parameter count of a model has on its performance with the SPIDER-dev test set. The correlation between model size
+and general performance is significantly more minor than expected (r = 0.019).
+
+Notably, the best and worst performing models in our dataset were both 8b parameter models. This indicates that 
+while parameter count could be important, training modalities and the different training inputs that these models were
+built on is likely more significant. 
+
+However, this also raises the question of how well different model architectures work with these tasks as well. Both 
+instruction tuned models evaluated (the Llama models) performed well, with Llama-3b-instruct performing massively
+well proportional to its small footprint. However, Deepseek-R1-14b did not perform above expectations, despite being 
+distilled from a significantly more powerful model. While this is not a large sample size, it may indicate that improved
+comprehension on the input side may be key to unlocking better performance on NL2SQL tasks using this type of small, 
+opensource LLM.
+
+\subsection*{Implications for Model Usefulness}
+
+To be blunt, none of these models worked acceptably well as is to be used reliably as a NL2SQL tool, at least not 
+without an immense amount of secondary work beforehand. The best performing contender, while having a 60+\% success rate
+in execution accuracy  across all categories of question nonetheless failed to execute the most difficult 
+SPIDER-dev questions 60+\% of the time. Furthermore, SPIDER contains far less complex questions than its contemporaries
+such as SPIDER2 or BIRD.
+
+For a user intending to run a general purpose LLM on their local system without further fine-tuning or configuration, it
+is still necessary to use a far more powerful model if NL2SQL tasks are part of a commonly required workflow. 
+
+\subsection*{Future Work}
+
+While this paper does not demonstrate the usefulness of small LLMs in completing NL2SQL tasks in a zeroshot manner, it
+is not improbable that these models can be a useful tool for text to query generation. Given the fact that most models
+tested in this paper succeeded in over 50\% of SPIDER-dev test cases, there is potential for future work in this domain.
+
+One avenue of potential improvement in model performance is fine tuning using SPIDER's own data set. Each model could be 
+fine tuned based off of prebuilt prompts and the output evaluated against the "gold SQL". The hope with this strategy
+would be that having been trained on not just SQL generation examples but generation examples with the exact SQL dialect
+that would need generation, the model would be able to more reliably generate SQL in a zero-shot fashion. 
+
+However, study would have to be made into the performance tradeoffs of fine-tuning the model for SQL generation on
+other use cases, like code and text generation or general problem solving. This is especially true if we are interested
+in asessing models for local, general purpose use cases. 
+
+Our zero-shot evaluation revealed significant performance limitations, but few-shot learning approaches could 
+potentially improve results by providing models with relevant examples within their context window. By including a handful
+of high-quality NL2SQL examples that demonstrate proper query construction for similar database schemas or question 
+types, models could better understand the expected output format and reasoning patterns. This approach would be 
+particularly valuable for addressing the WHERE clause generation difficulties we observed across all models, as concrete 
+examples could help models understand how to parse schema for relevant data and make connections between entity types. 
+The effectiveness of k-shot prompting could vary significantly across model architectures as well, meaning that a more
+clear group of winners/losers may come out of conducting such an assessment.
+
+The component-specific performance analysis revealed that models struggle most with complex reasoning tasks like WHERE 
+clause construction. Implementing explicit chain-of-thought prompting could help models break down complex 
+NL2SQL tasks into manageable steps, such as:
+
+
+\begin{itemize}
+  \item schema analysis 
+  \item entity identification 
+  \item relationship mapping 
+  \item incremental query construction
+  \item iterative debugging and self assessment
+\end{itemize}
+
+The current obstacle to doing this is the limited token window on small LLMs. However, there is potential
+in generating prompts with the LLMs themselves, compressing the query window upon running out of token space.
+
+In addition to these potential approaches, combinations of these should also be tested. Only then would we be able to 
+draw a fuller picture of how these models behave as query generation tools.
+
+Overall, the results of this study point to small LLMs on their own and with simplest case zero-shot prompting being 
+insufficient for query generation from natural language, even in relatively simple test sets like SPIDER-dev. 
+Not only this, but at this scale increasing model size does not seem to be a foolproof method of increasing performance,
+and neither does distilling a compact model from a larger, more powerful model. While results indicate that the tested fine tuned
+models perform well and better than some of their larger, untuned counterparts, the sample size in this paper is insufficient
+to assert this claim. 
+
+However, these results do not conclusively indicate that there is no potential in using these models to generate queries, especially for 
+relatively low-stakes applications. The number of both small, locally runnable and opensource models and ways to configure
+them is only growing, and future work needs to be done in this area. 
+
 \section{Conclusion}
 
+The asessment of small, opensource LLMs in NL2SQL tasks is an underexplored domain within LLM applications. While their
+use in code generation tasks like HumanEval is well documented, there is comparatively less data we saw in preliminary
+resarch into this area. For this reason, we chose to build a testbench using the SPIDER-dev dataset\cite{Yu&al.18c} and
+its accompanying test-suite-sql-eval
+
+This paper evaluated the zero-shot NL2SQL performance of eight lightweight open-source language models ranging from 3-27 
+billion parameters on the SPIDER-dev dataset. Our assessment examined execution accuracy, exact match accuracy, and 
+component-specific performance to understand the current capabilities and limitations of consumer-deployable models for 
+database query generation tasks.
 
 \balance
+\newpage
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{references}
 
