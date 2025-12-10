@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.1.7)  9 DEC 2025 01:14
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.1.7)  9 DEC 2025 22:34
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**/home/catboycowboy/code/comp5118/final/experiment_report/COMP5118FinalReport
-(/home/catboycowboy/code/comp5118/final/experiment_report/COMP5118FinalReport.tex
+**/home/catboycowboy/code/comp5118/final/experiment_report/COMP5118FinalReportTomFan
+(/home/catboycowboy/code/comp5118/final/experiment_report/COMP5118FinalReportTomFan.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
 (/usr/share/texlive/texmf-dist/tex/latex/acmart/acmart.cls
@@ -674,108 +674,108 @@ Package: capt-of 2009/12/29 v0.2 standard captions outside of floats
 ) (/usr/share/texlive/texmf-dist/tex/latex/placeins/placeins.sty
 Package: placeins 2005/04/18  v 2.2
 )
-Class acmart Info: Suppressing folios on input line 25.
-Class acmart Info: Suppressing CCS on input line 25.
-Class acmart Info: Suppressing bibformat on input line 25.
+Class acmart Info: Suppressing folios on input line 24.
+Class acmart Info: Suppressing CCS on input line 24.
+Class acmart Info: Suppressing bibformat on input line 24.
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\\' on input line 27.
+(hyperref)                removing `\\' on input line 26.
 
-Package hyperref Info: Option `pdfdisplaydoctitle' set `true' on input line 27.
+Package hyperref Info: Option `pdfdisplaydoctitle' set `true' on input line 26.
 \c@theorem=\count320
 Excluding comment 'screenonly' Include comment 'printonly' Include comment 'anonsuppress' (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
 File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count321
 \l__pdf_internal_box=\box76
-) (./COMP5118FinalReport.aux)
-\openout1 = `COMP5118FinalReport.aux'.
+) (./COMP5118FinalReportTomFan.aux)
+\openout1 = `COMP5118FinalReportTomFan.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/nxlmi/m/it on input line 27.
-LaTeX Font Info:    Trying to load font information for OML+nxlmi on input line 27.
+LaTeX Font Info:    Checking defaults for OML/nxlmi/m/it on input line 26.
+LaTeX Font Info:    Trying to load font information for OML+nxlmi on input line 26.
  (/usr/share/texlive/texmf-dist/tex/latex/newtx/omlnxlmi.fd
 File: omlnxlmi.fd 2013/11/19 Fontinst v1.933 font definitions for OML/nxlmi.
 )
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 27.
-LaTeX Font Info:    Trying to load font information for U+ntxexa on input line 27.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for U/ntxexa/m/n on input line 26.
+LaTeX Font Info:    Trying to load font information for U+ntxexa on input line 26.
  (/usr/share/texlive/texmf-dist/tex/latex/newtx/untxexa.fd
 File: untxexa.fd 2012/04/16 Fontinst v1.933 font definitions for U/ntxexa.
 )
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 27.
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 27.
-LaTeX Font Info:    Trying to load font information for LMS+ntxsy on input line 27.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 26.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for LMS/ntxsy/m/n on input line 26.
+LaTeX Font Info:    Trying to load font information for LMS+ntxsy on input line 26.
  (/usr/share/texlive/texmf-dist/tex/latex/newtx/lmsntxsy.fd
 File: lmsntxsy.fd 2016/07/02 Fontinst v1.933 font definitions for LMS/ntxsy.
 )
-LaTeX Font Info:    ... okay on input line 27.
-LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 27.
-LaTeX Font Info:    Trying to load font information for LMX+ntxexx on input line 27.
+LaTeX Font Info:    ... okay on input line 26.
+LaTeX Font Info:    Checking defaults for LMX/ntxexx/m/n on input line 26.
+LaTeX Font Info:    Trying to load font information for LMX+ntxexx on input line 26.
  (/usr/share/texlive/texmf-dist/tex/latex/newtx/lmxntxexx.fd
 File: lmxntxexx.fd 2016/07/03 Fontinst v1.933 font definitions for LMX/ntxexx.
 )
-LaTeX Font Info:    ... okay on input line 27.
+LaTeX Font Info:    ... okay on input line 26.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.0pt on input line 27.
-LaTeX Font Info:    Trying to load font information for OT1+LinuxLibertineT-TLF on input line 27.
+(Font)              scaled to size 7.0pt on input line 26.
+LaTeX Font Info:    Trying to load font information for OT1+LinuxLibertineT-TLF on input line 26.
  (/usr/share/texlive/texmf-dist/tex/latex/libertine/OT1LinuxLibertineT-TLF.fd
 File: OT1LinuxLibertineT-TLF.fd 2017/03/20 (autoinst) Font definitions for OT1/LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.3pt on input line 27.
+(Font)              scaled to size 7.3pt on input line 26.
 <<ot1.cmap>>
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 5.5pt on input line 27.
+(Font)              scaled to size 5.5pt on input line 26.
 <<oml.cmap>>
-LaTeX Font Info:    Trying to load font information for U+msa on input line 27.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 26.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 27.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 26.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Trying to load font information for U+ntxmia on input line 27.
+LaTeX Font Info:    Trying to load font information for U+ntxmia on input line 26.
  (/usr/share/texlive/texmf-dist/tex/latex/newtx/untxmia.fd
 File: untxmia.fd 2018/04/14 Fontinst v1.933 font definitions for U/ntxmia.
 )
-LaTeX Font Info:    Trying to load font information for U+ntxsym on input line 27.
+LaTeX Font Info:    Trying to load font information for U+ntxsym on input line 26.
  (/usr/share/texlive/texmf-dist/tex/latex/newtx/untxsym.fd
 File: untxsym.fd 2023/08/16 Fontinst v1.933 font definitions for U/ntxsym.
 )
-LaTeX Font Info:    Trying to load font information for U+ntxsyc on input line 27.
+LaTeX Font Info:    Trying to load font information for U+ntxsyc on input line 26.
  (/usr/share/texlive/texmf-dist/tex/latex/newtx/untxsyc.fd
 File: untxsyc.fd 2012/04/12 Fontinst v1.933 font definitions for U/ntxsyc.
 )
-LaTeX Info: Command `\dddot' is already robust on input line 27.
-LaTeX Info: Command `\ddddot' is already robust on input line 27.
-LaTeX Info: Redefining \microtypecontext on input line 27.
-Package microtype Info: Applying patch `item' on input line 27.
-Package microtype Info: Applying patch `toc' on input line 27.
-Package microtype Info: Applying patch `eqnum' on input line 27.
-Package microtype Info: Applying patch `footnote' on input line 27.
-Package microtype Info: Applying patch `verbatim' on input line 27.
+LaTeX Info: Command `\dddot' is already robust on input line 26.
+LaTeX Info: Command `\ddddot' is already robust on input line 26.
+LaTeX Info: Redefining \microtypecontext on input line 26.
+Package microtype Info: Applying patch `item' on input line 26.
+Package microtype Info: Applying patch `toc' on input line 26.
+Package microtype Info: Applying patch `eqnum' on input line 26.
+Package microtype Info: Applying patch `footnote' on input line 26.
+Package microtype Info: Applying patch `verbatim' on input line 26.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `alltext-nott'.
-LaTeX Info: Redefining \showhyphens on input line 27.
+LaTeX Info: Redefining \showhyphens on input line 26.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -783,10 +783,10 @@ Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
-Package hyperref Info: Link coloring OFF on input line 27.
- (./COMP5118FinalReport.out) (./COMP5118FinalReport.out)
+Package hyperref Info: Link coloring OFF on input line 26.
+ (./COMP5118FinalReportTomFan.out) (./COMP5118FinalReportTomFan.out)
 \@outlinefile=\write4
-\openout4 = `COMP5118FinalReport.out'.
+\openout4 = `COMP5118FinalReportTomFan.out'.
 
  (/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
@@ -850,25 +850,25 @@ Package caption Info: Begin \AtBeginDocument code.
 Package caption Info: float package is loaded.
 Package caption Info: End \AtBeginDocument code.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 17.28pt on input line 29.
-LaTeX Font Info:    Trying to load font information for T1+LinuxBiolinumT-TLF on input line 29.
+(Font)              scaled to size 17.28pt on input line 28.
+LaTeX Font Info:    Trying to load font information for T1+LinuxBiolinumT-TLF on input line 28.
  (/usr/share/texlive/texmf-dist/tex/latex/libertine/T1LinuxBiolinumT-TLF.fd
 File: T1LinuxBiolinumT-TLF.fd 2017/03/20 (autoinst) Font definitions for T1/LinuxBiolinumT-TLF.
 )
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/m/n' will be
-(Font)              scaled to size 17.28pt on input line 29.
+(Font)              scaled to size 17.28pt on input line 28.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxBiolinumT-TLF' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Font shape `T1/LinuxBiolinumT-TLF/b/n' will be
-(Font)              scaled to size 17.28pt on input line 29.
+(Font)              scaled to size 17.28pt on input line 28.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 12.0pt on input line 29.
+(Font)              scaled to size 12.0pt on input line 28.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 29.
+(Font)              scaled to size 10.0pt on input line 28.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 10.0pt on input line 29.
+(Font)              scaled to size 10.0pt on input line 28.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: OT1).
 (microtype)             For optimal results, create family-specific settings.
@@ -879,13 +879,13 @@ File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/it' will be
-(Font)              scaled to size 7.0pt on input line 29.
-LaTeX Font Info:    Trying to load font information for TS1+LinuxLibertineT-TLF on input line 29.
+(Font)              scaled to size 7.0pt on input line 28.
+LaTeX Font Info:    Trying to load font information for TS1+LinuxLibertineT-TLF on input line 28.
  (/usr/share/texlive/texmf-dist/tex/latex/libertine/TS1LinuxLibertineT-TLF.fd
 File: TS1LinuxLibertineT-TLF.fd 2017/03/20 (autoinst) Font definitions for TS1/LinuxLibertineT-TLF.
 )
 LaTeX Font Info:    Font shape `TS1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 7.0pt on input line 29.
+(Font)              scaled to size 7.0pt on input line 28.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `LinuxLibertineT-TLF' (encoding: TS1).
 (microtype)             For optimal results, create family-specific settings.
@@ -893,14 +893,14 @@ Package microtype Info: Loading generic protrusion settings for font family
 
 
 Package hyperref Warning: Token not allowed in a PDF string (Unicode):
-(hyperref)                removing `\\' on input line 29.
+(hyperref)                removing `\\' on input line 28.
 
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 9.0pt on input line 34.
+(Font)              scaled to size 9.0pt on input line 33.
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/b/n' will be
-(Font)              scaled to size 10.95pt on input line 34.
+(Font)              scaled to size 10.95pt on input line 33.
 LaTeX Font Info:    Font shape `OT1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 9.0pt on input line 96.
+(Font)              scaled to size 9.0pt on input line 95.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
@@ -910,14 +910,14 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 LaTeX Font Info:    Font shape `T1/LinuxLibertineT-TLF/m/n' will be
-(Font)              scaled to size 6.0pt on input line 193.
+(Font)              scaled to size 6.0pt on input line 192.
  [2.2{/usr/share/texlive/texmf-dist/fonts/enc/dvips/libertine/lbtn_oexx6f.enc}]
-LaTeX Font Info:    Trying to load font information for T1+zi4 on input line 214.
+LaTeX Font Info:    Trying to load font information for T1+zi4 on input line 213.
  (/usr/share/texlive/texmf-dist/tex/latex/inconsolata/t1zi4.fd
 File: t1zi4.fd 2018/01/14 T1/zi4 (Inconsolata)
 )
 LaTeX Font Info:    Font shape `T1/zi4/m/n' will be
-(Font)              scaled to size 6.0pt on input line 214.
+(Font)              scaled to size 6.0pt on input line 213.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `zi4' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
@@ -925,29 +925,29 @@ Package microtype Info: Loading generic protrusion settings for font family
 <../plots/successful_predictions_rate.png, id=104, 858.5676pt x 571.8966pt>
 File: ../plots/successful_predictions_rate.png Graphic file (type png)
 <use ../plots/successful_predictions_rate.png>
-Package pdftex.def Info: ../plots/successful_predictions_rate.png  used on input line 269.
+Package pdftex.def Info: ../plots/successful_predictions_rate.png  used on input line 268.
 (pdftex.def)             Requested size: 192.91872pt x 128.49664pt.
 <../plots/test_suite_accuracy.png, id=106, 858.5676pt x 572.1375pt>
 File: ../plots/test_suite_accuracy.png Graphic file (type png)
 <use ../plots/test_suite_accuracy.png>
-Package pdftex.def Info: ../plots/test_suite_accuracy.png  used on input line 289.
+Package pdftex.def Info: ../plots/test_suite_accuracy.png  used on input line 288.
 (pdftex.def)             Requested size: 192.91872pt x 128.55077pt.
  [3.3{/usr/share/texlive/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-4.enc} <../plots/successful_predictions_rate.png> <../plots/test_suite_accuracy.png>]
 <../plots/exact_match_accuracy.png, id=125, 858.5676pt x 572.1375pt>
 File: ../plots/exact_match_accuracy.png Graphic file (type png)
 <use ../plots/exact_match_accuracy.png>
-Package pdftex.def Info: ../plots/exact_match_accuracy.png  used on input line 333.
+Package pdftex.def Info: ../plots/exact_match_accuracy.png  used on input line 332.
 (pdftex.def)             Requested size: 192.91872pt x 128.55077pt.
 <../plots/mean_token_usage.png, id=128, 858.5676pt x 572.1375pt>
 File: ../plots/mean_token_usage.png Graphic file (type png)
 <use ../plots/mean_token_usage.png>
-Package pdftex.def Info: ../plots/mean_token_usage.png  used on input line 424.
+Package pdftex.def Info: ../plots/mean_token_usage.png  used on input line 423.
 (pdftex.def)             Requested size: 192.91872pt x 128.55077pt.
  [4.4 <../plots/exact_match_accuracy.png>]
 <../plots/execution_accuracy_vs_model_size.png, id=142, 858.5676pt x 569.4876pt>
 File: ../plots/execution_accuracy_vs_model_size.png Graphic file (type png)
 <use ../plots/execution_accuracy_vs_model_size.png>
-Package pdftex.def Info: ../plots/execution_accuracy_vs_model_size.png  used on input line 459.
+Package pdftex.def Info: ../plots/execution_accuracy_vs_model_size.png  used on input line 458.
 (pdftex.def)             Requested size: 192.91872pt x 127.95538pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -958,17 +958,17 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [6.6] (./COMP5118FinalReport.bbl
-LaTeX Info: Redefining \tempurl on input line 146.
-LaTeX Info: Redefining \tempurl on input line 168.
-LaTeX Info: Redefining \tempurl on input line 184.
-LaTeX Info: Redefining \tempurl on input line 207.
-LaTeX Info: Redefining \tempurl on input line 226.
+ [6.6] (./COMP5118FinalReportTomFan.bbl
+LaTeX Info: Redefining \tempurl on input line 135.
+LaTeX Info: Redefining \tempurl on input line 157.
+LaTeX Info: Redefining \tempurl on input line 173.
+LaTeX Info: Redefining \tempurl on input line 196.
+LaTeX Info: Redefining \tempurl on input line 215.
 
 Underfull \vbox (badness 6396) has occurred while \output is active []
 
-LaTeX Info: Redefining \tempurl on input line 287.
-LaTeX Info: Redefining \tempurl on input line 334.
+LaTeX Info: Redefining \tempurl on input line 276.
+LaTeX Info: Redefining \tempurl on input line 323.
 )
 
 Class acmart Warning: ACM keywords are mandatory for papers over two pages.
@@ -986,27 +986,27 @@ Class acmart Warning: CCS concepts are mandatory for papers over two pages.
 File: se-pdfdoc.def 2019/11/29 v1.12 stringenc: PDFDocEncoding
 ) (/usr/share/texlive/texmf-dist/tex/generic/stringenc/se-utf8.def
 File: se-utf8.def 2019/11/29 v1.12 stringenc: UTF-8
-) [7.7] (./COMP5118FinalReport.aux)
+) [7.7] (./COMP5118FinalReportTomFan.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
-Package rerunfilecheck Info: File `COMP5118FinalReport.out' has not changed.
+Package rerunfilecheck Info: File `COMP5118FinalReportTomFan.out' has not changed.
 (rerunfilecheck)             Checksum: ACA42F5F5871B816D4DA9A2368EF892D;883.
  ) 
 Here is how much of TeX's memory you used:
- 22201 strings out of 474222
- 359601 string characters out of 5748734
- 1963975 words of memory out of 5000000
- 43526 multiletter control sequences out of 15000+600000
- 664038 words of font info for 293 fonts, out of 8000000 for 9000
+ 22194 strings out of 474222
+ 359576 string characters out of 5748734
+ 1962975 words of memory out of 5000000
+ 43523 multiletter control sequences out of 15000+600000
+ 663765 words of font info for 291 fonts, out of 8000000 for 9000
  1302 hyphenation exceptions out of 8191
- 90i,11n,131p,1069b,607s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 90i,11n,131p,1075b,607s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinBiolinumTB.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineT.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineTB.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/libertine/LinLibertineTI.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/newtx/txsys.pfb>
-Output written on COMP5118FinalReport.pdf (7 pages, 1551363 bytes).
+Output written on COMP5118FinalReportTomFan.pdf (7 pages, 1551250 bytes).
 PDF statistics:
- 256 PDF objects out of 1000 (max. 8388607)
- 217 compressed objects within 3 object streams
- 62 named destinations out of 1000 (max. 500000)
+ 253 PDF objects out of 1000 (max. 8388607)
+ 214 compressed objects within 3 object streams
+ 61 named destinations out of 1000 (max. 500000)
  57954 words of extra memory for PDF output out of 61914 (max. 10000000)
 

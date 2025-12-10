@@ -5,10 +5,10 @@
 \usepackage{balance}
 \usepackage[ruled,lined]{algorithm2e}
 \usepackage{float}
-\usepackage{stfloats} % better placement control for wide floats
-\usepackage{cuted} % allow temporarily full-width blocks in two-column mode
-\usepackage{capt-of} % captions outside floats
-\usepackage{placeins} % provides \FloatBarrier
+\usepackage{stfloats}
+\usepackage{cuted}
+\usepackage{capt-of}
+\usepackage{placeins} 
 
 \title{An Evaluation of The Performance of \\
 Lightweight Language Models on Zero-Shot NL2SQL tasks}
@@ -21,7 +21,6 @@ Lightweight Language Models on Zero-Shot NL2SQL tasks}
 }
 \email{tomfan3@cmail.carleton.ca}
 
-% Remove default conference information
 \settopmatter{printfolios=false,printccs=false,printacmref=false}
 
 \begin{document}
@@ -41,7 +40,7 @@ foundation models hosted by SAAS providers like Anthropic or OpenAI, an increasi
 entering the market. These models have demonstrated promise on several different kinds of tasks, such as code generation
 using Python \cite{hasan2025smallcode}. However, there is limited research on how they perform in other common 
 coding-adjacent tasks, including NL2SQL. While there is an emerging wealth of assessment on how larger models like OpenAI's
-closed source GPT series perform on NL2SQL tasks in various configurations\cite{liu2024survey_nl2sql}\cite{nl2sqlsurvey},
+closed source GPT series perform on NL2SQL tasks in various configurations \cite{liu2024survey_nl2sql, nl2sqlsurvey},
 the performance of these small models' smaller cousins in non-pretrained configurations is still an underexplored area.
 In this paper, we aim to provide an overview of how several such opensource models perform when faced with  
 NL2SQL tasks on the Spider-Dev question dataset.
@@ -59,7 +58,7 @@ to be current generation Nvidia RTX chips or other equivalents, able to comforta
 or smaller at 8 or 16b quantization). 
 
 These LLMs have shown promise in their ability to solve an array of tasks, including completing test sets for code 
-generation such as HumanEval \cite{hasan2025smallcode}\cite{corradini2025slmsurvey}. In these experiments, the authors
+generation such as HumanEval \cite{hasan2025smallcode, corradini2025slmsurvey}. In these experiments, the authors
 were able to push these models to perform disproportinately well to how large their footprints are, indicating that 
 these smaller LLMs are able to consistently solve simple, well defined tasks and generate effective code.
 
@@ -80,14 +79,14 @@ In this interest, the aim of this paper is to explore the potential of using sma
 locally as NL2SQL generation tools. 
 
 While there are many evaluations of the potential of LLMs for NL2SQL tasks, many of these depend on the aforementioned
-large, closed-source, proprietary models \cite{pei2025feather_sql}\cite{nl2sqlsurvey}\cite{liu2024survey_nl2sql}. At the same 
+large, closed-source, proprietary models \cite{pei2025feather_sql, nl2sqlsurvey, liu2024survey_nl2sql}. At the same 
 time, evaluations of the performance of lightweight, open source models are few in number. Therefore, in this paper we
 conduct an evaluation asking one guiding question - how well do lightweight LLMs such as Llama 8b or Qwen3 perform when 
 presented with NL2SQL tasks in a zeroshot format? 
 
 To answer this guiding question, we took a sample of 8 such models in the 0-20b parameter range and evaluated their 
 performance on the SPIDER-dev NL2SQL question set. Using a zero-shot method with a short context length, we built a 
-testbench\cite{sourceCode} to evaluate these opensource models using Novita's online AI service and hardware rental service \cite{novitaAI}.
+testbench \cite{sourceCode} to evaluate these opensource models using Novita's online AI service and hardware rental service \cite{novitaAI}.
 This allowed us to run each model on the cloud with consistent hardware, while still being able to evaluate token efficiency
 and getting results equivalent to what we would see running these models on a local system.
 

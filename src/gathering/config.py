@@ -17,14 +17,12 @@ AVAILABLE_MODELS = [
     "openai/gpt-oss-20b"
 ]
 
-# Default model parameters
 DEFAULT_MODEL_PARAMS = {
     "temperature": 0.1,
     "max_tokens": 8192,
     "retry_count": 10  # Increased for batch runs to avoid any failures
 }
 
-# Spider2 Strategy configuration
 STRATEGY_CONFIG = {
     "spider2_basic": {
         "generation_temp": 0.1
@@ -59,7 +57,7 @@ def get_spider2_comprehensive_config() -> dict:
         "name": "spider2_comprehensive",
         "models": AVAILABLE_MODELS,
         "strategy": "spider2_basic",
-        "max_examples": None,  # All examples
+        "max_examples": None,  # All examples, default
         "spider2_path": "Spider2",
         "dataset_type": "spider2"
     }

@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{22}
+\begin{thebibliography}{21}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -111,20 +111,9 @@
 \showDOI{\tempurl}
 
 
-\bibitem[Google(2025a)]%
-        {gemma312BCitation}
-\bibfield{author}{\bibinfo{person}{Google}.} \bibinfo{year}{2025}\natexlab{a}.
-\newblock \bibinfo{title}{google/gemma-3-12b-it}.
-\newblock
-  \bibinfo{howpublished}{\url{https://huggingface.co/gemma-ai/gemma-3-12B}}.
-\newblock
-\newblock
-\shownote{As of Dec 2025}.
-
-
-\bibitem[Google(2025b)]%
+\bibitem[Google(2025)]%
         {gemma3_27b_citation}
-\bibfield{author}{\bibinfo{person}{Google}.} \bibinfo{year}{2025}\natexlab{b}.
+\bibfield{author}{\bibinfo{person}{Google}.} \bibinfo{year}{2025}\natexlab{}.
 \newblock \bibinfo{title}{google/gemma-3-27b-it}.
 \newblock
   \bibinfo{howpublished}{\url{https://huggingface.co/google/gemma-3-27b-it}}.
